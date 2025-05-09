@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res, next) => {
-  passport.authenticate("local", { session: false }, (err, user, info) => {
+  passport.authenticate("local", { session: true }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({ message: info.message });
     }
