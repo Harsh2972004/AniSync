@@ -15,6 +15,9 @@ passport.use(
         if (!user) {
           return done(null, false, { message: "Incorrect email." });
         }
+        if (!user.isVerified) {
+          return done(null, false, { message: "Email not verified." });
+        }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
           return done(null, false, { message: "Incorrect password." });
@@ -35,11 +38,14 @@ passport.use(
     async (jwtPayload, done) => {
       try {
         const user = await User.findById(jwtPayload.id);
-        if (user) {
-          return done(null, user);
-        } else {
+        if (!user) {
           return done(null, false);
         }
+        if (!user.isVerified) {
+          return done(null, false, { message: "Email not verified." });
+        }
+
+        return done(null, user);
       } catch (error) {
         return done(error);
       }

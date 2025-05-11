@@ -1,15 +1,72 @@
 import jwt from "jsonwebtoken";
 import { BlacklistedToken } from "../models/blacklistModel.js";
 import { User } from "../models/userModel.js";
+import { sendEmail } from "../config/email.js";
 import passport from "passport";
+
+export const sendVerificationEmail = async (user, req, res) => {
+  try {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+
+    const verificationUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/api/user/verify-email/${token}`;
+
+    const subject = "Verify Your Email Address";
+    const html = `
+      <h1>Welcome to AniSync!</h1>
+      <p>Click the link below to verify your email address:</p>
+      <a href="${verificationUrl}" target="_blank">${verificationUrl}</a>
+      <p>This link will expire in 1 hour.</p>
+    `;
+
+    await sendEmail(user.email, subject, html);
+
+    console.log(
+      `Verification email sent to ${user.email} with link: ${verificationUrl}`
+    );
+    res.status(200).json({
+      message: "Verification email sent",
+      verificationUrl,
+    });
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    res.status(500).json({ message: "Error sending verification email" });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json({ message: "Error verifying email" });
+  }
+};
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const user = await User.register(name, email, password);
-    res
-      .status(201)
-      .json({ message: "User registered successfully", name, email });
+    await sendVerificationEmail(user, req, res);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
