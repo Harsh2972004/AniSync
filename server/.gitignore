@@ -89,3 +89,8 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+#https certificates
+cert/
+key.pem
+cert.pem
