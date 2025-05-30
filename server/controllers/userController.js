@@ -3,63 +3,61 @@ import { BlacklistedToken } from "../models/blacklistModel.js";
 import { User } from "../models/userModel.js";
 import { sendEmail } from "../config/email.js";
 import passport from "passport";
+import crypto from "crypto";
 
 export const sendVerificationEmail = async (user, req, res) => {
   try {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "10m",
-    });
+    // Generate a 6-digit OTP
+    const otp = crypto.randomInt(100000, 1000000).toString();
 
-    // Store the token in the database
-    user.verificationToken = token;
+    //store the OTP in the user document
+    user.emailOTP = otp;
+    user.emailOTPExpires = Date.now() + 10 * 60 * 1000; // 10 minutes expiration
     await user.save();
-
-    const protocol =
-      process.env.NODE_ENV === "production" ? "https" : req.protocol;
-    const verificationUrl = `${protocol}://${req.get(
-      "host"
-    )}/api/user/verify-email/${token}`;
 
     const subject = "Verify Your Email Address";
     const html = `
       <h1>Welcome to AniSync!</h1>
-      <p>Click the link below to verify your email address:</p>
-      <a href="${verificationUrl}" target="_blank">${verificationUrl}</a>
-      <p>This link will expire in 1 hour.</p>
+      <p>Your verification code is: <b>${otp}</b></p>
+      <p>This code will expire in 10 minutes.</p>
     `;
 
     await sendEmail(user.email, subject, html);
 
-    console.log(
-      `Verification email sent to ${user.email} with link: ${verificationUrl}`
-    );
+    console.log(`Verification code sent to ${user.email}`);
     res.status(200).json({
-      message: "Verification email sent",
-      verificationUrl,
+      message: "Verification code sent",
     });
   } catch (error) {
-    console.error("Error sending verification email:", error);
-    res.status(500).json({ message: "Error sending verification email" });
+    console.error("Error sending verification code:", error);
+    res.status(500).json({ message: "Error sending verification code" });
   }
 };
 
 export const verifyEmail = async (req, res) => {
-  const { token } = req.params;
+  const { email, otp } = req.body;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user || user.verificationToken !== token) {
-      return res.status(400).json({ message: "Invalid token" });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
 
     if (user.isVerified) {
       return res.status(400).json({ message: "Email already verified" });
     }
+    if (
+      !user.emailOTP ||
+      user.emailOTP !== otp ||
+      !user.emailOTPExpires ||
+      user.emailOTPExpires < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
 
     user.isVerified = true;
-    user.verificationToken = null; // Clear the verification token after successful verification
+    user.emailOTP = null; // Clear OTP after verification
+    user.emailOTPExpires = null; // Clear OTP expiration after verification
     await user.save();
 
     res.status(200).json({ message: "Email verified successfully" });
@@ -91,7 +89,7 @@ export const loginUser = async (req, res, next) => {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      return res.json({ user, token });
+      return res.json({ name: user.name, email: user.email, token });
     });
   })(req, res, next);
 };
