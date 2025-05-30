@@ -10,6 +10,10 @@ export const sendVerificationEmail = async (user, req, res) => {
       expiresIn: "10m",
     });
 
+    // Store the token in the database
+    user.verificationToken = token;
+    await user.save();
+
     const verificationUrl = `${req.protocol}://${req.get(
       "host"
     )}/api/user/verify-email/${token}`;
@@ -44,7 +48,7 @@ export const verifyEmail = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (!user) {
+    if (!user || user.verificationToken !== token) {
       return res.status(400).json({ message: "Invalid token" });
     }
 
@@ -53,6 +57,7 @@ export const verifyEmail = async (req, res) => {
     }
 
     user.isVerified = true;
+    user.verificationToken = null; // Clear the verification token after successful verification
     await user.save();
 
     res.status(200).json({ message: "Email verified successfully" });
