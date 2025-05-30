@@ -14,7 +14,9 @@ export const sendVerificationEmail = async (user, req, res) => {
     user.verificationToken = token;
     await user.save();
 
-    const verificationUrl = `${req.protocol}://${req.get(
+    const protocol =
+      process.env.NODE_ENV === "production" ? "https" : req.protocol;
+    const verificationUrl = `${protocol}://${req.get(
       "host"
     )}/api/user/verify-email/${token}`;
 
