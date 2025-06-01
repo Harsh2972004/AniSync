@@ -34,6 +34,47 @@ export const sendVerificationEmail = async (user, req, res) => {
   }
 };
 
+export const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    if (user.isVerified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    const now = Date.now();
+    if (user.lastResend && now - user.lastResend < 2 * 60 * 1000) {
+      return res.status(429).json({
+        message: "You can only resend the verification code every 2 minutes",
+      });
+    }
+    user.lastResend = now;
+
+    // Generate a new OTP
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    user.emailOTP = otp;
+    user.emailOTPExpires = Date.now() + 10 * 60 * 1000; // 10 minutes expiration
+    await user.save();
+
+    const subject = "Verify Your Email Address";
+    const html = `
+      <h1>Welcome to AniSync!</h1>
+      <p>Your verification code is: <b>${otp}</b></p>
+      <p>This code will expire in 10 minutes.</p>
+    `;
+
+    await sendEmail(user.email, subject, html);
+
+    res.status(200).json({
+      message: "Verification code resent successfully",
+    });
+  } catch (error) {}
+};
+
 export const verifyEmail = async (req, res) => {
   const { email, otp } = req.body;
 

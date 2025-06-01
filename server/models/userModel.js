@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    lastResend: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
