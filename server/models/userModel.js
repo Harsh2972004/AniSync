@@ -37,6 +37,14 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    resestPassword: {
+      type: String,
+      default: null,
+    },
+    resestPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

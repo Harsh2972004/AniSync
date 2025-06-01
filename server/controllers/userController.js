@@ -4,6 +4,7 @@ import { User } from "../models/userModel.js";
 import { sendEmail } from "../config/email.js";
 import passport from "passport";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 
 export const sendVerificationEmail = async (user, req, res) => {
   try {
@@ -105,6 +106,65 @@ export const verifyEmail = async (req, res) => {
   } catch (error) {
     console.error("Error verifying email:", error);
     res.status(500).json({ message: "Error verifying email" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    user.resestPassword = otp;
+    user.resestPasswordExpires = Date.now() + 10 * 60 * 1000;
+    await user.save();
+
+    const subject = "AniSync Password Reset Code";
+    const html = `
+      <h1>Password Reset</h1>
+      <p>Your password reset code is: <b>${otp}</b></p>
+      <p>This code will expire in 10 minutes.</p>
+    `;
+    await sendEmail(user.email, subject, html);
+    res.status(200).json({ message: "Password reset code sent to your email" });
+  } catch (error) {
+    console.error("Error requesting password reset:", error);
+    res.status(500).json({ message: "Error requesting password reset" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (
+      !user ||
+      !user.resestPassword ||
+      user.resestPassword !== otp ||
+      !user.resestPasswordExpires ||
+      user.resestPasswordExpires < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+
+    // Clear the reset password fields
+    user.resestPassword = null;
+    user.resestPasswordExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Error resetting password" });
   }
 };
 
