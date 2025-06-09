@@ -14,6 +14,7 @@ import {
   otpLimiter,
   resendLimiter,
 } from "../../middleware/rateLimitMiddleware.js";
+import passport from "passport";
 
 const router = express.Router();
 
@@ -26,4 +27,20 @@ router.post("/forgot-password", resendLimiter, requestPasswordReset);
 router.post("/reset-password", otpLimiter, resetPassword);
 router.get("/profile", isAuthenticated, getUserProfile);
 
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/google/anisync",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  (req, res) => {
+    // Successful authentication, redirect home or send user data.
+    res.redirect("/profile");
+  }
+);
 export default router;

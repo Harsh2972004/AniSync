@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { User } from "../models/userModel.js";
 
 passport.use(
@@ -29,6 +30,7 @@ passport.use(
     }
   )
 );
+
 passport.use(
   new JwtStrategy(
     {
@@ -65,5 +67,32 @@ passport.deserializeUser(async (id, done) => {
     done(error, null);
   }
 });
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "https://localhost:3000/api/user/auth/google/anisync",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+        if (!user) {
+          user = new User({
+            googleId: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            isVerified: true, // Google accounts are verified
+          });
+          await user.save();
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 
 export default passport;
