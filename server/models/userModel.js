@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
     password: {
@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     googleId: {
+      type: String,
+      default: null,
+    },
+    anlisitId: {
+      type: String,
+      default: null,
+    },
+    anilistAvatar: {
       type: String,
       default: null,
     },

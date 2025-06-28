@@ -1,8 +1,10 @@
 import passport from "passport";
+import axios from "axios";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { User } from "../models/userModel.js";
+import { Strategy as OAuthStrategy } from "passport-oauth2";
 
 passport.use(
   new LocalStrategy(
@@ -95,4 +97,62 @@ passport.use(
   )
 );
 
+passport.use(
+  "anilist",
+  new OAuthStrategy(
+    {
+      authorizationURL: "https://anilist.co/api/v2/oauth/authorize",
+      tokenURL: "https://anilist.co/api/v2/oauth/token",
+      clientID: process.env.ANILIST_CLIENT_ID,
+      clientSecret: process.env.ANILIST_CLIENT_SECRET,
+      callbackURL: "https://localhost:3000/api/user/auth/anilist/anisync",
+    },
+    async (accessToken, refreshToken, params, profile, done) => {
+      console.log("AniList accessToken:", accessToken);
+      console.log("AniList params:", params);
+      try {
+        // Fetch AniList user profile using axios
+        const response = await axios.post(
+          "https://graphql.anilist.co",
+          {
+            query: `
+              query {
+                Viewer {
+                  id
+                  name
+                  avatar { large }
+                }
+              }
+            `,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const viewer = response.data.data.Viewer;
+
+        let user = await User.findOne({ anilistId: viewer.id });
+        if (!user) {
+          user = await User.create({
+            name: viewer.name,
+            email: `anilist_${viewer.id}@anilist.local`, // <-- unique placeholder
+            anilistId: viewer.id,
+            anilistAvatar: viewer.avatar?.large,
+            isVerified: true,
+          });
+        }
+        return done(null, user);
+      } catch (error) {
+        console.error(
+          "AniList axios error:",
+          error.response?.data || error.message
+        );
+        return done(error, null);
+      }
+    }
+  )
+);
 export default passport;

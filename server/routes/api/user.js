@@ -43,4 +43,21 @@ router.get(
     res.redirect("/profile");
   }
 );
+
+router.get(
+  "/auth/anilist",
+  passport.authenticate("anilist", { session: false })
+);
+
+router.get(
+  "/auth/anilist/anisync",
+  passport.authenticate("anilist", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  (req, res) => {
+    // Successful authentication
+    res.json({ message: "AniList login successful", user: req.user });
+  }
+);
 export default router;
