@@ -8,7 +8,7 @@ import { dirname } from "path";
 import session from "express-session";
 import connectDB from "./config/db.js";
 import router from "./routes/api/user.js";
-import animeRouter from "./routes/api/anime.js";
+import mediaRouter from "./routes/api/media.js";
 import passport from "./config/passport.js";
 import dotenv from "dotenv";
 
@@ -41,7 +41,7 @@ app.use(passport.session());
 
 //routes module
 app.use("/api/user", router);
-app.use("/api/anime", animeRouter);
+app.use("/api/anime", mediaRouter);
 
 // Connect to MongoDB
 connectDB();
