@@ -1,9 +1,12 @@
+import LoadingButton from "./LoadingButton";
+
 const OTPForm = ({
   email,
   handleOtpVerification,
   otp,
   setOtp,
   handleResendOtp,
+  isLoading,
 }) => {
   return (
     <form
@@ -25,12 +28,7 @@ const OTPForm = ({
           className="w-[400px] h-12 p-2 rounded-md bg-secondary"
         />
       </div>
-      <button
-        type="submit"
-        className="w-full font-semibold bg-btn_pink text-secondary px-4 py-2 rounded-lg hover:bg-secondary hover:text-btn_pink transition-colors"
-      >
-        Verify OTP
-      </button>
+      <LoadingButton isLoading={isLoading} text={"Verify OTP"} />
       <p className="text-sm text-gray-400">
         Didn't receive the OTP?{" "}
         <button

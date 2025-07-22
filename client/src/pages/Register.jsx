@@ -13,6 +13,8 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [step, setStep] = useState("form"); // "form" or "otp"
   const [otp, setOtp] = useState("");
 
@@ -32,10 +34,7 @@ const Register = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    // if (userDetails.password !== userDetails.confirmPassword) {
-    //   alert("Passwords do not match!");
-    //   return;
-    // }
+    setIsLoading(true);
     try {
       const response = await register(userDetails);
       console.log("user registered successfully", response.data);
@@ -50,6 +49,8 @@ const Register = () => {
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -103,6 +104,7 @@ const Register = () => {
             handleInputChange={handleInputChange}
             handleRegister={handleRegister}
             userDetails={userDetails}
+            isLoading={isLoading}
           />
         ) : (
           <OTPForm
@@ -111,6 +113,7 @@ const Register = () => {
             setOtp={setOtp}
             email={userDetails.email}
             handleResendOtp={handleResendOtp}
+            isLoading={isLoading}
           />
         )}
 

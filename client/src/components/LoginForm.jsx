@@ -1,6 +1,12 @@
 import { useState } from "react";
+import LoadingButton from "./LoadingButton";
 
-const LoginForm = ({ userDetails, handleLogin, handleInputChange }) => {
+const LoginForm = ({
+  userDetails,
+  handleLogin,
+  handleInputChange,
+  isLoading,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -43,12 +49,7 @@ const LoginForm = ({ userDetails, handleLogin, handleInputChange }) => {
           </button>
         </div>
       </div>
-      <button
-        type="submit"
-        className="w-full font-semibold bg-btn_pink text-secondary px-4 py-2 rounded-lg hover:bg-secondary hover:text-btn_pink transition-colors"
-      >
-        Login
-      </button>
+      <LoadingButton isLoading={isLoading} text={"Login"} />
     </form>
   );
 };

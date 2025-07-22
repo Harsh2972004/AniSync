@@ -12,6 +12,8 @@ const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -25,6 +27,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setIsLoading(true);
     try {
       const response = await login(userDetails);
       console.log("User logged in successfully", response.data);
@@ -37,6 +40,8 @@ const Login = () => {
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +55,7 @@ const Login = () => {
           userDetails={userDetails}
           handleInputChange={handleInputChange}
           handleLogin={handleLogin}
+          isLoading={isLoading}
         />
         <OAuthSection title={"login"} />
         <div className="col-span-2 text-center mt-8">
