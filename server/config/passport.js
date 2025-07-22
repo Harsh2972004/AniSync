@@ -75,7 +75,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://localhost:3000/api/user/auth/google/anisync",
+      callbackURL: "http://localhost:3000/api/user/auth/google/anisync",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -101,11 +101,11 @@ passport.use(
   "anilist",
   new OAuthStrategy(
     {
-      authorizationURL: "https://anilist.co/api/v2/oauth/authorize",
+      authorizationURL: "http://anilist.co/api/v2/oauth/authorize",
       tokenURL: "https://anilist.co/api/v2/oauth/token",
       clientID: process.env.ANILIST_CLIENT_ID,
       clientSecret: process.env.ANILIST_CLIENT_SECRET,
-      callbackURL: "https://localhost:3000/api/user/auth/anilist/anisync",
+      callbackURL: "http://localhost:3000/api/user/auth/anilist/anisync",
     },
     async (accessToken, refreshToken, params, profile, done) => {
       console.log("AniList accessToken:", accessToken);

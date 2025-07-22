@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       maxWidth: {
-        container: "1360px", // for main container max-width
+        container: "1280px", // for main container max-width
       },
       spacing: {
-        nav: "1.5rem 2.5rem", // for navbar spacing
+        nav: "1.5rem", // for navbar spacing
         layout: "2.5rem", // for main layout spacing
         section: "1.5rem", // for section spacing
       },
@@ -18,7 +18,7 @@ export default {
       },
       fontFamily: {
         sans: ["Open Sans", "sans-serif"],
-        mono: ["Roboto Mono", "monospace"],
+        montserrat: ["Montserrat", "sans-serif"],
       },
     },
   },

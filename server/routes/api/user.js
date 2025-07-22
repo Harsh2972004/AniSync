@@ -14,6 +14,7 @@ import {
   otpLimiter,
   resendLimiter,
 } from "../../middleware/rateLimitMiddleware.js";
+import otpCooldownMiddleware from "../../middleware/cooldownMiddleware.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -22,7 +23,12 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 router.post("/verify-email", otpLimiter, verifyEmail);
-router.post("/resend-verification", resendLimiter, resendVerificationEmail);
+router.post(
+  "/resend-verification",
+  otpCooldownMiddleware,
+  resendLimiter,
+  resendVerificationEmail
+);
 router.post("/forgot-password", resendLimiter, requestPasswordReset);
 router.post("/reset-password", otpLimiter, resetPassword);
 router.get("/profile", isAuthenticated, getUserProfile);
@@ -36,7 +42,7 @@ router.get(
   "/auth/google/anisync",
   passport.authenticate("google", {
     failureRedirect: "/login",
-    session: false,
+    session: true,
   }),
   (req, res) => {
     // Successful authentication, redirect home or send user data.
@@ -44,9 +50,18 @@ router.get(
   }
 );
 
+// AniList authentication routes
+router.get("/auth/anilist", passport.authenticate("anilist"));
+
 router.get(
-  "/auth/anilist",
-  passport.authenticate("anilist", { session: false })
+  "/auth/anilist/anisync",
+  passport.authenticate("anilist", {
+    failureRedirect: "/login",
+    session: true,
+  }),
+  (req, res) => {
+    res.redirect("/profile");
+  }
 );
 
 router.get(

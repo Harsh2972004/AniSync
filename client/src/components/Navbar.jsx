@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="bg-primary text-white font-mono">
+    <nav className="bg-primary text-white font-montserrat">
       <div className="navbar-container">
         <div>
           <h1 className=" text-[1.8rem] italic">AniSync</h1>

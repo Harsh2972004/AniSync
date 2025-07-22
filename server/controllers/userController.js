@@ -39,7 +39,7 @@ export const resendVerificationEmail = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = req.user;
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -48,11 +48,6 @@ export const resendVerificationEmail = async (req, res) => {
     }
 
     const now = Date.now();
-    if (user.lastResend && now - user.lastResend < 2 * 60 * 1000) {
-      return res.status(429).json({
-        message: "You can only resend the verification code every 2 minutes",
-      });
-    }
     user.lastResend = now;
 
     // Generate a new OTP
@@ -73,7 +68,10 @@ export const resendVerificationEmail = async (req, res) => {
     res.status(200).json({
       message: "Verification code resent successfully",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error resending verification code:", error);
+    res.status(500).json({ message: "Error resending verification code" });
+  }
 };
 
 export const verifyEmail = async (req, res) => {

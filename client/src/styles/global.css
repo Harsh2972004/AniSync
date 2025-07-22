@@ -1,11 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply p-0 m-0 box-border;
+  }
   body {
-    @apply bg-secondary text-white font-sans;
+    @apply bg-secondary text-white font-montserrat;
   }
 }
 
@@ -17,6 +20,10 @@
     @apply px-layout max-w-container w-full mx-auto;
   }
 
+  .auth-page {
+    @apply max-w-[40%] mx-auto w-full px-layout;
+  }
+
   .section-spacing {
     @apply my-section;
   }
@@ -24,6 +31,6 @@
 
 @layer utilities {
   .navbar-spacing {
-    @apply p-nav;
+    @apply py-nav;
   }
 }
