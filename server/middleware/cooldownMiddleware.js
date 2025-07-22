@@ -1,6 +1,6 @@
 import { User } from "../models/userModel.js";
 
-const otpCooldownMiddleware = async (req, res, next) => {
+const cooldownMiddleware = async (req, res, next) => {
   const email = req.body.email;
   if (!email) {
     return res.status(400).json({ message: "Email is required" });
@@ -33,4 +33,4 @@ const otpCooldownMiddleware = async (req, res, next) => {
   next();
 };
 
-export default otpCooldownMiddleware;
+export default cooldownMiddleware;

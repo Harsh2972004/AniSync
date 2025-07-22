@@ -140,14 +140,19 @@ export const resetPassword = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+    if (!user || !user.resestPassword) {
+      return res.status(400).json({ message: "User not found." });
+    }
+
+    if (user.resestPassword !== otp) {
+      return res.status(400).json({ message: "Invalid OTP." });
+    }
+
     if (
-      !user ||
-      !user.resestPassword ||
-      user.resestPassword !== otp ||
       !user.resestPasswordExpires ||
       user.resestPasswordExpires < Date.now()
     ) {
-      return res.status(400).json({ message: "Invalid or expired OTP" });
+      return res.status(400).json({ message: "OTP has expired" });
     }
 
     const salt = await bcrypt.genSalt(10);

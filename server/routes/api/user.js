@@ -14,7 +14,7 @@ import {
   otpLimiter,
   resendLimiter,
 } from "../../middleware/rateLimitMiddleware.js";
-import otpCooldownMiddleware from "../../middleware/cooldownMiddleware.js";
+import cooldownMiddleware from "../../middleware/cooldownMiddleware.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -25,11 +25,16 @@ router.get("/logout", logoutUser);
 router.post("/verify-email", otpLimiter, verifyEmail);
 router.post(
   "/resend-verification",
-  otpCooldownMiddleware,
+  cooldownMiddleware,
   resendLimiter,
   resendVerificationEmail
 );
-router.post("/forgot-password", resendLimiter, requestPasswordReset);
+router.post(
+  "/forgot-password",
+  cooldownMiddleware,
+  resendLimiter,
+  requestPasswordReset
+);
 router.post("/reset-password", otpLimiter, resetPassword);
 router.get("/profile", isAuthenticated, getUserProfile);
 

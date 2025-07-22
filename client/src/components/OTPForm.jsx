@@ -18,12 +18,13 @@ const OTPForm = ({
         <span className="font-semibold text-blue-500">{email}</span>
       </h3>
       <div className="flex flex-col space-y-2">
-        <label name="otp">Enter OTP</label>
+        <label htmlFor="otp">Enter OTP</label>
         <input
           onChange={(e) => setOtp(e.target.value)}
           value={otp}
           type="text"
           placeholder="OTP"
+          id="otp"
           name="otp"
           className="w-[400px] h-12 p-2 rounded-md bg-secondary"
         />
