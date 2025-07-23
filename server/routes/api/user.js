@@ -5,9 +5,9 @@ import {
   loginUser,
   getUserProfile,
   verifyEmail,
-  resendVerificationEmail,
   requestPasswordReset,
   resetPassword,
+  resendOtp,
 } from "../../controllers/userController.js";
 import { isAuthenticated } from "../../middleware/authMiddleware.js";
 import {
@@ -23,12 +23,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 router.post("/verify-email", otpLimiter, verifyEmail);
-router.post(
-  "/resend-verification",
-  cooldownMiddleware,
-  resendLimiter,
-  resendVerificationEmail
-);
+router.post("/resend-otp", cooldownMiddleware, resendLimiter, resendOtp);
 router.post(
   "/forgot-password",
   cooldownMiddleware,

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LoadingButton from "./LoadingButton";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const RegisterForm = ({
   handleRegister,
@@ -59,7 +60,11 @@ const RegisterForm = ({
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-4 top-1/4 text-gray-400 hover:text-white"
           >
-            {showPassword ? "Hide" : "Show"}
+            {showPassword ? (
+              <FaRegEyeSlash size={22} />
+            ) : (
+              <FaRegEye size={22} />
+            )}
           </button>
         </div>
 
@@ -89,7 +94,11 @@ const RegisterForm = ({
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-4 top-1/4 text-gray-400 hover:text-white"
             >
-              {showConfirmPassword ? "Hide" : "Show"}
+              {showPassword ? (
+                <FaRegEyeSlash size={22} />
+              ) : (
+                <FaRegEye size={22} />
+              )}
             </button>
           </div>
         </div>

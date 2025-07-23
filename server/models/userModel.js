@@ -45,7 +45,11 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    lastResend: {
+    lastEmailResend: {
+      type: Date,
+      default: null,
+    },
+    lastResetResend: {
       type: Date,
       default: null,
     },

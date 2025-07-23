@@ -1,7 +1,7 @@
 import { resendOtp } from "../services/auth";
 import { useState, useEffect } from "react";
 
-const useResendOtp = (email, cooldown = 120) => {
+const useResendOtp = (email, purpose, cooldown = 120) => {
   const [remainingTime, setRemainingTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,7 +12,7 @@ const useResendOtp = (email, cooldown = 120) => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const response = await resendOtp(email);
+      const response = await resendOtp(email, purpose);
       console.log("OTP resent successfully", response.data);
       setSuccess("OTP resent successfully! Please check your email.");
       setRemainingTime(cooldown);

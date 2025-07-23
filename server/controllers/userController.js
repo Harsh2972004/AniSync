@@ -35,42 +35,68 @@ export const sendVerificationEmail = async (user, req, res) => {
   }
 };
 
-export const resendVerificationEmail = async (req, res) => {
-  const { email } = req.body;
+export const resendOtp = async (req, res) => {
+  const { email, purpose } = req.body;
 
   try {
+    if (!email || !purpose) {
+      return res
+        .status(400)
+        .json({ message: "Email and purpose are required" });
+    }
     const user = req.user;
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
-    if (user.isVerified) {
-      return res.status(400).json({ message: "Email already verified" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const now = Date.now();
-    user.lastResend = now;
 
     // Generate a new OTP
     const otp = crypto.randomInt(100000, 1000000).toString();
-    user.emailOTP = otp;
-    user.emailOTPExpires = Date.now() + 10 * 60 * 1000; // 10 minutes expiration
+
+    let subject = "";
+    let html = "";
+    let customMessage = "";
+
+    if (purpose === "verify") {
+      if (user.isVerified) {
+        return res.status(400).json({ message: "User already verified" });
+      }
+
+      user.emailOTP = otp;
+      user.emailOTPExpires = Date.now() + 10 * 60 * 1000; // 10 minutes expiration
+
+      subject = "Verify Your Email Address";
+      customMessage = "Your Verification code is:";
+
+      user.lastEmailResend = now;
+    } else if (purpose === "reset") {
+      user.resestPassword = otp;
+      user.resestPasswordExpires = Date.now() + 10 * 60 * 1000;
+
+      subject = "Reset Your Password";
+      customMessage = "Your Password reset code is:";
+      user.lastResetResend = now;
+    } else {
+      return res.status(400).json({ message: "Invalid Purpose" });
+    }
+
     await user.save();
 
-    const subject = "Verify Your Email Address";
-    const html = `
+    html = `
       <h1>Welcome to AniSync!</h1>
-      <p>Your verification code is: <b>${otp}</b></p>
+      <p>${customMessage} <b>${otp}</b></p>
       <p>This code will expire in 10 minutes.</p>
     `;
 
     await sendEmail(user.email, subject, html);
 
     res.status(200).json({
-      message: "Verification code resent successfully",
+      message: "OTP resent successfully",
     });
   } catch (error) {
-    console.error("Error resending verification code:", error);
-    res.status(500).json({ message: "Error resending verification code" });
+    console.error("Error resending OTP:", error);
+    res.status(500).json({ message: "Error resending OTP" });
   }
 };
 

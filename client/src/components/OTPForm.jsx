@@ -5,6 +5,7 @@ import useResendOtp from "../hooks/useOtpResend";
 const OTPForm = ({ email, handleOtpVerification, otp, setOtp, isLoading }) => {
   const { remainingTime, error, handleResendOtp, success } = useResendOtp(
     email,
+    "verify",
     120
   );
 
