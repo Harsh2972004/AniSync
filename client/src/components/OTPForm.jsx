@@ -1,13 +1,13 @@
 import LoadingButton from "./LoadingButton";
+import OtpResendButton from "./OtpResendButton";
+import useResendOtp from "../hooks/useOtpResend";
 
-const OTPForm = ({
-  email,
-  handleOtpVerification,
-  otp,
-  setOtp,
-  handleResendOtp,
-  isLoading,
-}) => {
+const OTPForm = ({ email, handleOtpVerification, otp, setOtp, isLoading }) => {
+  const { remainingTime, error, handleResendOtp, success } = useResendOtp(
+    email,
+    120
+  );
+
   return (
     <form
       onSubmit={handleOtpVerification}
@@ -30,16 +30,10 @@ const OTPForm = ({
         />
       </div>
       <LoadingButton isLoading={isLoading} text={"Verify OTP"} />
-      <p className="text-sm text-gray-400">
-        Didn't receive the OTP?{" "}
-        <button
-          type="button"
-          onClick={handleResendOtp}
-          className="text-blue-400 underline"
-        >
-          Resend OTP
-        </button>
-      </p>
+      <OtpResendButton
+        handleResendOtp={handleResendOtp}
+        remainingTime={remainingTime}
+      />
     </form>
   );
 };
