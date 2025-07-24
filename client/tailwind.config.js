@@ -13,7 +13,7 @@ export default {
       },
       colors: {
         primary: "#201F31", //greyish-blue
-        secondary: "#12121B", //darke
+        secondary: "#12121B", //darker-blue
         btn_pink: "#E19FDF", //pink
       },
       fontFamily: {

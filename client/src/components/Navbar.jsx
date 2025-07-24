@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ home = true }) => {
   return (
-    <nav className="bg-primary text-white font-montserrat">
+    <nav
+      className={`${
+        home ? "bg-opacity-40 bg-black" : "bg-primary"
+      } text-white font-montserrat`}
+    >
       <div className="navbar-container">
         <div>
           <h1 className=" text-[1.8rem] italic">AniSync</h1>
