@@ -17,7 +17,7 @@
     @apply flex items-center justify-between navbar-spacing max-w-container mx-auto;
   }
   .container-spacing {
-    @apply px-layout max-w-container w-full mx-auto;
+    @apply py-layout max-w-container w-full mx-auto;
   }
 
   .auth-page {

@@ -1,11 +1,36 @@
+import { useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ home = true }) => {
+const Navbar = ({ home = false }) => {
+  const [show, setShow] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 30) {
+        // scrolling down
+        setShow(false);
+      } else {
+        // scrolling up
+        setShow(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
   return (
     <nav
-      className={`${
-        home ? "bg-opacity-40 bg-black" : "bg-primary"
-      } text-white font-montserrat`}
+      className={`top-0 w-full z-10 ${
+        home ? "bg-opacity-40 bg-black fixed " : "bg-primary sticky"
+      } text-white font-montserrat transition-transform ${
+        show ? "translate-y-0" : "-translate-y-full"
+      }`}
     >
       <div className="navbar-container">
         <div>
