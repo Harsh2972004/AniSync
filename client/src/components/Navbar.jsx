@@ -26,9 +26,13 @@ const Navbar = ({ home = false }) => {
   });
   return (
     <nav
-      className={`top-0 w-full z-10 ${
-        home ? "bg-opacity-40 bg-black fixed " : "bg-primary sticky"
-      } text-white font-montserrat transition-transform ${
+      className={`top-0 w-full z-50 ${
+        home
+          ? lastScrollY > 30
+            ? "bg-primary fixed"
+            : "bg-opacity-40 bg-black fixed"
+          : "bg-primary sticky"
+      } text-white font-montserrat transition-all ${
         show ? "translate-y-0" : "-translate-y-full"
       }`}
     >

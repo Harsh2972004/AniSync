@@ -33,4 +33,16 @@
   .navbar-spacing {
     @apply py-nav;
   }
+
+  .my-gradient-border {
+    border: 2px solid;
+    border-image: linear-gradient(
+        to bottom right,
+        #ffffff00,
+        #ffffff7d,
+        #ffffff
+      )
+      1;
+    border-radius: 1rem;
+  }
 }
