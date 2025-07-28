@@ -1,8 +1,12 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const AnimeCard = ({ animeImg, title, airSince, genres }) => {
+const AnimeCard = ({ id, animeImg, title, airSince, genres }) => {
   return (
-    <div className="w-[22%] min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white">
+    <Link
+      to={`/${id}`}
+      className="w-[22%] min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white hover:scale-105 focus:scale-105 transition-all duration-200"
+    >
       <div className="h-full w-full flex flex-col gap-3 bg-secondary rounded-2xl overflow-hidden p-2 pb-6">
         <div className="h-[300px] overflow-hidden rounded-2xl">
           <img
@@ -37,7 +41,7 @@ const AnimeCard = ({ animeImg, title, airSince, genres }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

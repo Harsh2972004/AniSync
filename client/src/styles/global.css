@@ -45,4 +45,32 @@
       1;
     border-radius: 1rem;
   }
+
+  @layer utilities {
+    .skeleton {
+      @apply bg-gray-300 relative overflow-hidden;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -150px;
+      height: 100%;
+      width: 150px;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%
+      );
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(200%);
+      }
+    }
+  }
 }

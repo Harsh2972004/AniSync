@@ -7,11 +7,14 @@ import {
   getUpcomingNextSeasonAnime,
 } from "../services/media";
 import { useEffect, useState } from "react";
+import SkeletonCard from "./SkeletonCard";
 
 const HomeSection = ({ title, fetchType, limit = 4 }) => {
   const [animeList, setAnimeList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchAnimeList = async () => {
       try {
         let response;
@@ -36,6 +39,8 @@ const HomeSection = ({ title, fetchType, limit = 4 }) => {
         setAnimeList(data);
       } catch (error) {
         console.error("Error fetching anime list:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchAnimeList();
@@ -50,41 +55,22 @@ const HomeSection = ({ title, fetchType, limit = 4 }) => {
         </Link>
       </div>
       <div className="flex justify-between w-full">
-        {(animeList || []).map((anime) => {
-          return (
-            <AnimeCard
-              key={anime.id}
-              title={anime.title.english}
-              animeImg={anime.coverImage.large}
-              airSince={anime.startDate.year}
-              genres={anime.genres.slice(0, 3)}
-            />
-          );
-        })}
-        {/* <AnimeCard
-          title={"One Piece"}
-          animeImg={onePiece}
-          airSince="dunno when"
-          genres={["action", "adventure", "drama"]}
-        />
-        <AnimeCard
-          title={"Ore dake level up na ken: season 2"}
-          animeImg={onePiece}
-          airSince="dunno when"
-          genres={["action", "adventure", "drama"]}
-        />
-        <AnimeCard
-          title={"one-Piece"}
-          animeImg={onePiece}
-          airSince="dunno when"
-          genres={["action", "adventure", "drama"]}
-        />
-        <AnimeCard
-          title={"one-Piece"}
-          animeImg={onePiece}
-          airSince="dunno when"
-          genres={["action", "adventure", "drama"]}
-        /> */}
+        {isLoading
+          ? Array.from({ length: limit }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))
+          : animeList.map((anime) => {
+              return (
+                <AnimeCard
+                  key={anime.id}
+                  id={anime.id}
+                  title={anime.title.english}
+                  animeImg={anime.coverImage.large}
+                  airSince={anime.startDate.year}
+                  genres={anime.genres.slice(0, 3)}
+                />
+              );
+            })}
       </div>
     </section>
   );
