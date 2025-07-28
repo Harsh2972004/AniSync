@@ -13,6 +13,8 @@ export const paginatedMediaQuery = `
         title { romaji english native }
         coverImage { large medium }
         description
+        genres
+        startDate{year month day}
       }
     }
   }

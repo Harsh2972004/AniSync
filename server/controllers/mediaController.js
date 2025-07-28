@@ -36,7 +36,7 @@ export const searchMedia = (mediaType) => async (req, res) => {
 
 export const getTrendingMedia = (mediaType) => async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-  const perPage = 10;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
 
   try {
     const data = await fetchFromAnilist({
@@ -54,6 +54,8 @@ export const getTrendingMedia = (mediaType) => async (req, res) => {
       title: media.title,
       coverImage: media.coverImage,
       description: media.description,
+      genres: media.genres,
+      startDate: media.startDate,
     }));
 
     const pageInfo = data.Page.pageInfo;
@@ -66,7 +68,7 @@ export const getTrendingMedia = (mediaType) => async (req, res) => {
 
 export const getAllTimePopularMedia = (mediaType) => async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-  const perPage = 10;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
 
   try {
     const data = await fetchFromAnilist({
@@ -84,6 +86,8 @@ export const getAllTimePopularMedia = (mediaType) => async (req, res) => {
       title: media.title,
       coverImage: media.coverImage,
       description: media.description,
+      genres: media.genres,
+      startDate: media.startDate,
     }));
 
     const pageInfo = data.Page.pageInfo;
@@ -96,7 +100,7 @@ export const getAllTimePopularMedia = (mediaType) => async (req, res) => {
 
 export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-  const perPage = 10;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
   // determine the current season and year
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
@@ -135,6 +139,8 @@ export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
       title: media.title,
       coverImage: media.coverImage,
       description: media.description,
+      genres: media.genres,
+      startDate: media.startDate,
     }));
 
     const pageInfo = data.Page.pageInfo;
@@ -147,7 +153,7 @@ export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
 
 export const getUpcomingNextSeasonMedia = (mediaType) => async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-  const perPage = 10;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
 
   // determine upcoming season
   const month = new Date().getMonth() + 1;
@@ -188,6 +194,8 @@ export const getUpcomingNextSeasonMedia = (mediaType) => async (req, res) => {
       title: media.title,
       coverImage: media.coverImage,
       description: media.description,
+      genres: media.genres,
+      startDate: media.startDate,
     }));
 
     const pageInfo = data.Page.pageInfo;

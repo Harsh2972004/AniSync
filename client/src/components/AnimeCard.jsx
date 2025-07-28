@@ -21,13 +21,13 @@ const AnimeCard = ({ animeImg, title, airSince, genres }) => {
             </div>
           </div>
           <span className="text-gray-500 text-sm font-semibold">
-            {airSince}
+            airing since {airSince}
           </span>
           <div className="flex items-center gap-3 flex-wrap mt-2">
             {genres.map((genre) => {
               return (
                 <span
-                  className="text-sm text-gray-500 border-[1px] font-semibold rounded-3xl px-[8px] py-[2px]"
+                  className="text-xs text-gray-500 border-[1px] font-semibold rounded-3xl px-[8px] py-[2px]"
                   key={genre}
                 >
                   {genre}
