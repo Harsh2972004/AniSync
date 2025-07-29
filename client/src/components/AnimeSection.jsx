@@ -1,5 +1,5 @@
 import AnimeCard from "./animeCard";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   getTrendingAnime,
   getAllTimePopularAnime,
@@ -8,10 +8,30 @@ import {
 } from "../services/media";
 import { useEffect, useState } from "react";
 import SkeletonCard from "./SkeletonCard";
+import { useBrowse } from "../context/BrowseContext";
 
-const HomeSection = ({ title, fetchType, limit = 4 }) => {
+const AnimeSection = ({ title, fetchType, limit = 4, inBrowse = false }) => {
   const [animeList, setAnimeList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const { mode, sectionType, setMode, setSectionType } = useBrowse();
+
+  const displayLimit =
+    inBrowse && mode === "sectionViewAll" && sectionType === fetchType ? 20 : 4;
+
+  const handleViewAll = () => {
+    if (inBrowse) {
+      setMode("sectionViewAll");
+      setSectionType({ fetchType: fetchType, title: title });
+    } else {
+      navigate(
+        `/browse?mode=sectionViewAll&sectionType=${fetchType}&title=${encodeURIComponent(
+          title
+        )}`
+      );
+    }
+    console.log(mode, sectionType);
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -20,19 +40,19 @@ const HomeSection = ({ title, fetchType, limit = 4 }) => {
         let response;
         switch (fetchType) {
           case "trending":
-            response = await getTrendingAnime(limit);
+            response = await getTrendingAnime(displayLimit);
             break;
           case "allTimePopular":
-            response = await getAllTimePopularAnime(limit);
+            response = await getAllTimePopularAnime(displayLimit);
             break;
           case "upcoming":
-            response = await getUpcomingNextSeasonAnime(limit);
+            response = await getUpcomingNextSeasonAnime(displayLimit);
             break;
           case "thisSeason":
-            response = await getPopularThisSeasonAnime(limit);
+            response = await getPopularThisSeasonAnime(displayLimit);
             break;
           default:
-            response = await getTrendingAnime(limit);
+            response = await getTrendingAnime(displayLimit);
             break;
         }
         const data = response.data.mediaList;
@@ -50,13 +70,16 @@ const HomeSection = ({ title, fetchType, limit = 4 }) => {
     <section className="container-spacing flex flex-col w-full gap-6 ">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <Link to="/browse">
-          <span className="text-gray-400">View All</span>
-        </Link>
+        <button
+          onClick={handleViewAll}
+          className={`text-gray-400 ${mode === "sectionViewAll" && "hidden"}`}
+        >
+          View All
+        </button>
       </div>
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between flex-wrap gap-y-20 w-full">
         {isLoading
-          ? Array.from({ length: limit }).map((_, index) => (
+          ? Array.from({ length: displayLimit }).map((_, index) => (
               <SkeletonCard key={index} />
             ))
           : animeList.map((anime) => {
@@ -76,4 +99,4 @@ const HomeSection = ({ title, fetchType, limit = 4 }) => {
   );
 };
 
-export default HomeSection;
+export default AnimeSection;

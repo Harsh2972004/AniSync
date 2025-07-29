@@ -52,10 +52,10 @@ const Navbar = ({ home = false }) => {
               <Link>Manga List</Link>
             </li>
             <li className="cursor-pointer">
-              <Link>Genres</Link>
+              <Link>genres</Link>
             </li>
             <li className="cursor-pointer">
-              <Link>Platforms</Link>
+              <Link to="/browse">Browse</Link>
             </li>
           </ul>
         </div>

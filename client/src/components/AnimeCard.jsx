@@ -24,7 +24,7 @@ const AnimeCard = ({ id, animeImg, title, airSince, genres }) => {
               <FaHeart size={28} color="red" />
             </div>
           </div>
-          <span className="text-gray-500 text-sm font-semibold">
+          <span className="text-gray-500 text-xs font-semibold">
             airing since {airSince}
           </span>
           <div className="flex items-center gap-3 flex-wrap mt-2">
