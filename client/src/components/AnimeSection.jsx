@@ -1,4 +1,4 @@
-import AnimeCard from "./animeCard";
+import AnimeCard from "./AnimeCard";
 import { useNavigate } from "react-router-dom";
 import {
   getTrendingAnime,
@@ -6,13 +6,11 @@ import {
   getPopularThisSeasonAnime,
   getUpcomingNextSeasonAnime,
 } from "../services/media";
-import { useEffect, useState } from "react";
 import SkeletonCard from "./SkeletonCard";
 import { useBrowse } from "../context/BrowseContext";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 
-const AnimeSection = ({ title, fetchType, limit = 4, inBrowse = false }) => {
-  const [animeList, setAnimeList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
   const navigate = useNavigate();
   const { mode, sectionType, setMode, setSectionType } = useBrowse();
 
@@ -22,7 +20,7 @@ const AnimeSection = ({ title, fetchType, limit = 4, inBrowse = false }) => {
   const handleViewAll = () => {
     if (inBrowse) {
       setMode("sectionViewAll");
-      setSectionType({ fetchType: fetchType, title: title });
+      setSectionType(fetchType);
     } else {
       navigate(
         `/browse?mode=sectionViewAll&sectionType=${fetchType}&title=${encodeURIComponent(
@@ -33,38 +31,47 @@ const AnimeSection = ({ title, fetchType, limit = 4, inBrowse = false }) => {
     console.log(mode, sectionType);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchAnimeList = async () => {
-      try {
-        let response;
-        switch (fetchType) {
-          case "trending":
-            response = await getTrendingAnime(displayLimit);
-            break;
-          case "allTimePopular":
-            response = await getAllTimePopularAnime(displayLimit);
-            break;
-          case "upcoming":
-            response = await getUpcomingNextSeasonAnime(displayLimit);
-            break;
-          case "thisSeason":
-            response = await getPopularThisSeasonAnime(displayLimit);
-            break;
-          default:
-            response = await getTrendingAnime(displayLimit);
-            break;
-        }
-        const data = response.data.mediaList;
-        setAnimeList(data);
-      } catch (error) {
-        console.error("Error fetching anime list:", error);
-      } finally {
-        setIsLoading(false);
+  const fetchAnimeList = async (page) => {
+    try {
+      const limit =
+        inBrowse && mode === "sectionViewAll" && sectionType === fetchType
+          ? 20
+          : 4;
+
+      let response;
+      console.log(fetchType);
+      switch (fetchType) {
+        case "trending":
+          response = await getTrendingAnime(limit, page);
+          break;
+        case "allTimePopular":
+          response = await getAllTimePopularAnime(limit, page);
+          break;
+        case "upcoming":
+          response = await getUpcomingNextSeasonAnime(limit, page);
+          break;
+        case "thisSeason":
+          response = await getPopularThisSeasonAnime(limit, page);
+          break;
+        default:
+          response = await getTrendingAnime(limit, page);
+          break;
       }
-    };
-    fetchAnimeList();
-  }, [fetchType, limit]);
+      return response.data.mediaList;
+    } catch (error) {
+      console.error("Error fetching anime list:", error);
+    }
+  };
+
+  const {
+    data: animeList,
+    lastAnimeRef,
+    isLoading,
+  } = useInfiniteScroll(fetchAnimeList, [fetchType, mode, sectionType]);
+
+  const uniqueAnimeList = Array.from(
+    new Map(animeList.map((item) => [item.id, item])).values()
+  );
 
   return (
     <section className="container-spacing flex flex-col w-full gap-6 ">
@@ -72,28 +79,37 @@ const AnimeSection = ({ title, fetchType, limit = 4, inBrowse = false }) => {
         <h1 className="text-2xl font-bold">{title}</h1>
         <button
           onClick={handleViewAll}
-          className={`text-gray-400 ${mode === "sectionViewAll" && "hidden"}`}
+          className={`text-gray-400 ${
+            inBrowse && mode === "sectionViewAll" && "hidden"
+          }`}
         >
           View All
         </button>
       </div>
       <div className="flex justify-between flex-wrap gap-y-20 w-full">
-        {isLoading
-          ? Array.from({ length: displayLimit }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))
-          : animeList.map((anime) => {
-              return (
-                <AnimeCard
-                  key={anime.id}
-                  id={anime.id}
-                  title={anime.title.english}
-                  animeImg={anime.coverImage.large}
-                  airSince={anime.startDate.year}
-                  genres={anime.genres.slice(0, 3)}
-                />
-              );
-            })}
+        {uniqueAnimeList.map((anime, index) => {
+          const isLast =
+            index === uniqueAnimeList.length - 1 &&
+            uniqueAnimeList.length >= displayLimit;
+          const shouldAttachRef =
+            inBrowse && mode === "sectionViewAll" && sectionType === fetchType;
+          console.log(isLast && displayLimit, sectionType);
+          return (
+            <AnimeCard
+              key={anime.id}
+              id={anime.id}
+              title={anime.title?.english || anime.title.romaji}
+              animeImg={anime.coverImage.large}
+              airSince={anime.startDate.year}
+              genres={anime.genres.slice(0, 3)}
+              ref={isLast && shouldAttachRef ? lastAnimeRef : null}
+            />
+          );
+        })}
+        {isLoading &&
+          Array.from({ length: 4 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
       </div>
     </section>
   );

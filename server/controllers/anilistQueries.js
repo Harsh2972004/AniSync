@@ -8,7 +8,7 @@ export const paginatedMediaQuery = `
         lastPage
         hasNextPage
       }
-      media(search: $search, type: $type, season: $season, seasonYear: $year, sort: $sort) {
+      media(isAdult: false, search: $search, type: $type, season: $season, seasonYear: $year, sort: $sort) {
         id
         title { romaji english native }
         coverImage { large medium }

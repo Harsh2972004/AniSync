@@ -37,7 +37,7 @@ export const searchMedia = (mediaType) => async (req, res) => {
 export const getTrendingMedia = (mediaType) => async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
   const perPage = parseInt(req.query.perPage, 10) || 10;
-
+  console.log(page, perPage);
   try {
     const data = await fetchFromAnilist({
       query: paginatedMediaQuery,

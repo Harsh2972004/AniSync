@@ -3,7 +3,7 @@ import { useContext, createContext, useState } from "react";
 const BrowseContext = createContext();
 
 export const BrowseProvider = ({ children }) => {
-  const [mode, setMode] = useState("default"); // default || filtered || search || sectionViewAll
+  const [mode, setMode] = useState(""); // default || filtered || search || sectionViewAll
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
   const [sectionType, setSectionType] = useState(null);
