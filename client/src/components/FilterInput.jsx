@@ -1,7 +1,17 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 
-const FilterInput = ({ text, width = true, search = false }) => {
+const FilterInput = ({
+  text,
+  width = true,
+  search = false,
+  initialFilter,
+  setInitialFilter,
+  handleChange,
+  onClick,
+  searchTerm,
+  handleKeyPress,
+}) => {
   const capitalizeLetter = (string) => {
     if (!string) {
       return "";
@@ -17,12 +27,16 @@ const FilterInput = ({ text, width = true, search = false }) => {
           type="text"
           id={text}
           name={text}
+          value={searchTerm}
+          onKeyDown={handleKeyPress}
+          onChange={handleChange}
           placeholder={capitalizeLetter(text)}
           className={`px-4 py-2 rounded-md w-full ${
             width ? "bg-primary" : "bg-secondary"
           }`}
         />
         <button
+          onClick={onClick}
           className={`absolute ${search ? "right-2" : "right-1"} top-1/5`}
         >
           {search ? <FaSearch size={20} /> : <MdKeyboardArrowDown size={24} />}

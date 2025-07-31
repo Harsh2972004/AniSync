@@ -1,10 +1,46 @@
-import { FaSearch, FaSlidersH } from "react-icons/fa";
+import { FaSlidersH } from "react-icons/fa";
 import FilterInput from "./FilterInput";
+import { useState } from "react";
+import useSearchHandler from "../hooks/useSearchHandler";
+import { useBrowse } from "../context/BrowseContext";
 
 const Filters = () => {
+  const [initialFilter, setInitialFilter] = useState({
+    genres: "",
+  });
+  const { searchTerm, setSearchTerm, reset } = useBrowse();
+  const { handleSearch } = useSearchHandler();
+
+  const onSearchSubmimit = (e) => {
+    e.preventDefault();
+    handleSearch(searchTerm);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(searchTerm);
+    }
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (!value.trim()) reset();
+  };
+
   return (
     <div className="flex items-end justify-between gap-10">
-      <FilterInput text="search" search={true} />
+      <FilterInput
+        text="search"
+        search={true}
+        setInitialFilter={setInitialFilter}
+        initialFilter={initialFilter}
+        handleChange={handleChange}
+        searchTerm={searchTerm}
+        onClick={onSearchSubmimit}
+        handleKeyPress={handleKeyPress}
+      />
       <FilterInput text="genres" />
       <FilterInput text="year" />
       <FilterInput text="season" />

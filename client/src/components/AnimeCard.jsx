@@ -8,7 +8,7 @@ const AnimeCard = forwardRef(
       <Link
         ref={ref}
         to={`/${id}`}
-        className="w-[22%] min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white hover:scale-105 focus:scale-105 transition-all duration-200"
+        className="min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white hover:scale-105 focus:scale-105 transition-all duration-200"
       >
         <div className="h-full w-full flex flex-col gap-3 bg-secondary rounded-2xl overflow-hidden p-2 pb-6">
           <div className="h-[300px] overflow-hidden rounded-2xl">
@@ -31,7 +31,7 @@ const AnimeCard = forwardRef(
               airing since {airSince}
             </span>
             <div className="flex items-center gap-3 flex-wrap mt-2">
-              {genres.map((genre) => {
+              {genres?.map((genre) => {
                 return (
                   <span
                     className="text-xs text-gray-500 border-[1px] font-semibold rounded-3xl px-[8px] py-[2px]"

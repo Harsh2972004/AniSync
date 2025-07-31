@@ -5,7 +5,9 @@ import axios from "axios";
 export const searchMedia = (mediaType) => async (req, res) => {
   const query = req.query.search;
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-  const perPage = 10;
+  const perPage = parseInt(req.query.perPage, 10) || 10; // Use perPage from request or default to 10
+
+  console.log("Search request:", { query, page, perPage, mediaType });
 
   try {
     const data = await fetchFromAnilist({
@@ -19,11 +21,15 @@ export const searchMedia = (mediaType) => async (req, res) => {
       },
     });
 
+    console.log("AniList response:", data);
+
     const mediaList = data.Page.media.map((media) => ({
       id: media.id,
       title: media.title,
       coverImage: media.coverImage,
       description: media.description,
+      genres: media.genres,
+      startDate: media.startDate,
     }));
 
     const pageInfo = data.Page.pageInfo;

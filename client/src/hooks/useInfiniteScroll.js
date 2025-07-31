@@ -4,9 +4,7 @@ const useInfiniteScroll = (fetchFunction, deps = []) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const didMountRef = useRef(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const observer = useRef();
   const lastAnimeRef = useCallback(
@@ -32,12 +30,6 @@ const useInfiniteScroll = (fetchFunction, deps = []) => {
   );
 
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-    } else if (page === 1) {
-      return;
-    }
-
     const loadData = async () => {
       setIsLoading(true);
       try {
@@ -59,13 +51,10 @@ const useInfiniteScroll = (fetchFunction, deps = []) => {
   }, [page, ...deps]);
 
   useEffect(() => {
-    if (didMountRef.current) {
-      setData([]);
-      setPage(1);
-      setHasMore(true);
-    } else {
-      didMountRef.current = true;
-    }
+    setData([]);
+    setPage(1);
+    setHasMore(true);
+    setIsLoading(false);
   }, deps);
 
   return { data, lastAnimeRef, isLoading };

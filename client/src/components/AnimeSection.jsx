@@ -86,27 +86,35 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
           View All
         </button>
       </div>
-      <div className="flex justify-between flex-wrap gap-y-20 w-full">
-        {uniqueAnimeList.map((anime, index) => {
-          const isLast =
-            index === uniqueAnimeList.length - 1 &&
-            uniqueAnimeList.length >= displayLimit;
-          const shouldAttachRef =
-            inBrowse && mode === "sectionViewAll" && sectionType === fetchType;
-          console.log(isLast && displayLimit, sectionType);
-          return (
-            <AnimeCard
-              key={anime.id}
-              id={anime.id}
-              title={anime.title?.english || anime.title.romaji}
-              animeImg={anime.coverImage.large}
-              airSince={anime.startDate.year}
-              genres={anime.genres.slice(0, 3)}
-              ref={isLast && shouldAttachRef ? lastAnimeRef : null}
-            />
-          );
-        })}
+      <div className="grid grid-cols-4 gap-10 gap-y-20 w-full">
+        {animeList.length === 0 && isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))
+          : uniqueAnimeList.map((anime, index) => {
+              const isLast =
+                index === uniqueAnimeList.length - 1 &&
+                uniqueAnimeList.length >= displayLimit;
+              const shouldAttachRef =
+                inBrowse &&
+                mode === "sectionViewAll" &&
+                sectionType === fetchType;
+              console.log(isLast && displayLimit, sectionType);
+              return (
+                <AnimeCard
+                  key={anime.id}
+                  id={anime.id}
+                  title={anime.title?.english || anime.title.romaji}
+                  animeImg={anime.coverImage.large}
+                  airSince={anime.startDate.year}
+                  genres={anime.genres.slice(0, 3)}
+                  ref={isLast && shouldAttachRef ? lastAnimeRef : null}
+                />
+              );
+            })}
+
         {isLoading &&
+          uniqueAnimeList.length > 0 &&
           Array.from({ length: 4 }).map((_, index) => (
             <SkeletonCard key={index} />
           ))}

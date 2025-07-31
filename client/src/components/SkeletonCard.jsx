@@ -1,6 +1,6 @@
 const SkeletonCard = () => {
   return (
-    <div className="w-[22%] min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white">
+    <div className=" min-h-[450px] rounded-2xl p-[1px] bg-gradient-to-br from-transparent via-yellow-50 to-white">
       <div className="h-full w-full flex flex-col gap-3 bg-secondary rounded-2xl overflow-hidden p-2 pb-6">
         <div className="skeleton h-[300px] overflow-hidden rounded-2xl" />
         <div className="  flex flex-col gap-2">
