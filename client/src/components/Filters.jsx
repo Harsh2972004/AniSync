@@ -8,6 +8,7 @@ const Filters = () => {
   const [initialFilter, setInitialFilter] = useState({
     genres: "",
   });
+  const [close, setClose] = useState(false);
   const { searchTerm, setSearchTerm, reset } = useBrowse();
   const { handleSearch } = useSearchHandler();
 
@@ -29,6 +30,10 @@ const Filters = () => {
     if (!value.trim()) reset();
   };
 
+  const onSearchClose = () => {
+    reset();
+  };
+
   return (
     <div className="flex items-end justify-between gap-10">
       <FilterInput
@@ -38,8 +43,11 @@ const Filters = () => {
         initialFilter={initialFilter}
         handleChange={handleChange}
         searchTerm={searchTerm}
-        onClick={onSearchSubmimit}
+        onSearchSubmit={onSearchSubmimit}
         handleKeyPress={handleKeyPress}
+        close={close}
+        setClose={setClose}
+        onSearchClose={onSearchClose}
       />
       <FilterInput text="genres" />
       <FilterInput text="year" />

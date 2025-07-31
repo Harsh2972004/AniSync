@@ -1,4 +1,5 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { IoCloseSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 
 const FilterInput = ({
@@ -8,9 +9,12 @@ const FilterInput = ({
   initialFilter,
   setInitialFilter,
   handleChange,
-  onClick,
+  onSearchSubmit,
   searchTerm,
   handleKeyPress,
+  close,
+  setClose,
+  onSearchClose,
 }) => {
   const capitalizeLetter = (string) => {
     if (!string) {
@@ -31,15 +35,31 @@ const FilterInput = ({
           onKeyDown={handleKeyPress}
           onChange={handleChange}
           placeholder={capitalizeLetter(text)}
+          autoComplete="off"
           className={`px-4 py-2 rounded-md w-full ${
             width ? "bg-primary" : "bg-secondary"
           }`}
         />
         <button
-          onClick={onClick}
+          onClick={onSearchSubmit}
           className={`absolute ${search ? "right-2" : "right-1"} top-1/5`}
         >
-          {search ? <FaSearch size={20} /> : <MdKeyboardArrowDown size={24} />}
+          {search ? (
+            close ? (
+              <IoCloseSharp
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSearchClose();
+                  setClose(!close);
+                }}
+                size={22}
+              />
+            ) : (
+              <FaSearch onClick={() => setClose(!close)} size={20} />
+            )
+          ) : (
+            <MdKeyboardArrowDown size={24} />
+          )}
         </button>
       </div>
     </div>

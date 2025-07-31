@@ -30,9 +30,7 @@ const Browse = () => {
       setMode("sectionViewAll");
       setSectionType(querySectionType);
       setTitle(queryTitle);
-    } else if (searchTerm && mode === "search") {
-      return;
-    } else {
+    } else if (!queryMode && !querySectionType && !queryTitle) {
       reset();
     }
   }, [searchParams]);
