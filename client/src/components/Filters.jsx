@@ -3,13 +3,10 @@ import FilterInput from "./FilterInput";
 import { useState } from "react";
 import useSearchHandler from "../hooks/useSearchHandler";
 import { useBrowse } from "../context/BrowseContext";
-
+// TODO: add filters functionality
 const Filters = () => {
-  const [initialFilter, setInitialFilter] = useState({
-    genres: "",
-  });
   const [close, setClose] = useState(false);
-  const { searchTerm, setSearchTerm, reset } = useBrowse();
+  const { searchTerm, setSearchTerm, reset, filters, setFilters } = useBrowse();
   const { handleSearch } = useSearchHandler();
 
   const onSearchSubmimit = (e) => {
@@ -23,15 +20,20 @@ const Filters = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    if (!value.trim()) reset();
+    if (!value.trim()) setSearchTerm("");
   };
 
   const onSearchClose = () => {
-    reset();
+    setSearchTerm("");
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -39,31 +41,54 @@ const Filters = () => {
       <FilterInput
         text="search"
         search={true}
-        setInitialFilter={setInitialFilter}
-        initialFilter={initialFilter}
-        handleChange={handleChange}
-        searchTerm={searchTerm}
+        filters={filters}
+        handleChange={handleSearchChange}
+        inputValue={searchTerm}
         onSearchSubmit={onSearchSubmimit}
         handleKeyPress={handleKeyPress}
         close={close}
         setClose={setClose}
         onSearchClose={onSearchClose}
       />
-      <FilterInput text="genres" />
-      <FilterInput text="year" />
-      <FilterInput text="season" />
-      <FilterInput text="format" />
+      <FilterInput
+        text="genres"
+        handleChange={handleFilterChange}
+        filters={filters}
+        setFilters={setFilters}
+        inputValue={filters.genres}
+      />
+      <FilterInput
+        text="year"
+        handleChange={handleFilterChange}
+        filters={filters}
+        setFilters={setFilters}
+        inputValue={filters.year}
+      />
+      <FilterInput
+        text="season"
+        handleChange={handleFilterChange}
+        filters={filters}
+        setFilters={setFilters}
+        inputValue={filters.season}
+      />
+      <FilterInput
+        text="format"
+        handleChange={handleFilterChange}
+        filters={filters}
+        setFilters={setFilters}
+        inputValue={filters.format}
+      />
       <div className="relative">
         <button className="flex items-center justify-center bg-primary p-2 h-10 mt-auto rounded-md">
           <FaSlidersH size={20} />
         </button>
         <div className="hidden grid-cols-3 gap-8 absolute right-0 top-[150%] rounded-lg p-6 bg-primary w-[45vw] z-10">
-          <FilterInput width={false} text="streaming on" />
+          {/* <FilterInput width={false} text="streaming on" />
           <FilterInput width={false} text="Country of origin" />
           <FilterInput width={false} text="Sources" />
           <FilterInput width={false} text="streaming on" />
           <FilterInput width={false} text="Country of origin" />
-          <FilterInput width={false} text="Sources" />
+          <FilterInput width={false} text="Sources" /> */}
         </div>
       </div>
     </div>

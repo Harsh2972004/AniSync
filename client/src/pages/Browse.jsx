@@ -3,7 +3,7 @@ import Filters from "../components/Filters";
 import AnimeSection from "../components/AnimeSection";
 import ResultsSection from "../components/ResultsSection";
 import { useBrowse } from "../context/BrowseContext";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const Browse = () => {
   const [searchParams] = useSearchParams();
@@ -11,9 +11,7 @@ const Browse = () => {
     mode,
     setMode,
     searchTerm,
-    setSearchTerm,
     filters,
-    setFilters,
     sectionType,
     setSectionType,
     reset,

@@ -6,11 +6,11 @@ const FilterInput = ({
   text,
   width = true,
   search = false,
-  initialFilter,
-  setInitialFilter,
+  filters,
+  setFilters,
   handleChange,
   onSearchSubmit,
-  searchTerm,
+  inputValue,
   handleKeyPress,
   close,
   setClose,
@@ -31,7 +31,7 @@ const FilterInput = ({
           type="text"
           id={text}
           name={text}
-          value={searchTerm}
+          value={inputValue}
           onKeyDown={handleKeyPress}
           onChange={handleChange}
           placeholder={capitalizeLetter(text)}

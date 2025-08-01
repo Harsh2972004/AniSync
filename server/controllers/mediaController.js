@@ -6,6 +6,8 @@ export const searchMedia = (mediaType) => async (req, res) => {
   const query = req.query.search;
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
   const perPage = parseInt(req.query.perPage, 10) || 10; // Use perPage from request or default to 10
+  const genres = req.query.genres;
+  const format = req.query.format;
 
   console.log("Search request:", { query, page, perPage, mediaType });
 
@@ -18,6 +20,8 @@ export const searchMedia = (mediaType) => async (req, res) => {
         search: query,
         type: mediaType,
         sort: ["SEARCH_MATCH"],
+        genres,
+        format,
       },
     });
 

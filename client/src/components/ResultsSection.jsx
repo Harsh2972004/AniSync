@@ -14,7 +14,15 @@ const ResultsSection = ({ searchTerm, filters, sectionType, title }) => {
   const heading = findHeading();
 
   // If it's a search, use SearchResults component
-  if (searchTerm) {
+  if (filters) {
+    return (
+      <SearchResults
+        searchTerm={searchTerm}
+        title={heading}
+        filters={filters}
+      />
+    );
+  } else if (searchTerm && !filters) {
     return <SearchResults searchTerm={searchTerm} title={heading} />;
   }
 

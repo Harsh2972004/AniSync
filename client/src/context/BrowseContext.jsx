@@ -5,14 +5,30 @@ const BrowseContext = createContext();
 export const BrowseProvider = ({ children }) => {
   const [mode, setMode] = useState(""); // default || filtered || search || sectionViewAll
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({
+    genres: "",
+    year: "",
+    season: "",
+    format: "",
+    streamingOn: "",
+    countryOfOrigin: "",
+    sources: "",
+  });
   const [sectionType, setSectionType] = useState(null);
   const [title, setTitle] = useState("");
 
   const reset = () => {
     setMode("default");
     setSectionType(null);
-    setFilters({});
+    setFilters({
+      genres: "",
+      year: "",
+      season: "",
+      format: "",
+      streamingOn: "",
+      countryOfOrigin: "",
+      sources: "",
+    });
     setSearchTerm("");
   };
 

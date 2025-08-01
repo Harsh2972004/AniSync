@@ -3,12 +3,12 @@ import SkeletonCard from "./SkeletonCard";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import { getSearchedAnime } from "../services/media";
 
-const SearchResults = ({ searchTerm, title }) => {
+const SearchResults = ({ searchTerm, title, filters }) => {
   const fetchSearchResults = async (page) => {
     try {
       if (!searchTerm) return [];
       console.log("Searching for:", searchTerm, "page:", page);
-      const response = await getSearchedAnime(20, page, searchTerm);
+      const response = await getSearchedAnime(20, page, searchTerm, filters);
       console.log("Search response:", response.data);
       return response.data.mediaList || [];
     } catch (error) {
