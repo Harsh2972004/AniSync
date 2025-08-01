@@ -33,30 +33,6 @@ passport.use(
   )
 );
 
-passport.use(
-  new JwtStrategy(
-    {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
-    },
-    async (jwtPayload, done) => {
-      try {
-        const user = await User.findById(jwtPayload.id);
-        if (!user) {
-          return done(null, false);
-        }
-        if (!user.isVerified) {
-          return done(null, false, { message: "Email not verified." });
-        }
-
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
-);
-
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

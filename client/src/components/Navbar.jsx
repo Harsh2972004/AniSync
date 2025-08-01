@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = ({ home = false }) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState("");
+  const { user, logoutUser, isLoading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,14 +61,18 @@ const Navbar = ({ home = false }) => {
             </li>
           </ul>
         </div>
-        <div className="flex space-x-4 font-semibold">
-          <button className="border-2 border-btn_pink rounded-lg px-4 py-2 text-btn_pink hover:bg-btn_pink hover:text-secondary transition-colors">
-            <Link to="/login">Login</Link>
-          </button>
-          <button className="bg-btn_pink text-secondary px-4 py-2 rounded-lg">
-            <Link to="/register">Sign Up</Link>
-          </button>
-        </div>
+        {user ? (
+          <span onClick={logoutUser}>logged in</span>
+        ) : (
+          <div className="flex space-x-4 font-semibold">
+            <button className="border-2 border-btn_pink rounded-lg px-4 py-2 text-btn_pink hover:bg-btn_pink hover:text-secondary transition-colors">
+              <Link to="/login">Login</Link>
+            </button>
+            <button className="bg-btn_pink text-secondary px-4 py-2 rounded-lg">
+              <Link to="/register">Sign Up</Link>
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

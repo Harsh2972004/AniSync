@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { register, verifyEmail, resendOtp } from "../services/auth";
+import { verifyEmail } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 import OTPForm from "../components/OTPForm";
 import OAuthSection from "../components/OAuthSection";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const [userDetails, setUserDetails] = useState({
@@ -12,6 +13,8 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const { registerUser } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,7 +41,7 @@ const Register = () => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const response = await register(userDetails);
+      const response = await registerUser(userDetails);
       console.log("user registered successfully", response.data);
       setSuccess(
         "Registration successful! Please check your email to verify your account."

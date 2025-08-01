@@ -9,7 +9,6 @@ import {
   resetPassword,
   resendOtp,
 } from "../../controllers/userController.js";
-import { isAuthenticated } from "../../middleware/authMiddleware.js";
 import {
   otpLimiter,
   resendLimiter,
@@ -31,7 +30,14 @@ router.post(
   requestPasswordReset
 );
 router.post("/reset-password", otpLimiter, resetPassword);
-router.get("/profile", isAuthenticated, getUserProfile);
+// router.get("/profile", isAuthenticated, getUserProfile);
+router.get("/auth/status", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ isAuthenticated: true, user: req.user });
+  } else {
+    res.json({ isAuthenticated: false });
+  }
+});
 
 router.get(
   "/auth/google",

@@ -19,7 +19,7 @@ export const getSearchedAnime = (perPage, page, query, filters) => {
     search: query,
   });
 
-  Object.entries(filters).forEach(([key, value]) => {
+  Object.entries(filters || {}).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((val) => params.append(key, val));
     } else if (value !== undefined && value !== "") {

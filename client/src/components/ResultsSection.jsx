@@ -22,7 +22,7 @@ const ResultsSection = ({ searchTerm, filters, sectionType, title }) => {
         filters={filters}
       />
     );
-  } else if (searchTerm && !filters) {
+  } else if (searchTerm) {
     return <SearchResults searchTerm={searchTerm} title={heading} />;
   }
 

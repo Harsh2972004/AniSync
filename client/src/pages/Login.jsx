@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import OAuthSection from "../components/OAuthSection";
@@ -12,6 +12,7 @@ const Login = () => {
     password: "",
     confirmPassword: "",
   });
+  const { loginUser } = useAuth();
 
   const [otp, setOtp] = useState("");
   const [resetPasswordStep, setResetPasswordStep] = useState("first");
@@ -37,12 +38,12 @@ const Login = () => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const response = await login(userDetails);
+      const response = await loginUser(userDetails);
       console.log("User logged in successfully", response.data);
       setSuccess("Login successful!");
       navigate("/"); // Redirect to home page after login
     } catch (error) {
-      console.error("Error logging in user:", error.response?.data);
+      console.error("Error logging in user:", error);
       if (error.response && error.response.data) {
         setError(error.response.data.message || "Login failed");
       } else {
