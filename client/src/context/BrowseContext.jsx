@@ -16,6 +16,7 @@ export const BrowseProvider = ({ children }) => {
   });
   const [sectionType, setSectionType] = useState(null);
   const [title, setTitle] = useState("");
+  const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
 
   const reset = () => {
     setMode("default");
@@ -46,6 +47,8 @@ export const BrowseProvider = ({ children }) => {
         title,
         setTitle,
         reset,
+        submittedSearchTerm,
+        setSubmittedSearchTerm,
       }}
     >
       {children}

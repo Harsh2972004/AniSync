@@ -1,21 +1,28 @@
 import { FaSearch } from "react-icons/fa";
 import characters from "../assets/images/characters.png";
-import { useState } from "react";
 import useSearchHandler from "../hooks/useSearchHandler";
+import { useBrowse } from "../context/BrowseContext";
 
 const HeroSection = () => {
-  const [input, setInput] = useState("");
+  const { searchTerm, setSearchTerm } = useBrowse();
   const { handleSearch } = useSearchHandler();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    handleSearch(input);
+    handleSearch(searchTerm);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      handleSearch(input);
+      handleSearch(searchTerm);
     }
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (!value.trim()) setSearchTerm("");
   };
 
   return (
@@ -46,8 +53,8 @@ const HeroSection = () => {
                 className="bg-primary h-14 rounded-lg px-6 flex-1"
                 type="text"
                 placeholder="Search anime..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={searchTerm}
+                onChange={handleSearchChange}
                 onKeyDown={handleKeyPress}
               />
               <button

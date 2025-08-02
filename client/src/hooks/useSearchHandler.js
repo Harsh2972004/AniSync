@@ -3,18 +3,18 @@ import { useBrowse } from "../context/BrowseContext";
 import { getSearchedAnime } from "../services/media";
 
 const useSearchHandler = () => {
-  const { setMode, setSearchTerm, searchTerm } = useBrowse();
+  const { setMode, setSubmittedSearchTerm, submittedSearchTerm } = useBrowse();
   const navigate = useNavigate();
 
   const handleSearch = (input) => {
     const trimmed = input.trim();
     if (!trimmed) return;
     setMode("search");
-    setSearchTerm(trimmed);
-    navigate("/browse");
+    setSubmittedSearchTerm(trimmed);
+    navigate(`/browse?mode=search&title=${encodeURIComponent(trimmed)}`);
   };
 
-  const fetchSearchAnime = async (page, searchQuery = searchTerm) => {
+  const fetchSearchAnime = async (page, searchQuery = submittedSearchTerm) => {
     try {
       if (!searchQuery) return [];
       const response = await getSearchedAnime(20, page, searchQuery);

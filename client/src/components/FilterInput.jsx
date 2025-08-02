@@ -9,7 +9,7 @@ const FilterInput = ({
   filters,
   setFilters,
   handleChange,
-  onSearchSubmit,
+  onInputSubmit,
   inputValue,
   handleKeyPress,
   close,
@@ -41,7 +41,7 @@ const FilterInput = ({
           }`}
         />
         <button
-          onClick={onSearchSubmit}
+          onClick={onInputSubmit}
           className={`absolute ${search ? "right-2" : "right-1"} top-1/5`}
         >
           {search ? (

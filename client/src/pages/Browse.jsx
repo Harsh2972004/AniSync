@@ -10,7 +10,7 @@ const Browse = () => {
   const {
     mode,
     setMode,
-    searchTerm,
+    submittedSearchTerm,
     filters,
     sectionType,
     setSectionType,
@@ -61,9 +61,9 @@ const Browse = () => {
           />
         </>
       )}
-      {mode === "search" && <ResultsSection searchTerm={searchTerm} />}
+      {mode === "search" && <ResultsSection searchTerm={submittedSearchTerm} />}
       {mode === "filtered" && (
-        <ResultsSection filters={filters} searchTerm={searchTerm} />
+        <ResultsSection filters={filters} searchTerm={submittedSearchTerm} />
       )}
       {mode === "sectionViewAll" && (
         <ResultsSection

@@ -3,12 +3,17 @@ import SkeletonCard from "./SkeletonCard";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import { getSearchedAnime } from "../services/media";
 
-const SearchResults = ({ searchTerm, title, filters }) => {
+const SearchResults = ({ submittedSearchTerm, title, filters }) => {
   const fetchSearchResults = async (page) => {
     try {
-      if (!searchTerm) return [];
-      console.log("Searching for:", searchTerm, "page:", page);
-      const response = await getSearchedAnime(20, page, searchTerm, filters);
+      if (!submittedSearchTerm) return [];
+      console.log("Searching for:", submittedSearchTerm, "page:", page);
+      const response = await getSearchedAnime(
+        20,
+        page,
+        submittedSearchTerm,
+        filters
+      );
       console.log("Search response:", response.data);
       return response.data.mediaList || [];
     } catch (error) {
@@ -25,12 +30,12 @@ const SearchResults = ({ searchTerm, title, filters }) => {
     data: searchResults,
     lastAnimeRef,
     isLoading,
-  } = useInfiniteScroll(fetchSearchResults, [searchTerm]);
+  } = useInfiniteScroll(fetchSearchResults, [submittedSearchTerm]);
 
   const uniqueSearchResults = Array.from(
     new Map(searchResults.map((item) => [item.id, item])).values()
   );
-  if (!searchTerm) {
+  if (!submittedSearchTerm) {
     return (
       <section className="container-spacing flex flex-col w-full gap-6">
         <h1 className="text-2xl font-bold">{title}</h1>
@@ -51,14 +56,22 @@ const SearchResults = ({ searchTerm, title, filters }) => {
         )}
       </div>
 
-      {uniqueSearchResults.length === 0 && !isLoading && (
+      {/* {uniqueSearchResults.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
-            No results found for "{searchTerm}"
+            No results found for "{submittedSearchTerm}"
           </p>
           <p className="text-gray-400 mt-2">
             Try searching with different keywords
           </p>
+        </div>
+      )} */}
+      {isLoading && (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">
+            Searching results for "{submittedSearchTerm}"
+          </p>
+          <p className="text-gray-500 mt-2">please wait.. </p>
         </div>
       )}
 

@@ -17,13 +17,13 @@ const ResultsSection = ({ searchTerm, filters, sectionType, title }) => {
   if (filters) {
     return (
       <SearchResults
-        searchTerm={searchTerm}
+        submittedSearchTerm={searchTerm}
         title={heading}
         filters={filters}
       />
     );
   } else if (searchTerm) {
-    return <SearchResults searchTerm={searchTerm} title={heading} />;
+    return <SearchResults submittedSearchTerm={searchTerm} title={heading} />;
   }
 
   // For other cases, use AnimeSection

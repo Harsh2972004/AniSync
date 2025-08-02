@@ -29,3 +29,7 @@ export const getSearchedAnime = (perPage, page, query, filters) => {
 
   return API.get(`/anime/search-anime?${params.toString()}`);
 };
+
+export const filterEnums = () => {
+  return API.get("/filters");
+};

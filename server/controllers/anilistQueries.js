@@ -19,3 +19,25 @@ export const paginatedMediaQuery = `
     }
   }
 `;
+
+export const introspectionQuery = `
+{
+  
+  format: __type(name: "MediaFormat") {
+    enumValues {
+      name
+    }
+  }
+  status: __type(name: "MediaStatus") {
+    enumValues {
+      name
+    }
+  }
+  season: __type(name: "MediaSeason") {
+    enumValues {
+      name
+    }
+  }
+  _genres: GenreCollection
+
+}`;
