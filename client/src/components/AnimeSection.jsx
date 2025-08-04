@@ -28,7 +28,6 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
         )}`
       );
     }
-    console.log(mode, sectionType);
   };
 
   const fetchAnimeList = async (page) => {
@@ -39,7 +38,6 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
           : 4;
 
       let response;
-      console.log(fetchType);
       switch (fetchType) {
         case "trending":
           response = await getTrendingAnime(limit, page);
@@ -99,7 +97,6 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
                 inBrowse &&
                 mode === "sectionViewAll" &&
                 sectionType === fetchType;
-              console.log(isLast && displayLimit, sectionType);
               return (
                 <AnimeCard
                   key={anime.id}

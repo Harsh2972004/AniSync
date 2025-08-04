@@ -7,13 +7,31 @@ import { filterEnums } from "../services/media";
 // TODO: add filters functionality
 const Filters = () => {
   const [close, setClose] = useState(false);
-  const { reset, searchTerm, setSearchTerm, filters, setFilters } = useBrowse();
-  const { handleSearch } = useSearchHandler();
+  const {
+    setSubmittedSearchTerm,
+    searchTerm,
+    setSearchTerm,
+    filters,
+    setFilters,
+  } = useBrowse();
+  const { handleSearch, handleFilters } = useSearchHandler();
   const [filterValues, setFilterValues] = useState(null);
+  const [filteredValues, setFilteredValues] = useState(filterValues);
+
+  const currentYear = new Date().getFullYear();
+  const filterYears = Array.from(
+    { length: currentYear - 1940 + 1 },
+    (_, i) => currentYear - i
+  );
 
   const onSearchSubmimit = (e) => {
     e.preventDefault();
     handleSearch(searchTerm);
+  };
+
+  const onFiltersSubmit = () => {
+    handleFilters();
+    console.log("filters", filters);
   };
 
   const handleSearchKeyPress = (e) => {
@@ -38,17 +56,27 @@ const Filters = () => {
   };
 
   const onSearchClose = () => {
-    const isEmpty = Object.values(filters).every((value) => value === "");
-    if (isEmpty) {
-      reset();
-    } else {
-      setSearchTerm("");
-    }
+    setSubmittedSearchTerm("");
   };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
+    const newFilters = { ...filters, [name]: value };
+    setFilters(newFilters);
+
+    if (value === "") {
+      // Reset to full original values
+      setFilteredValues((prev) => ({ ...prev, [name]: filterValues[name] }));
+      return;
+    }
+
+    const filtered = filterValues[name].filter((item) =>
+      item.toString().toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilteredValues((prev) => ({ ...prev, [name]: filtered }));
+
+    console.log(filtered);
   };
 
   useEffect(() => {
@@ -56,6 +84,7 @@ const Filters = () => {
       const data = await filterEnums();
       console.log("fetched data:", data.data);
       setFilterValues(data.data);
+      setFilteredValues(data.data);
     };
 
     getFliters();
@@ -76,20 +105,26 @@ const Filters = () => {
         onSearchClose={onSearchClose}
       />
       <FilterInput
-        text="genres"
+        text="genre"
         handleChange={handleFilterChange}
         filters={filters}
         setFilters={setFilters}
-        inputValue={filters.genres}
+        inputValue={filters.genre}
         handleKeyPress={handleFilterKeyPress}
+        filterValues={filteredValues?.genres}
+        filterKeys={"genre"}
+        onInputSubmit={onFiltersSubmit}
       />
       <FilterInput
-        text="year"
+        text="seasonYear"
         handleChange={handleFilterChange}
         filters={filters}
         setFilters={setFilters}
-        inputValue={filters.year}
+        inputValue={filters.seasonYear}
         handleKeyPress={handleFilterKeyPress}
+        filterValues={filterYears}
+        filterKeys={"seasonYear"}
+        onInputSubmit={onFiltersSubmit}
       />
       <FilterInput
         text="season"
@@ -98,6 +133,9 @@ const Filters = () => {
         setFilters={setFilters}
         inputValue={filters.season}
         handleKeyPress={handleFilterKeyPress}
+        filterValues={filteredValues?.season}
+        filterKeys={"season"}
+        onInputSubmit={onFiltersSubmit}
       />
       <FilterInput
         text="format"
@@ -106,6 +144,9 @@ const Filters = () => {
         setFilters={setFilters}
         inputValue={filters.format}
         handleKeyPress={handleFilterKeyPress}
+        filterValues={filteredValues?.format}
+        filterKeys={"format"}
+        onInputSubmit={onFiltersSubmit}
       />
       <div className="relative">
         <button className="flex items-center justify-center bg-primary p-2 h-10 mt-auto rounded-md">

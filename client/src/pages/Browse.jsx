@@ -67,7 +67,7 @@ const Browse = () => {
       )}
       {mode === "sectionViewAll" && (
         <ResultsSection
-          searchTerm={searchTerm}
+          searchTerm={submittedSearchTerm}
           title={title}
           sectionType={sectionType}
         />

@@ -1,48 +1,20 @@
 import AnimeCard from "./AnimeCard";
 import SkeletonCard from "./SkeletonCard";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
-import { getSearchedAnime } from "../services/media";
+import useSearchHandler from "../hooks/useSearchHandler";
 
 const SearchResults = ({ submittedSearchTerm, title, filters }) => {
-  const fetchSearchResults = async (page) => {
-    try {
-      if (!submittedSearchTerm) return [];
-      console.log("Searching for:", submittedSearchTerm, "page:", page);
-      const response = await getSearchedAnime(
-        20,
-        page,
-        submittedSearchTerm,
-        filters
-      );
-      console.log("Search response:", response.data);
-      return response.data.mediaList || [];
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-      if (error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-      }
-      return [];
-    }
-  };
+  const { fetchSearchResults } = useSearchHandler();
 
   const {
     data: searchResults,
     lastAnimeRef,
     isLoading,
-  } = useInfiniteScroll(fetchSearchResults, [submittedSearchTerm]);
+  } = useInfiniteScroll(fetchSearchResults, [submittedSearchTerm, filters]);
 
   const uniqueSearchResults = Array.from(
     new Map(searchResults.map((item) => [item.id, item])).values()
   );
-  if (!submittedSearchTerm) {
-    return (
-      <section className="container-spacing flex flex-col w-full gap-6">
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="text-gray-500">Enter a search term to find anime</p>
-      </section>
-    );
-  }
 
   return (
     <section className="container-spacing flex flex-col w-full gap-6">
@@ -56,7 +28,7 @@ const SearchResults = ({ submittedSearchTerm, title, filters }) => {
         )}
       </div>
 
-      {/* {uniqueSearchResults.length === 0 && !isLoading && (
+      {uniqueSearchResults.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
             No results found for "{submittedSearchTerm}"
@@ -65,7 +37,7 @@ const SearchResults = ({ submittedSearchTerm, title, filters }) => {
             Try searching with different keywords
           </p>
         </div>
-      )} */}
+      )}
       {isLoading && (
         <div className="text-center py-12">
           <p className="text-gray-400 text-lg">

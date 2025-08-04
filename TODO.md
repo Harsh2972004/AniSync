@@ -4,3 +4,4 @@ To-Do's for the AiniSync Website — Things to keep in mind
 []create schema for the anime list data like favourites, watching etc.
 []create error and form validation across the website- Like Login, Register, Search section, Not found on anime search
 []remove all the console.logs which aren't necessary before deploying.
+[]fix the browse page params not getting removed on refresh page

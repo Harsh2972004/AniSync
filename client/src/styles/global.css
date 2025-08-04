@@ -67,6 +67,26 @@
       animation: shimmer 1.5s infinite;
     }
 
+    .dropdown {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .dropdown.open {
+      padding: 1rem 0;
+      overflow: auto;
+      max-height: 300px; /* Or enough to fit your content */
+    }
+
+    .hide-scrollbar {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, and Opera */
+    }
+
     @keyframes shimmer {
       100% {
         transform: translateX(200%);

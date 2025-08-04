@@ -18,9 +18,9 @@ export const getFiltersEnum = async () => {
     lastFetched = now;
     return (cachedFilters = {
       genres: data._genres.map((v) => v),
-      formats: data.format.enumValues.map((v) => v.name),
-      statuses: data.status.enumValues.map((v) => v.name),
-      seasons: data.season.enumValues.map((v) => v.name),
+      format: data.format.enumValues.map((v) => v.name),
+      status: data.status.enumValues.map((v) => v.name),
+      season: data.season.enumValues.map((v) => v.name),
     });
   } catch (error) {
     console.error("Error fetching introspection data:", error.message);

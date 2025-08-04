@@ -1,6 +1,7 @@
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
+import { useState } from "react";
 
 const FilterInput = ({
   text,
@@ -8,6 +9,8 @@ const FilterInput = ({
   search = false,
   filters,
   setFilters,
+  filterValues,
+  filterKeys,
   handleChange,
   onInputSubmit,
   inputValue,
@@ -16,6 +19,7 @@ const FilterInput = ({
   setClose,
   onSearchClose,
 }) => {
+  const [show, setShow] = useState(false);
   const capitalizeLetter = (string) => {
     if (!string) {
       return "";
@@ -24,8 +28,10 @@ const FilterInput = ({
   };
 
   return (
-    <div className={`flex flex-col gap-2 ${width && "w-[15%]"}`}>
-      <label htmlFor={text}>{capitalizeLetter(text)}</label>
+    <div className={`relative flex flex-col gap-2 ${width && "w-[15%]"}`}>
+      <label htmlFor={text}>
+        {capitalizeLetter(text === "seasonYear" ? "year" : text)}
+      </label>
       <div className="flex items-center justify-between relative w-full">
         <input
           type="text"
@@ -34,7 +40,14 @@ const FilterInput = ({
           value={inputValue}
           onKeyDown={handleKeyPress}
           onChange={handleChange}
-          placeholder={capitalizeLetter(text)}
+          onClick={
+            !search
+              ? () => {
+                  setShow(true);
+                }
+              : null
+          }
+          placeholder={capitalizeLetter(text === "seasonYear" ? "year" : text)}
           autoComplete="off"
           className={`px-4 py-2 rounded-md w-full ${
             width ? "bg-primary" : "bg-secondary"
@@ -57,11 +70,51 @@ const FilterInput = ({
             ) : (
               <FaSearch onClick={() => setClose(!close)} size={20} />
             )
+          ) : inputValue ? (
+            <IoCloseSharp
+              size={22}
+              onClick={(e) =>
+                setFilters((prev) => ({ ...prev, [filterKeys]: "" }))
+              }
+            />
           ) : (
-            <MdKeyboardArrowDown size={24} />
+            <MdKeyboardArrowDown
+              onClick={(e) => {
+                e.stopPropagation();
+                setShow(!show);
+              }}
+              size={24}
+              className=" transition-transform duration-200"
+              style={
+                show && {
+                  transform: "rotate(180deg)",
+                }
+              }
+            />
           )}
         </button>
       </div>
+      {!search && (
+        <div
+          className={`w-full hide-scrollbar flex flex-col gap-2 absolute top-[120%] z-10 bg-primary rounded-lg dropdown ${
+            show ? "open" : ""
+          }`}
+        >
+          {filterValues?.map((value, index) => (
+            <span
+              onClick={() => {
+                setFilters((prev) => ({ ...prev, [text]: value }));
+                setShow(!show);
+                onInputSubmit();
+              }}
+              key={index}
+              className="cursor-pointer px-4"
+            >
+              {value}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

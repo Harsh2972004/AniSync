@@ -13,21 +13,22 @@ export const getUpcomingNextSeasonAnime = (perPage, page) =>
   API.get(`/anime/upcoming/next-season?perPage=${perPage}&page=${page}`);
 
 export const getSearchedAnime = (perPage, page, query, filters) => {
+  const cleanedFilters = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([_, value]) => value !== "" && value != null
+    )
+  );
+
   const params = new URLSearchParams({
     perPage,
     page,
-    search: query,
+    ...(query !== "" && { search: query }),
+    ...cleanedFilters,
   });
 
-  Object.entries(filters || {}).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((val) => params.append(key, val));
-    } else if (value !== undefined && value !== "") {
-      params.append(key, value);
-    }
-  });
-
-  return API.get(`/anime/search-anime?${params.toString()}`);
+  const url = `/anime/search-anime?${params.toString()}`;
+  console.log(url, filters);
+  return API.get(url);
 };
 
 export const filterEnums = () => {

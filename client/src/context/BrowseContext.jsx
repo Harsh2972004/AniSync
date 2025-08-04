@@ -6,8 +6,8 @@ export const BrowseProvider = ({ children }) => {
   const [mode, setMode] = useState(""); // default || filtered || search || sectionViewAll
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    genres: "",
-    year: "",
+    genre: "",
+    seasonYear: "",
     season: "",
     format: "",
     streamingOn: "",
@@ -22,8 +22,8 @@ export const BrowseProvider = ({ children }) => {
     setMode("default");
     setSectionType(null);
     setFilters({
-      genres: "",
-      year: "",
+      genre: "",
+      seasonYear: "",
       season: "",
       format: "",
       streamingOn: "",
