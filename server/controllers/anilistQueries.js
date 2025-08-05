@@ -11,7 +11,7 @@ export const paginatedMediaQuery = `
       media(isAdult: false, search: $search, type: $type, season: $season, seasonYear: $seasonYear, sort: $sort, genre: $genre, format: $format) {
         id
         title { romaji english native }
-        coverImage { large medium }
+        coverImage { extraLarge large medium }
         description
         genres
         seasonYear

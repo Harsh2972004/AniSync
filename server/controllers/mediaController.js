@@ -228,74 +228,118 @@ export const getMedia = (mediaType) => async (req, res) => {
   const graphqlQuery = {
     query: `
     query ($id: Int, $type: MediaType) {
-      Media(id: $id, type: $type) {
-        id
-        title {
-          romaji
-          english
-          native
-        }
-        coverImage {
-          large
-          medium
-        }
-        description
-        episodes
-        duration
-        genres
-        averageScore
-        popularity
-        status
-        season
-        seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
-        studios {
-          nodes {
-            name
-          }
-        }
-        trailer {
-          id
-          site
-        }
-        characters (perPage: 10) {
-          nodes {
-            name {
-              full
+  Media(id: $id, type: $type) {
+    id
+    title {
+      romaji
+      english
+      native
+    }
+    coverImage {
+      extraLarge
+      large
+      medium
+    }
+    bannerImage
+    description
+    episodes
+    duration
+    genres
+    averageScore
+    popularity
+    status
+    season
+    seasonYear
+    format
+    favourites
+    recommendations(sort: RATING_DESC, page: 1, perPage: 6) {
+      edges {
+        node {
+          mediaRecommendation {
+            id
+            title {
+              romaji
+              english
+              native
             }
-            image {
+            coverImage {
               large
             }
-          }
-        }
-        siteUrl
-        relations {
-          edges {
-            relationType
-            node {
-              id
-              title {
-                romaji
-                english
-                native
-              }
-              type
-              siteUrl
-              coverImage { large }
-            }
+            siteUrl
           }
         }
       }
     }
+    streamingEpisodes {
+      title
+      thumbnail
+      url
+      site
+    }
+    startDate {
+      year
+      month
+      day
+    }
+    endDate {
+      year
+      month
+      day
+    }
+    studios {
+      edges {
+        isMain
+        node {
+          name
+        }
+      }
+    }
+    trailer {
+      id
+      site
+    }
+    characters( sort: [ROLE, RELEVANCE, ID], page: 1, perPage: 6) {
+      edges {
+      role
+        node {
+          name {
+            full
+          }
+          image {
+            large
+          }
+        }
+        voiceActors(language: JAPANESE) {
+          name {
+            full
+          }
+          image {
+            large
+          }
+        }
+      }
+    }
+    siteUrl   
+    relations {
+      edges {
+        relationType
+        node {
+          id
+          title {
+            romaji
+            english
+            native
+          }
+          type
+          siteUrl
+          coverImage {
+            large
+          }
+        }
+      }
+    }
+  }
+}
   `,
     variables: {
       id: animeId,

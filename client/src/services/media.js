@@ -34,3 +34,7 @@ export const getSearchedAnime = (perPage, page, query, filters) => {
 export const filterEnums = () => {
   return API.get("/filters");
 };
+
+export const getAnimeDetails = (id) => {
+  return API.get(`/anime/animeDetails/${id}`);
+};

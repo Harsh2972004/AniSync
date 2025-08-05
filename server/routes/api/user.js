@@ -3,7 +3,6 @@ import {
   registerUser,
   logoutUser,
   loginUser,
-  getUserProfile,
   verifyEmail,
   requestPasswordReset,
   resetPassword,
@@ -51,8 +50,7 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    // Successful authentication, redirect home or send user data.
-    res.redirect("/profile");
+    res.redirect("http://localhost:5173/");
   }
 );
 
@@ -66,19 +64,8 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    res.redirect("/profile");
+    res.redirect("http://localhost:5173/");
   }
 );
 
-router.get(
-  "/auth/anilist/anisync",
-  passport.authenticate("anilist", {
-    failureRedirect: "/login",
-    session: false,
-  }),
-  (req, res) => {
-    // Successful authentication
-    res.json({ message: "AniList login successful", user: req.user });
-  }
-);
 export default router;

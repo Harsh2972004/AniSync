@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import useSearchHandler from "../hooks/useSearchHandler";
 import { useBrowse } from "../context/BrowseContext";
 import { filterEnums } from "../services/media";
-// TODO: add filters functionality
+
 const Filters = () => {
   const [close, setClose] = useState(false);
   const {

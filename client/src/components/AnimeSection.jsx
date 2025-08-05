@@ -102,7 +102,7 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
                   key={anime.id}
                   id={anime.id}
                   title={anime.title?.english || anime.title.romaji}
-                  animeImg={anime.coverImage.large}
+                  animeImg={anime.coverImage.extraLarge}
                   airSince={anime.startDate.year}
                   genres={anime.genres.slice(0, 3)}
                   ref={isLast && shouldAttachRef ? lastAnimeRef : null}

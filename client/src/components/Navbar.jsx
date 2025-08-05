@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FaRegUserCircle } from "react-icons/fa";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
-const Navbar = ({ home = false }) => {
+const Navbar = ({ home = false, details = false }) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState("");
   const { user, logoutUser, isLoading } = useAuth();
@@ -29,7 +31,7 @@ const Navbar = ({ home = false }) => {
   return (
     <nav
       className={`top-0 w-full z-50 ${
-        home
+        home || details
           ? lastScrollY > 30
             ? "bg-primary fixed"
             : "bg-opacity-40 bg-black fixed"
@@ -48,13 +50,10 @@ const Navbar = ({ home = false }) => {
               <Link to="/">Home</Link>
             </li>
             <li className="cursor-pointer">
-              <Link>Anime List</Link>
+              <Link to="/animeList">Anime List</Link>
             </li>
             <li className="cursor-pointer">
-              <Link>Manga List</Link>
-            </li>
-            <li className="cursor-pointer">
-              <Link>genres</Link>
+              <Link to="/mangaList">Manga List</Link>
             </li>
             <li className="cursor-pointer">
               <Link to="/browse">Browse</Link>
@@ -62,15 +61,40 @@ const Navbar = ({ home = false }) => {
           </ul>
         </div>
         {user ? (
-          <span onClick={logoutUser}>logged in</span>
+          <div>
+            <button
+              className="border-2 rounded-lg flex items-center gap-3 py-2 px-3"
+              onClick={logoutUser}
+            >
+              {user.avatar || user.anilistAvatar ? (
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src={user.avatar || user.anilistAvatar}
+                  alt=""
+                />
+              ) : (
+                <FaRegUserCircle size={30} />
+              )}
+              <div className="flex flex-col items-start justify-center">
+                <h5 className="text-sm">Hi, {user.name}</h5>
+                <span className="text-gray-400 text-xs flex items-center">
+                  Your account{<MdKeyboardArrowDown className=" -rotate-90" />}
+                </span>
+              </div>
+            </button>
+          </div>
         ) : (
           <div className="flex space-x-4 font-semibold">
-            <button className="border-2 border-btn_pink rounded-lg px-4 py-2 text-btn_pink hover:bg-btn_pink hover:text-secondary transition-colors">
-              <Link to="/login">Login</Link>
-            </button>
-            <button className="bg-btn_pink text-secondary px-4 py-2 rounded-lg">
-              <Link to="/register">Sign Up</Link>
-            </button>
+            <Link to="/login">
+              <button className="border-2 border-btn_pink rounded-lg px-4 py-2 text-btn_pink hover:bg-btn_pink hover:text-secondary transition-colors">
+                Login
+              </button>
+            </Link>
+            <Link to="/register">
+              <button className="bg-btn_pink text-secondary px-4 py-2 rounded-lg">
+                Sign Up
+              </button>
+            </Link>
           </div>
         )}
       </div>
