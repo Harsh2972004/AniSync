@@ -61,7 +61,6 @@ const Browse = () => {
           />
         </>
       )}
-      {mode === "search" && <ResultsSection searchTerm={submittedSearchTerm} />}
       {mode === "filtered" && (
         <ResultsSection filters={filters} searchTerm={submittedSearchTerm} />
       )}

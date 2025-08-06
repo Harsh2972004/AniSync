@@ -11,7 +11,7 @@ const useSearchHandler = () => {
   const handleSearch = (input) => {
     const trimmed = input.trim();
     if (!trimmed) return;
-    setMode("search");
+    setMode("filtered");
     setSubmittedSearchTerm(trimmed);
     navigate(`/browse?mode=search&title=${encodeURIComponent(trimmed)}`);
     console.log(trimmed);

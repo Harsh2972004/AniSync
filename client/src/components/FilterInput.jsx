@@ -7,7 +7,6 @@ const FilterInput = ({
   text,
   width = true,
   search = false,
-  filters,
   setFilters,
   filterValues,
   filterKeys,
@@ -18,6 +17,7 @@ const FilterInput = ({
   close,
   setClose,
   onSearchClose,
+  submittedSearchTerm,
 }) => {
   const [show, setShow] = useState(false);
   const capitalizeLetter = (string) => {
@@ -58,17 +58,17 @@ const FilterInput = ({
           className={`absolute ${search ? "right-2" : "right-1"} top-1/5`}
         >
           {search ? (
-            close ? (
+            submittedSearchTerm || close ? (
               <IoCloseSharp
                 onClick={(e) => {
                   e.stopPropagation();
                   onSearchClose();
-                  setClose(!close);
+                  setClose(false);
                 }}
                 size={22}
               />
             ) : (
-              <FaSearch onClick={() => setClose(!close)} size={20} />
+              <FaSearch onClick={() => setClose(true)} size={20} />
             )
           ) : inputValue ? (
             <IoCloseSharp

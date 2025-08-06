@@ -7,3 +7,4 @@ To-Do's for the AiniSync Website — Things to keep in mind
 []fix the browse page params not getting removed on refresh page
 []fix navbar if the banner image is not there in anime details page
 [X]Fix Oauth for google so that if the user is already in the database it doesn't try to register it again but log them in, instead
+[]Need to make a footer as well...

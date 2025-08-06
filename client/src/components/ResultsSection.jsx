@@ -14,7 +14,7 @@ const ResultsSection = ({ searchTerm, filters, sectionType, title }) => {
   const heading = findHeading();
 
   // If it's a search, use SearchResults component
-  if (filters) {
+  if (filters || searchTerm) {
     return (
       <SearchResults
         submittedSearchTerm={searchTerm}
@@ -22,10 +22,7 @@ const ResultsSection = ({ searchTerm, filters, sectionType, title }) => {
         filters={filters}
       />
     );
-  } else if (searchTerm) {
-    return <SearchResults submittedSearchTerm={searchTerm} title={heading} />;
   }
-
   // For other cases, use AnimeSection
   return (
     <div className="">

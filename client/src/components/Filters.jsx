@@ -9,6 +9,7 @@ const Filters = () => {
   const [close, setClose] = useState(false);
   const {
     setSubmittedSearchTerm,
+    submittedSearchTerm,
     searchTerm,
     setSearchTerm,
     filters,
@@ -57,6 +58,7 @@ const Filters = () => {
 
   const onSearchClose = () => {
     setSubmittedSearchTerm("");
+    setSearchTerm("");
   };
 
   const handleFilterChange = (e) => {
@@ -103,6 +105,7 @@ const Filters = () => {
         close={close}
         setClose={setClose}
         onSearchClose={onSearchClose}
+        submittedSearchTerm={submittedSearchTerm}
       />
       <FilterInput
         text="genre"
