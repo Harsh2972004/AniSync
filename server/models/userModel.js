@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    anlisitId: {
+    anilistId: {
       type: String,
       default: null,
     },

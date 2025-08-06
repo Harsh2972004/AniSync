@@ -175,8 +175,9 @@ const DetailsPage = () => {
               charImage={edge.node.image.large}
               charName={edge.node.name.full}
               charRole={edge.role}
-              voiceActor={edge.voiceActors[0].name.full}
-              voiceActorImg={edge.voiceActors[0].image.large}
+              voiceActor={edge.voiceActors[0]?.name.full}
+              voiceActorImg={edge.voiceActors[0]?.image.large}
+              voiceActorLang={edge.voiceActors[0]?.language}
             />
           ))}
         </div>

@@ -309,13 +309,14 @@ export const getMedia = (mediaType) => async (req, res) => {
             large
           }
         }
-        voiceActors(language: JAPANESE) {
+        voiceActors {
           name {
             full
           }
           image {
             large
           }
+            language
         }
       }
     }
