@@ -41,8 +41,8 @@ const DetailsPage = () => {
   const monthName = monthNumber ? monthNames[monthNumber - 1] : "";
 
   useEffect(() => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const fetchAnimeDetails = async () => {
         const response = await getAnimeDetails(id);
         setAnimeDetails(response.data);
@@ -183,32 +183,39 @@ const DetailsPage = () => {
         </div>
       </div>
       <div className="container-spacing grid grid-cols-[auto_1fr] grid-rows-[auto] gap-8">
-        {animeDetails?.trailer?.site === "youtube" && (
-          <div>
-            <iframe
-              width="560"
-              height="315"
-              src={`https://www.youtube.com/embed/${animeDetails.trailer.id}`}
-              title="YouTube trailer"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="rounded-md"
-            ></iframe>
+        <div className="w-[560px] h-[315px] flex flex-col gap-2">
+          <h3 className="text-lg font-bold">Trailer</h3>
+
+          {animeDetails?.trailer?.site === "youtube" && (
+            <div>
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${animeDetails.trailer.id}`}
+                title="YouTube trailer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="rounded-md"
+              ></iframe>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold">Watch</h3>
+          <div className="grid grid-cols-3 grid-rows-2 gap-x-8 gap-y-6">
+            {animeDetails?.streamingEpisodes?.map((ep, index) => {
+              if (index < 6) {
+                return (
+                  <EpisodeCard
+                    key={ep.title}
+                    title={ep.title}
+                    url={ep.url}
+                    thumbnail={ep.thumbnail}
+                  />
+                );
+              }
+            })}
           </div>
-        )}
-        <div className="grid grid-cols-3 grid-rows-2 gap-x-8 gap-y-6">
-          {animeDetails?.streamingEpisodes?.map((ep, index) => {
-            if (index < 6) {
-              return (
-                <EpisodeCard
-                  key={ep.title}
-                  title={ep.title}
-                  url={ep.url}
-                  thumbnail={ep.thumbnail}
-                />
-              );
-            }
-          })}
         </div>
       </div>
       <div className="container-spacing flex flex-col gap-4 pt-0">

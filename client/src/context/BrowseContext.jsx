@@ -1,9 +1,10 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const BrowseContext = createContext();
 
 export const BrowseProvider = ({ children }) => {
-  const [mode, setMode] = useState(""); // default || filtered || search || sectionViewAll
+  const [mode, setMode] = useState("default"); // default || filtered || search || sectionViewAll
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     genre: "",
@@ -17,6 +18,8 @@ export const BrowseProvider = ({ children }) => {
   const [sectionType, setSectionType] = useState(null);
   const [title, setTitle] = useState("");
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
+
+  const location = useLocation();
 
   const reset = () => {
     setMode("default");
@@ -32,6 +35,13 @@ export const BrowseProvider = ({ children }) => {
     });
     setSearchTerm("");
   };
+
+  useEffect(() => {
+    if (location.pathname !== "/browse" && mode === "sectionViewAll") {
+      setMode("default");
+      setSectionType(null);
+    }
+  }, [location.pathname, mode]);
 
   return (
     <BrowseContext.Provider

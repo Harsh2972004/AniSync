@@ -14,6 +14,8 @@ const AppRouter = () => {
         <Route path="/browse" element={<Browse />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/animeList" />
+        <Route path="/mangaList" />
         <Route path="/:id" element={<DetailsPage />} />
       </Route>
       {/* Add more routes here as needed */}

@@ -1,12 +1,22 @@
 import { useRef, useCallback, useState, useEffect } from "react";
 
-const useInfiniteScroll = (fetchFunction, deps = []) => {
+const sectionCache = {};
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
+const useInfiniteScroll = (
+  fetchFunction,
+  deps = [],
+  cacheKey = null,
+  mode = "default"
+) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const observer = useRef();
+  const isCacheLoaded = useRef(false);
+
   const lastAnimeRef = useCallback(
     (node) => {
       console.log(node);
@@ -31,14 +41,43 @@ const useInfiniteScroll = (fetchFunction, deps = []) => {
 
   useEffect(() => {
     const loadData = async () => {
+      if (cacheKey && sectionCache[cacheKey] && mode === "default") {
+        const cached = sectionCache[cacheKey];
+        const isExpired = Date.now() - cached.timestamp > CACHE_DURATION_MS;
+
+        if (!isExpired) {
+          setData(cached.data);
+          setPage(cached.page);
+          setHasMore(cached.hasMore);
+          setIsLoading(false);
+          isCacheLoaded.current = true;
+          return;
+        } else {
+          delete sectionCache[cacheKey];
+        }
+      }
+
+      if (!hasMore) return;
+
       setIsLoading(true);
       try {
         const newData = await fetchFunction(page);
-        console.log(page, newData);
         if (!newData || newData.length === 0) {
           setHasMore(false);
         } else {
-          setData((prev) => [...prev, ...newData]);
+          setData((prev) => {
+            const combined = [...prev, ...newData];
+
+            if (cacheKey && mode === "default") {
+              sectionCache[cacheKey] = {
+                data: combined,
+                page: page + 1,
+                hasMore: true,
+                timestamp: Date.now(),
+              };
+            }
+            return combined;
+          });
         }
       } catch (error) {
         console.log({ "an error occurred fetching anime": error });
@@ -51,10 +90,13 @@ const useInfiniteScroll = (fetchFunction, deps = []) => {
   }, [page, ...deps]);
 
   useEffect(() => {
-    setData([]);
-    setPage(1);
-    setHasMore(true);
-    setIsLoading(false);
+    if (!(cacheKey && sectionCache[cacheKey])) {
+      setData([]);
+      setPage(1);
+      setHasMore(true);
+      setIsLoading(false);
+    }
+    isCacheLoaded.current = false;
   }, deps);
 
   return { data, lastAnimeRef, isLoading };

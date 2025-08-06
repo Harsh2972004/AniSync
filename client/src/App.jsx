@@ -7,12 +7,12 @@ import { AuthProvider } from "./context/AuthContext";
 const App = () => {
   return (
     <AuthProvider>
-      <BrowseProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <BrowseProvider>
           <ScrollToTop />
           <AppRouter />
-        </BrowserRouter>
-      </BrowseProvider>
+        </BrowseProvider>
+      </BrowserRouter>
     </AuthProvider>
   );
 };

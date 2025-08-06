@@ -65,7 +65,12 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
     data: animeList,
     lastAnimeRef,
     isLoading,
-  } = useInfiniteScroll(fetchAnimeList, [fetchType, mode, sectionType]);
+  } = useInfiniteScroll(
+    fetchAnimeList,
+    [fetchType, mode, sectionType],
+    fetchType,
+    mode
+  );
 
   const uniqueAnimeList = Array.from(
     new Map(animeList.map((item) => [item.id, item])).values()
