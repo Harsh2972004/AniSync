@@ -21,6 +21,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    favourites: [Number], // Array of AniList anime IDs
+    animeList: [
+      {
+        animeId: Number, // AniList ID
+        status: {
+          type: String,
+          enum: ["watching", "completed", "dropped", "planning"],
+          default: "planning",
+        },
+        progress: Number,
+        score: Number,
+        notes: String,
+      },
+    ],
     googleId: {
       type: String,
       default: null,

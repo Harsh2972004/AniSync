@@ -4,7 +4,7 @@ const RecommendationsCard = ({ image, title, id }) => {
   return (
     <Link to={`/${id}`} className="rounded-md w-40 flex flex-col gap-2">
       <img className=" rounded-md max-h-[220px]" src={image} alt={title} />
-      <h4>{title}</h4>
+      <h4 className="text-sm">{title}</h4>
     </Link>
   );
 };

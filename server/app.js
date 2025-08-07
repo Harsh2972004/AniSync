@@ -10,6 +10,7 @@ import connectDB from "./config/db.js";
 import router from "./routes/api/user.js";
 import mediaRouter from "./routes/api/media.js";
 import filterRouter from "./routes/api/filtersEnum.js";
+import listRouter from "./routes/api/list.js";
 import passport from "./config/passport.js";
 import dotenv from "dotenv";
 import corsMiddleware from "./middleware/corsMiddleware.js";
@@ -51,6 +52,7 @@ app.use(passport.session());
 app.use("/api/user", router);
 app.use("/api/anime", mediaRouter);
 app.use("/api/filters", filterRouter);
+app.use("/api/list", listRouter);
 
 // Connect to MongoDB
 connectDB();

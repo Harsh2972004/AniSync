@@ -75,7 +75,11 @@ const DetailsPage = () => {
             <img
               className="-mt-32 w-[300px] max-h-[390px] aspect-auto shadow-lg"
               src={animeDetails?.coverImage.extraLarge}
-              alt={`${animeDetails?.title.english}-Image`}
+              alt={`${
+                animeDetails?.title.english ||
+                animeDetails?.title.romaji ||
+                animeDetails?.title.native
+              }-Image`}
             />
             <div className="w-full flex justify-between ">
               <button className="w-[80%] relative border-2 rounded-lg px-4 py-2 flex items-center justify-center">
@@ -89,7 +93,9 @@ const DetailsPage = () => {
           </div>
           <div className="flex flex-col gap-4">
             <h1 className="text-3xl font-bold">
-              {animeDetails?.title.english}
+              {animeDetails?.title.english ||
+                animeDetails?.title.romaji ||
+                animeDetails?.title.native}
             </h1>
             <p className="text-md text-gray-300">
               {parse(animeDetails?.description || "")}
@@ -224,7 +230,11 @@ const DetailsPage = () => {
           {animeDetails?.recommendations.edges.map((edge) => (
             <RecommendationsCard
               key={edge.node.mediaRecommendation.id}
-              title={edge.node.mediaRecommendation.title.english}
+              title={
+                edge.node.mediaRecommendation.title.english ||
+                edge.node.mediaRecommendation.title.romaji ||
+                edge.node.mediaRecommendation.title.native
+              }
               image={edge.node.mediaRecommendation.coverImage.large}
               id={edge.node.mediaRecommendation.id}
             />

@@ -6,9 +6,9 @@ const CharacterCard = ({
   voiceActor,
   voiceActorLang,
 }) => {
-  const role = charRole.charAt(0) + charRole.slice(1).toLowerCase();
+  const role = charRole?.charAt(0) + charRole?.slice(1).toLowerCase();
   const language =
-    voiceActorLang.charAt(0) + voiceActorLang.slice(1).toLowerCase();
+    voiceActorLang?.charAt(0) + voiceActorLang?.slice(1).toLowerCase();
 
   return (
     <div className="h-24 flex justify-between bg-primary rounded-md">
