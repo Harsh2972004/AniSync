@@ -361,3 +361,49 @@ export const getMedia = (mediaType) => async (req, res) => {
     res.status(500).json({ error: "Failed to fetch anime details" });
   }
 };
+
+export const getListAnime = async (req, res) => {
+  const perPage = parseInt(req.query.perPage, 10) || 10;
+  if (!req.query.id_in) {
+    return res.status(400).json({ error: "Missing 'id_in' query parameter" });
+  }
+  const ids = req.query.id_in?.split(",").map(Number);
+
+  const graphqlQuery = {
+    query: `
+    query ($ids: [Int], $perPage: Int) {
+    Page(perPage: $perPage) {
+      media(id_in: $ids, type: ANIME) {
+        id
+        title {
+          romaji
+          english
+        }
+        coverImage {
+          large
+        }
+          bannerImage
+      }
+    }
+}`,
+    variables: {
+      perPage,
+      ids,
+    },
+  };
+
+  try {
+    const response = await axios.post(
+      "https://graphql.anilist.co",
+      graphqlQuery,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    res.json(response.data.data.Page.media);
+  } catch (error) {
+    console.error("Error fetching anime list:", error.message);
+    console.error("AniList Error:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to fetch anime list" });
+  }
+};

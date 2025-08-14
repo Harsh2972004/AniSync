@@ -6,6 +6,7 @@ import MainLayout from "../layouts/MainLayout";
 import Browse from "../pages/Browse";
 import DetailsPage from "../pages/DetailsPage";
 import AnimeList from "../pages/AnimeList";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
   return (
@@ -15,7 +16,14 @@ const AppRouter = () => {
         <Route path="/browse" element={<Browse />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/animeList" element={<AnimeList />} />
+        <Route
+          path="/animeList"
+          element={
+            <ProtectedRoute>
+              <AnimeList />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/mangaList" />
         <Route path="/:id" element={<DetailsPage />} />
       </Route>

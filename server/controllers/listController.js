@@ -7,7 +7,7 @@ export const addAnime = async (req, res) => {
   try {
     const user = await User.findById(userId);
     const alreadyExist = user.animeList.some(
-      (item) => item.animeId === animeId
+      (item) => item.animeId.toString() === animeId.toString()
     );
 
     if (alreadyExist) {
@@ -39,7 +39,9 @@ export const updateAnime = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    const anime = user.animeList.find((item) => item.animeId === animeId);
+    const anime = user.animeList.find(
+      (item) => item.animeId.toString() === animeId.toString()
+    );
 
     if (!anime) {
       return res.status(404).json({ error: "Anime not found in the list." });
@@ -92,7 +94,9 @@ export const addToFavourite = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    const alreadyExist = user.favourites.some((id) => id === animeId);
+    const alreadyExist = user.favourites.some(
+      (id) => id.toString() === animeId.toString()
+    );
 
     if (alreadyExist) {
       return res.status(400).json({ error: "Anime already in list" });

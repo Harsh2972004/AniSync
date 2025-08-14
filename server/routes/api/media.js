@@ -6,6 +6,7 @@ import {
   getAllTimePopularMedia,
   getPopularThisSeasonMedia,
   getUpcomingNextSeasonMedia,
+  getListAnime,
 } from "../../controllers/mediaController.js";
 
 const mediaRouter = express.Router();
@@ -20,6 +21,7 @@ mediaRouter.get("/popular/all-time-anime", getAllTimePopularMedia("ANIME"));
 mediaRouter.get("/popular/all-time-manga", getAllTimePopularMedia("MANGA"));
 mediaRouter.get("/popular/this-season", getPopularThisSeasonMedia("ANIME"));
 mediaRouter.get("/upcoming/next-season", getUpcomingNextSeasonMedia("ANIME"));
+mediaRouter.get("/animeList", getListAnime);
 mediaRouter.get("/animeDetails/:id", getMedia("ANIME")); // <-- always last!
 mediaRouter.get("/mangaDetails/:id", getMedia("MANGA")); // <-- always last!
 

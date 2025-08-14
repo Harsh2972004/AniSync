@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaRegUserCircle } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import logo from "../assets/images/anisync-logo.png";
 
-const Navbar = ({ home = false, details = false }) => {
+const Navbar = ({ home = false, details = false, list = false }) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState("");
   const { user, logoutUser, isLoading } = useAuth();
@@ -31,31 +32,34 @@ const Navbar = ({ home = false, details = false }) => {
   return (
     <nav
       className={`top-0 w-full z-50 ${
-        home || details
+        home || details || list
           ? lastScrollY > 30
             ? "bg-primary fixed"
-            : "bg-opacity-40 bg-black fixed"
+            : "bg-opacity-65 bg-black fixed"
           : "bg-primary sticky"
       } text-white font-montserrat transition-all ${
         show ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <div className="navbar-container">
-        <div>
-          <h1 className=" text-[1.8rem] italic">AniSync</h1>
+        <div className="flex flex-col items-center justify-center w-20">
+          <Link to="/">
+            <img src={logo} alt="logo" />
+          </Link>
+          {/* <h1 className=" text-[1.8rem] italic">AniSync</h1> */}
         </div>
         <div>
           <ul className="flex space-x-6 text-lg">
-            <li className="cursor-pointer">
+            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
               <Link to="/">Home</Link>
             </li>
-            <li className="cursor-pointer">
+            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
               <Link to="/animeList">Anime List</Link>
             </li>
-            <li className="cursor-pointer">
+            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
               <Link to="/mangaList">Manga List</Link>
             </li>
-            <li className="cursor-pointer">
+            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
               <Link to="/browse">Browse</Link>
             </li>
           </ul>

@@ -21,10 +21,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    favourites: [Number], // Array of AniList anime IDs
+    favourites: {
+      type: [Number],
+      default: [],
+      required: true,
+    }, // Array of AniList anime IDs
     animeList: [
       {
-        animeId: Number, // AniList ID
+        animeId: {
+          type: Number,
+          unique: true,
+          required: true,
+        }, // AniList ID
         status: {
           type: String,
           enum: ["watching", "completed", "dropped", "planning"],
@@ -32,9 +40,20 @@ const userSchema = new mongoose.Schema(
         },
         progress: Number,
         score: Number,
-        notes: String,
+        notes: {
+          type: String,
+          default: null,
+        },
       },
     ],
+    avatar: {
+      type: String,
+      default: null,
+    },
+    profileBanner: {
+      type: String,
+      default: null,
+    },
     googleId: {
       type: String,
       default: null,
@@ -46,6 +65,10 @@ const userSchema = new mongoose.Schema(
     anilistAvatar: {
       type: String,
       default: null,
+    },
+    anilistBannerImage: {
+      type: String,
+      defaul: null,
     },
     isAdmin: {
       type: Boolean,

@@ -97,6 +97,7 @@ passport.use(
                   id
                   name
                   avatar { large }
+                  bannerImage
                 }
               }
             `,
@@ -114,10 +115,11 @@ passport.use(
         if (!user) {
           user = await User.create({
             name: viewer.name,
-            email: `anilist_${viewer.id}@anilist.local`, // <-- unique placeholder
+            email: `anilist_${viewer.id}@anilist.local`,
             anilistId: viewer.id,
             anilistAvatar: viewer.avatar?.large,
             isVerified: true,
+            anilistBannerImage: viewer.bannerImage,
           });
         }
         return done(null, user);

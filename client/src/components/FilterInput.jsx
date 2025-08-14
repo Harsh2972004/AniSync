@@ -55,7 +55,9 @@ const FilterInput = ({
         />
         <button
           onClick={onInputSubmit}
-          className={`absolute ${search ? "right-2" : "right-1"} top-1/5`}
+          className={`absolute ${
+            search ? "right-2" : "right-1"
+          } top-1/2 -translate-y-1/2`}
         >
           {search ? (
             submittedSearchTerm || close ? (
