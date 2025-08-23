@@ -1,8 +1,14 @@
+import defaultAvatar from "../assets/images/user-default-avatar.png";
+
 const ListBar = ({ username, avatar, formattedDate, title, setTitle }) => {
   return (
     <div className="flex items-center justify-between relative bg-primary py-2 px-4 rounded-lg">
       <div className="flex items-center gap-2 bg-primary rounded-lg">
-        <img className="w-14 rounded-lg" src={avatar} alt="avatar" />
+        <img
+          className="w-14 rounded-lg"
+          src={avatar || defaultAvatar}
+          alt="avatar"
+        />
         <div>
           <h3 className="text-lg font-bold">{username}</h3>
           <p className="text-sm text-gray-400">User since {formattedDate}</p>

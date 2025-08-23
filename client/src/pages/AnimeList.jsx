@@ -1,92 +1,123 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ListBar from "../components/ListBar";
-import { getAnimeForList, getFavourites, getList } from "../services/list";
 import ListAnimeCard from "../components/ListAnimeCard";
 import Modal from "../components/Modal";
 import SelectedAnimeEdit from "../components/SelectedAnimeEdit";
 import AnimeListSection from "../components/AnimeListSection";
+import { useUserContext } from "../context/UserListContext";
+import bannerImage from "../assets/images/AniSync-user-default-banner.png";
+import bannerVideo from "../assets/images/smaller-blue-blinking-eyes.mp4";
+import { CiImageOn, CiVideoOn } from "react-icons/ci";
+import SelectedAnimeView from "../components/SelectedAnimeView";
+import { motion, AnimatePresence } from "motion/react";
 
 const AnimeList = () => {
-  const { user } = useAuth();
-  const [listTitle, setListTitle] = useState("Anime List");
-  const [animeList, setAnimeList] = useState(null);
-  const [animeInfo, setAnimeInfo] = useState(null);
+  const { user, userAvatar } = useAuth();
+  const { isLoading, animeList, animeInfo, listTitle, setListTitle } =
+    useUserContext();
   const [modalOpen, setModalOpen] = useState(false);
+  const [view, setView] = useState(null); //view, edit
   const [selectedAnime, setSelectedAnime] = useState(null);
-  const [show, setShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [bannerVideoOn, setBannerVideoOn] = useState(true);
 
   const createdAt = new Date(user.createdAt);
 
   const options = { day: "numeric", month: "short", year: "numeric" };
   const formattedDate = createdAt.toLocaleDateString("en-GB", options);
 
-  const onCardClick = (animeCardInfo, info) => {
+  const onEditCardClick = (animeCardInfo, info) => {
     setModalOpen(true);
     setSelectedAnime([animeCardInfo, info]);
+    setView("edit");
+  };
+
+  const onViewCardClick = (animeCardInfo, info) => {
+    setModalOpen(true);
+    setSelectedAnime([animeCardInfo, info]);
+    setView("view");
   };
 
   const onModalClose = () => {
     setModalOpen(false), setSelectedAnime(null);
   };
 
-  useEffect(() => {
-    const getAnimeList = async () => {
-      try {
-        setIsLoading(true);
-        const listResponse =
-          listTitle === "Favourites" ? await getFavourites() : await getList();
-
-        const animeIds =
-          listTitle === "Favourites"
-            ? listResponse.data.favourites.map((favourites) => favourites)
-            : listResponse.data.animeList.map((anime) => anime.animeId);
-        console.log(animeIds, listResponse.data);
-
-        const animeResponse = await getAnimeForList(animeIds);
-        setAnimeList(animeResponse.data);
-        setAnimeInfo(listResponse.data?.animeList);
-        console.log(animeResponse.data);
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getAnimeList();
-  }, [listTitle]);
-
   return (
-    <div>
-      {selectedAnime && (
-        <Modal onClose={onModalClose} open={modalOpen}>
-          <SelectedAnimeEdit
-            title={
-              selectedAnime[0]?.title.english ||
-              selectedAnime[0]?.title.romaji ||
-              selectedAnime[0]?.title.native
-            }
-            coverImage={selectedAnime[0]?.coverImage.large}
-            bannerImage={selectedAnime[0]?.bannerImage}
-            status={selectedAnime[1]?.status}
-            progress={selectedAnime[1]?.progress}
-            score={selectedAnime[1]?.score}
-            show={show}
-            setShow={setShow}
-          />
-        </Modal>
-      )}
-      <img
-        className="w-full"
-        src={user.bannerImage || user.anilistBannerImage}
-        alt="banner-image"
-      />
+    <div className="flex flex-col">
+      <AnimatePresence>
+        {selectedAnime && (
+          <Modal onClose={onModalClose} open={modalOpen}>
+            {view === "edit" && (
+              <SelectedAnimeEdit
+                id={selectedAnime[1].animeId}
+                title={
+                  selectedAnime[0]?.title.english ||
+                  selectedAnime[0]?.title.romaji ||
+                  selectedAnime[0]?.title.native
+                }
+                coverImage={selectedAnime[0]?.coverImage.large}
+                bannerImage={selectedAnime[0]?.bannerImage}
+                episodeNumber={
+                  selectedAnime[0]?.nextAiringEpisode?.episode - 1 ||
+                  selectedAnime[0]?.episodes
+                }
+                setModalOpen={setModalOpen}
+              />
+            )}
+            {view === "view" && (
+              <SelectedAnimeView
+                id={selectedAnime[1].animeId}
+                title={
+                  selectedAnime[0]?.title.english ||
+                  selectedAnime[0]?.title.romaji ||
+                  selectedAnime[0]?.title.native
+                }
+                coverImage={selectedAnime[0]?.coverImage.large}
+                bannerImage={selectedAnime[0]?.bannerImage}
+                setModalOpen={setModalOpen}
+              />
+            )}
+          </Modal>
+        )}
+      </AnimatePresence>
+      <div className="relative group">
+        <AnimatePresence mode="wait">
+          {!bannerVideoOn ? (
+            <motion.img
+              key="image"
+              src={user.bannerImage || user.anilistBannerImage || bannerImage}
+              alt="banner-image"
+              className="w-full h-full object-cover"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          ) : (
+            <motion.video
+              key="video"
+              src={bannerVideo}
+              autoPlay
+              loop
+              className="w-full h-full object-cover"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
+        </AnimatePresence>
+        <button
+          onClick={() => setBannerVideoOn(!bannerVideoOn)}
+          className="absolute right-14 bottom-10 p-4 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-black/60 text-btn_pink rounded-full"
+        >
+          {!bannerVideoOn ? <CiVideoOn size={24} /> : <CiImageOn size={24} />}
+        </button>
+      </div>
       <div className="container-spacing flex flex-col gap-8 h-full">
         <ListBar
           username={user.name}
-          avatar={user.avatar || user.anilistAvatar}
+          avatar={userAvatar || user.anilistAvatar}
           formattedDate={formattedDate}
           title={listTitle}
           setTitle={setListTitle}
@@ -97,52 +128,68 @@ const AnimeList = () => {
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white animate-loading-bar" />
           </div>
         )}
-        {listTitle === "Anime List" && !isLoading && (
-          <>
-            <AnimeListSection
-              status="planning"
-              animeList={animeList}
-              animeInfo={animeInfo}
-              onCardClick={onCardClick}
-            />
-            <AnimeListSection
-              status="watching"
-              animeList={animeList}
-              animeInfo={animeInfo}
-              onCardClick={onCardClick}
-            />
-            <AnimeListSection
-              status="completed"
-              animeList={animeList}
-              animeInfo={animeInfo}
-              onCardClick={onCardClick}
-            />
-            <AnimeListSection
-              status="dropped"
-              animeList={animeList}
-              animeInfo={animeInfo}
-              onCardClick={onCardClick}
-            />
-          </>
-        )}
-        {listTitle === "Favourites" && !isLoading && (
-          <div className="flex flex-col gap-4">
-            <h3 className="font-bold text-xl">Favourites</h3>
-            <div className="grid grid-cols-6 gap-10">
-              {animeList?.map((anime) => (
-                <ListAnimeCard
-                  key={anime.id}
-                  title={
-                    anime.title.english ||
-                    anime.title.romaji ||
-                    anime.title.native
-                  }
-                  image={anime.coverImage.large}
-                />
-              ))}
+        <div className="overflow-hidden">
+          {listTitle === "Anime List" && !isLoading && (
+            <div className="space-y-10">
+              <AnimeListSection
+                status="planning"
+                animeList={animeList}
+                animeInfo={animeInfo}
+                onEditCardClick={onEditCardClick}
+                onViewCardClick={onViewCardClick}
+              />
+              <AnimeListSection
+                status="watching"
+                animeList={animeList}
+                animeInfo={animeInfo}
+                onEditCardClick={onEditCardClick}
+                onViewCardClick={onViewCardClick}
+              />
+              <AnimeListSection
+                status="completed"
+                animeList={animeList}
+                animeInfo={animeInfo}
+                onEditCardClick={onEditCardClick}
+                onViewCardClick={onViewCardClick}
+              />
+              <AnimeListSection
+                status="dropped"
+                animeList={animeList}
+                animeInfo={animeInfo}
+                onEditCardClick={onEditCardClick}
+                onViewCardClick={onViewCardClick}
+              />
             </div>
-          </div>
-        )}
+          )}
+          {listTitle === "Favourites" && !isLoading && animeList.length > 0 && (
+            <div className="flex flex-col gap-4">
+              <h3 className="font-bold text-xl">Favourites</h3>
+              <div className="grid grid-cols-6 gap-10">
+                {animeList?.map((anime) => (
+                  <ListAnimeCard
+                    key={anime.id}
+                    title={
+                      anime.title.english ||
+                      anime.title.romaji ||
+                      anime.title.native
+                    }
+                    image={anime.coverImage.large}
+                    list={false}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {animeList?.length === 0 && (
+            <div className="flex items-center justify-center text-gray-400">
+              <p>{`No Anime ${
+                listTitle === "Favourites" ? "Favourited" : "in the list."
+              }. Try adding anime to the ${
+                listTitle === "Favourites" ? "favourites..." : "list..."
+              }`}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

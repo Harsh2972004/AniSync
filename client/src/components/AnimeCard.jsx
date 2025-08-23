@@ -1,9 +1,14 @@
 import { forwardRef } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useUserContext } from "../context/UserListContext";
 
 const AnimeCard = forwardRef(
   ({ id, animeImg, title, airSince, genres }, ref) => {
+    const { isInFavourites, handleAddToFavourite } = useUserContext();
+
+    const isFavourites = isInFavourites(id);
+
     return (
       <Link
         ref={ref}
@@ -23,8 +28,19 @@ const AnimeCard = forwardRef(
               <div className="flex-[7] h-14">
                 <h3 className="font-bold text-lg line-clamp-2">{title}</h3>
               </div>
-              <div className="flex-[3] flex justify-end">
-                <FaHeart size={28} color="red" />
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleAddToFavourite(id);
+                }}
+                className="flex-[3] flex justify-end cursor-pointer"
+              >
+                {isFavourites ? (
+                  <FaHeart size={28} color="red" />
+                ) : (
+                  <FaRegHeart size={28} color="red" />
+                )}
               </div>
             </div>
             <span className="text-gray-500 text-xs font-semibold">

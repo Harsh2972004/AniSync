@@ -7,6 +7,8 @@ import {
   requestPasswordReset,
   resetPassword,
   resendOtp,
+  uploadProfileAvatatr,
+  getAvatar,
 } from "../../controllers/userController.js";
 import {
   otpLimiter,
@@ -14,6 +16,8 @@ import {
 } from "../../middleware/rateLimitMiddleware.js";
 import cooldownMiddleware from "../../middleware/cooldownMiddleware.js";
 import passport from "passport";
+import upload from "../../middleware/multerMiddlerware.js";
+import isAuthenticated from "../../middleware/isAuthenticated.js";
 
 const router = express.Router();
 
@@ -29,7 +33,9 @@ router.post(
   requestPasswordReset
 );
 router.post("/reset-password", otpLimiter, resetPassword);
+
 // router.get("/profile", isAuthenticated, getUserProfile);
+
 router.get("/auth/status", (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ isAuthenticated: true, user: req.user });
@@ -37,6 +43,15 @@ router.get("/auth/status", (req, res) => {
     res.json({ isAuthenticated: false });
   }
 });
+
+router.post(
+  "/profile-avatar",
+  isAuthenticated,
+  upload.single("profileAvatar"),
+  uploadProfileAvatatr
+);
+
+router.get("/getAvatar/:filename", isAuthenticated, getAvatar);
 
 router.get(
   "/auth/google",

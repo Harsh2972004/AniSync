@@ -70,7 +70,7 @@
     .dropdown {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
+      transition: all 0.3s ease;
     }
     .dropdown.open {
       padding: 1rem 0;

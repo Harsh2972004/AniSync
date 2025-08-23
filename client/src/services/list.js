@@ -13,4 +13,7 @@ export const getAnimeForList = (animeId) => {
 
 export const getList = () => API.get("/list/getAnimeList");
 
+export const updateAnimeProgress = (animeId, status, progress, score, notes) =>
+  API.put("/list/updateAnime", { animeId, status, progress, score, notes });
+
 export const getFavourites = () => API.get("/list/getFavourites");

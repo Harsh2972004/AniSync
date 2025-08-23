@@ -29,6 +29,7 @@ app.use(corsMiddleware);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 
 // Session configuration
 app.use(
@@ -82,6 +83,6 @@ app.use("/", (req, res) => {
 //   console.log(`Server is running on https://localhost:${PORT}`);
 // });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

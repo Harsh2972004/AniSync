@@ -252,6 +252,11 @@ export const getMedia = (mediaType) => async (req, res) => {
     seasonYear
     format
     favourites
+    episodes   
+          nextAiringEpisode { 
+          episode
+          airingAt
+      }
     recommendations(sort: RATING_DESC, page: 1, perPage: 6) {
       edges {
         node {
@@ -383,6 +388,11 @@ export const getListAnime = async (req, res) => {
           large
         }
           bannerImage
+          episodes   
+          nextAiringEpisode { 
+          episode
+          airingAt
+      }
       }
     }
 }`,

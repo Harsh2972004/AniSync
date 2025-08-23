@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect, createContext } from "react";
-import { login, logout, register } from "../services/auth";
+import { getAvatar, login, logout, register } from "../services/auth";
 import API from "../services/api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userAvatar, setUserAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [authChanged, setAuthChanged] = useState(false);
 
@@ -30,13 +31,29 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, [authChanged]);
 
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (!user || !user.avatar) return;
+
+      try {
+        const response = await getAvatar(user.avatar);
+        const avatarUrl = URL.createObjectURL(response.data);
+        setUserAvatar(avatarUrl);
+      } catch (error) {
+        console.error("Failed to fetch avatar:", error);
+      }
+    };
+
+    fetchUserAvatar();
+  }, [user?.avatar]);
+
   const registerUser = async (formdata) => {
     try {
       const res = await register(formdata);
       if (res.data.user) {
         setUser(res.data.user);
       }
-      setAuthChanged([(prev) => !prev]);
+      setAuthChanged((prev) => !prev);
       return res;
     } catch (error) {
       console.error("error registering user:", error);
@@ -72,7 +89,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, loginUser, logoutUser, registerUser }}
+      value={{
+        user,
+        setUser,
+        userAvatar,
+        setUserAvatar,
+        isLoading,
+        loginUser,
+        logoutUser,
+        registerUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

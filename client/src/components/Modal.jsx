@@ -1,4 +1,5 @@
 import ReactDom from "react-dom";
+import { motion } from "motion/react";
 import { IoCloseSharp } from "react-icons/io5";
 
 const Modal = ({ children, open, onClose }) => {
@@ -6,22 +7,31 @@ const Modal = ({ children, open, onClose }) => {
 
   return ReactDom.createPortal(
     <>
-      <div
+      <motion.div
         onClick={onClose}
-        className="fixed top-0 left-0 bottom-0 right-0 bg-black opacity-50 z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        exit={{ opacity: 0 }}
+        className="fixed top-0 left-0 bottom-0 right-0 bg-black opacity-50 z-40"
       />
-      <div
+      <motion.div
         onClick={(e) => e.stopPropagation()}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50  w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-0 z-50 flex justify-center items-center"
       >
-        <button
-          className="fixed top-8 right-8 bg-black/80 rounded-lg p-1"
-          onClick={onClose}
-        >
-          <IoCloseSharp size={30} />
-        </button>
-        {children}
-      </div>
+        <div className=" relative w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg">
+          <button
+            className="absolute top-8 right-8 bg-black/80 rounded-lg p-1"
+            onClick={onClose}
+          >
+            <IoCloseSharp size={30} />
+          </button>
+          {children}
+        </div>
+      </motion.div>
     </>,
     document.getElementById("modal-root")
   );

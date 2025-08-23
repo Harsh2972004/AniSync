@@ -51,7 +51,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/api/user/auth/google/anisync",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -81,7 +81,7 @@ passport.use(
       tokenURL: "https://anilist.co/api/v2/oauth/token",
       clientID: process.env.ANILIST_CLIENT_ID,
       clientSecret: process.env.ANILIST_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/api/user/auth/anilist/anisync",
+      callbackURL: process.env.ANILIST_CALLBACK_URL,
     },
     async (accessToken, refreshToken, params, profile, done) => {
       console.log("AniList accessToken:", accessToken);

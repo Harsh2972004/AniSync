@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { getAnimeDetails } from "../services/media";
 import parse from "html-react-parser";
@@ -8,11 +8,19 @@ import RelationCard from "../components/RelationCard";
 import CharacterCard from "../components/CharacterCard";
 import EpisodeCard from "../components/EpisodeCard";
 import RecommendationsCard from "../components/RecommendationsCard";
-import { addToFavourite, addToList } from "../services/list";
+import { useUserContext } from "../context/UserListContext";
 
 const DetailsPage = () => {
   const { id } = useParams();
+  const {
+    animeInfo,
+    handleAddToFavourite,
+    handleAddToList,
+    isInList,
+    isInFavourites,
+  } = useUserContext();
   const [animeDetails, setAnimeDetails] = useState(null);
+  const [timeLeft, setTimeLeft] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const monthNames = [
@@ -41,31 +49,10 @@ const DetailsPage = () => {
   const monthNumber = animeDetails?.startDate?.month; // 1-12
   const monthName = monthNumber ? monthNames[monthNumber - 1] : "";
 
-  const handleAddToList = async () => {
-    try {
-      const response = await addToList(id);
-      console.log(response.data);
-    } catch (error) {
-      console.log(
-        "error adding to the list:",
-        error.message,
-        error.response.data
-      );
-    }
-  };
+  const inList = isInList(id);
+  const inFavourites = isInFavourites(id);
 
-  const handleAddToFavourite = async () => {
-    try {
-      const response = await addToFavourite(id);
-      console.log(response.data);
-    } catch (error) {
-      console.log(
-        "error adding to the favourite:",
-        error.message,
-        error.response
-      );
-    }
-  };
+  const airingAt = animeDetails?.nextAiringEpisode?.airingAt;
 
   useEffect(() => {
     const fetchAnimeDetails = async () => {
@@ -74,6 +61,7 @@ const DetailsPage = () => {
         const response = await getAnimeDetails(id);
         setAnimeDetails(response.data);
         console.log(response.data);
+        console.log("animeInfo:", animeInfo, isInList);
       } catch (error) {
         console.log("error fetching anime details:", error);
       } finally {
@@ -83,6 +71,32 @@ const DetailsPage = () => {
 
     fetchAnimeDetails();
   }, [id]);
+
+  useEffect(() => {
+    if (!airingAt) return;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const diff = airingAt * 1000 - now;
+
+      if (diff <= 0) {
+        setTimeLeft("Now Airing!");
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000); // update every second
+
+    return () => clearInterval(interval); // cleanup when component unmounts
+  }, [airingAt]);
 
   if (isLoading) {
     return (
@@ -116,17 +130,21 @@ const DetailsPage = () => {
               />
               <div className="w-full flex justify-between ">
                 <button
-                  onClick={handleAddToList}
+                  onClick={() => handleAddToList(id)}
                   className="w-[80%] relative border-2 rounded-lg px-4 py-2 flex items-center justify-center"
                 >
-                  Add to list
+                  {inList ? "Added to List" : "Add to list"}
                   <MdArrowDropDown className="absolute right-2" size={24} />
                 </button>
                 <button
-                  onClick={handleAddToFavourite}
+                  onClick={() => handleAddToFavourite(id)}
                   className="bg-red-500 rounded-lg p-2"
                 >
-                  <FaRegHeart size={26} />
+                  {inFavourites ? (
+                    <FaHeart size={26} />
+                  ) : (
+                    <FaRegHeart size={26} />
+                  )}
                 </button>
               </div>
             </div>
@@ -157,6 +175,24 @@ const DetailsPage = () => {
                   {animeDetails?.status}
                 </span>
               </div>
+              <div>
+                <h1 className="font-bold">Episodes</h1>
+                <span className="text-gray-300 text-sm font-semibold">
+                  {animeDetails?.episodes ||
+                    `${
+                      animeDetails?.nextAiringEpisode?.episode - 1
+                    } and more coming`}
+                </span>
+              </div>
+              {airingAt && (
+                <div>
+                  <h1 className="font-bold">Next Airing Episode</h1>
+                  <span className="text-gray-300 text-sm font-semibold">
+                    Episode {animeDetails?.nextAiringEpisode?.episode} in{" "}
+                    <span className="text-blue-500 font-bold">{timeLeft}</span>
+                  </span>
+                </div>
+              )}
               <div>
                 <h1 className="font-bold">Start Date</h1>
                 <span className="text-gray-300 text-sm">{`${monthName} ${animeDetails?.startDate.day}, ${animeDetails?.startDate.year}`}</span>

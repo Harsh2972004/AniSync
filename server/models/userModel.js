@@ -30,8 +30,6 @@ const userSchema = new mongoose.Schema(
       {
         animeId: {
           type: Number,
-          unique: true,
-          required: true,
         }, // AniList ID
         status: {
           type: String,
@@ -68,7 +66,7 @@ const userSchema = new mongoose.Schema(
     },
     anilistBannerImage: {
       type: String,
-      defaul: null,
+      default: null,
     },
     isAdmin: {
       type: Boolean,

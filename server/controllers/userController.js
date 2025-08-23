@@ -3,6 +3,8 @@ import { sendEmail } from "../config/email.js";
 import passport from "passport";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import path from "path";
+import fs from "fs";
 
 export const sendVerificationEmail = async (user, req, res) => {
   try {
@@ -239,4 +241,46 @@ export const logoutUser = (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   res.status(200).json({ message: "Welcome to your profile", user: req.user });
+};
+
+export const uploadProfileAvatatr = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    // Fetch user to get old avatar
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Delete old avatar if it exists
+    if (user.avatar) {
+      const oldPath = path.join(process.cwd(), "uploads", user.avatar);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath); // delete old file
+      }
+    }
+
+    const normalizePath = req.file.path.replace(/\\/g, "/");
+    const profileAvatar = normalizePath.split("/").pop();
+
+    user.avatar = profileAvatar;
+    await user.save();
+
+    res.json({ message: "profile Updated", avatar: profileAvatar });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getAvatar = async (req, res) => {
+  const { filename } = req.params;
+  try {
+    const filePath = path.join(process.cwd(), "uploads", filename);
+
+    if (!fs.existsSync(filePath)) return res.status(404).send("File not found");
+
+    res.sendFile(filePath);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+    console.log({ error: error.message });
+  }
 };
