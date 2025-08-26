@@ -149,6 +149,7 @@ export const UserListProvider = ({ children }) => {
       value={{
         animeInfo,
         animeList,
+        setAnimeList,
         isLoading,
         listTitle,
         setListTitle,

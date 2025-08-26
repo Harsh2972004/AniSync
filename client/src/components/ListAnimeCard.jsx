@@ -1,15 +1,32 @@
 import { MdEdit } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const ListAnimeCard = ({
+  id,
   image,
   title,
   onEditClick,
   onViewClick,
   list = true,
 }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
-    <div className=" w-44 relative rounded-md group">
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className=" w-44 relative rounded-md group"
+    >
       <img
         className="rounded-md w-full max-h-[220px]"
         src={image}

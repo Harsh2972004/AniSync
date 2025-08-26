@@ -3,8 +3,9 @@ import { sendEmail } from "../config/email.js";
 import passport from "passport";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import path from "path";
+import path, { normalize } from "path";
 import fs from "fs";
+import { profile } from "console";
 
 export const sendVerificationEmail = async (user, req, res) => {
   try {
@@ -277,6 +278,45 @@ export const getAvatar = async (req, res) => {
     const filePath = path.join(process.cwd(), "uploads", filename);
 
     if (!fs.existsSync(filePath)) return res.status(404).send("File not found");
+
+    res.sendFile(filePath);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+    console.log({ error: error.message });
+  }
+};
+
+export const uploadBannerImage = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: "user not found." });
+
+    if (user.profileBanner) {
+      const oldPath = path.join(process.cwd(), "uploads", user.profileBanner);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    const normalizedPath = req.file.path.replace(/\\/g, "/");
+    const profileBanner = normalizedPath.split("/").pop();
+
+    user.profileBanner = profileBanner;
+    await user.save();
+    res.json({ message: "banner Updated", profileBanner });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getBannerImage = async (req, res) => {
+  const { filename } = req.params;
+  try {
+    const filePath = path.join(process.cwd(), "uploads", filename);
+    if (!fs.existsSync(filePath))
+      res.status(404).json({ error: "banner image not found" });
 
     res.sendFile(filePath);
   } catch (error) {

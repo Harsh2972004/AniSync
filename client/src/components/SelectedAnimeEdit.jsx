@@ -40,17 +40,6 @@ const SelectedAnimeEdit = ({
     (anime) => anime.animeId === Number(id)
   );
 
-  useEffect(() => {
-    if (currentAnime) {
-      setAnimeProgress({
-        status: currentAnime.status || "",
-        progress: currentAnime.progress || "",
-        score: currentAnime.score || "",
-        notes: currentAnime.notes || "",
-      });
-    }
-  }, [currentAnime]);
-
   const updateProgress = async () => {
     try {
       const response = await updateAnimeInfo(
@@ -76,7 +65,12 @@ const SelectedAnimeEdit = ({
             : anime
         ),
       }));
-
+      setAnimeProgress({
+        status: "",
+        progress: "",
+        score: "",
+        notes: "",
+      });
       setModalOpen(false);
     } catch (error) {
       console.log("updation failed:", error.message, error.response.data);
@@ -131,6 +125,7 @@ const SelectedAnimeEdit = ({
             value={animeProgress.status}
             selectedEnums={["planning", "watching", "completed", "dropped"]}
             onClick={onEnumClick}
+            setAnimeProgress={setAnimeProgress}
           />
           {/* progress */}
           <SelectedAnimeInput
@@ -140,6 +135,7 @@ const SelectedAnimeEdit = ({
             selectedEnums={episodes}
             onClick={onEnumClick}
             progress={true}
+            setAnimeProgress={setAnimeProgress}
           />
           {/* score */}
           <SelectedAnimeInput
@@ -148,6 +144,7 @@ const SelectedAnimeEdit = ({
             value={animeProgress.score}
             selectedEnums={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
             onClick={onEnumClick}
+            setAnimeProgress={setAnimeProgress}
           />
           <div className="flex flex-col gap-2 w-[200px] row-span-2">
             <label className="font-semibold" htmlFor="notes">
@@ -162,14 +159,7 @@ const SelectedAnimeEdit = ({
               placeholder="Write your experience"
               value={animeProgress.notes || ""}
               onChange={(e) =>
-                setAnimeInfo((prev) => ({
-                  ...prev,
-                  animeList: prev.animeList.map((anime) =>
-                    anime.animeId === Number(id)
-                      ? { ...anime, notes: e.target.value }
-                      : anime
-                  ),
-                }))
+                setAnimeProgress((prev) => ({ ...prev, notes: e.target.value }))
               }
             />
           </div>

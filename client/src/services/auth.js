@@ -24,3 +24,8 @@ export const getAvatar = (filePath) =>
   API.get(`/user/getAvatar/${filePath}`, {
     responseType: "blob",
   });
+
+export const uploadBanner = (file) => API.post("user/banner-image", file);
+
+export const getBannerImage = (filePath) =>
+  API.get(`/user/get-banner-image/${filePath}`, { responseType: "blob" });

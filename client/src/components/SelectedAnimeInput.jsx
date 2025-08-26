@@ -40,6 +40,7 @@ const SelectedAnimeInput = ({
             setAnimeProgress((prev) => ({ ...prev, [title]: e.target.value }))
           }
           onFocus={() => setShow(true)}
+          autoComplete="off"
         />
         <button
           onClick={() => setShow(!show)}

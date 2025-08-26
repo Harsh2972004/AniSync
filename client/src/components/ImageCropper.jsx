@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 
-const AvatarCropper = ({ image, onCropComplete, crop, setCrop }) => {
+const ImageCropper = ({ image, onCropComplete, crop, setCrop, aspect }) => {
   const [zoom, setZoom] = useState(1);
 
   const handleCropComplete = useCallback(
@@ -17,8 +17,8 @@ const AvatarCropper = ({ image, onCropComplete, crop, setCrop }) => {
         image={image}
         crop={crop}
         zoom={zoom}
-        aspect={1}
-        cropShape="round"
+        aspect={aspect} // 19 / 4 || 1
+        cropShape={aspect === 1 ? "round" : "rect"}
         showGrid={true}
         onCropChange={setCrop}
         onZoomChange={setZoom}
@@ -30,4 +30,4 @@ const AvatarCropper = ({ image, onCropComplete, crop, setCrop }) => {
   );
 };
 
-export default AvatarCropper;
+export default ImageCropper;

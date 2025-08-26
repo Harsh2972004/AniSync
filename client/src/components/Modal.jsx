@@ -12,19 +12,21 @@ const Modal = ({ children, open, onClose }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.5 }}
         exit={{ opacity: 0 }}
-        className="fixed top-0 left-0 bottom-0 right-0 bg-black opacity-50 z-40"
+        className="fixed top-0 left-0 bottom-0 right-0 bg-black z-40"
       />
       <motion.div
-        onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-50 flex justify-center items-center"
+        className="fixed inset-0 z-50 flex justify-center items-center pointer-events-none"
       >
-        <div className=" relative w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="pointer-events-auto relative w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg"
+        >
           <button
-            className="absolute top-8 right-8 bg-black/80 rounded-lg p-1"
+            className="absolute z-50 top-8 right-8 bg-black/80 rounded-lg p-1"
             onClick={onClose}
           >
             <IoCloseSharp size={30} />

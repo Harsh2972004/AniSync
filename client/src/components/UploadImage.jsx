@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { uploadAvatar } from "../services/auth";
-import AvatarCropper from "./AvatarCropper";
+import { uploadAvatar, uploadBanner } from "../services/auth";
+import ImageCropper from "./ImageCropper";
 import { useAuth } from "../context/AuthContext";
 import { getCroppedImg } from "../utils/getCroppedImg";
 
-const UploadAvatar = ({ file, onClose }) => {
+const UploadImage = ({ file, onClose, aspect, actionName }) => {
   const { setUser } = useAuth();
   const [crop, setCrop] = useState({ x: 0, y: 0, width: 200, height: 200 });
   const [loading, setLoading] = useState(false);
@@ -23,13 +23,30 @@ const UploadAvatar = ({ file, onClose }) => {
       );
 
       const formData = new FormData();
-      formData.append("profileAvatar", croppedFile, "avatar.jpg");
+      formData.append(
+        actionName === "avatar" ? "profileAvatar" : "profileBanner",
+        croppedFile,
+        actionName === "avatar" ? "avatar.jpg" : "banner.jpg"
+      );
 
-      const response = await uploadAvatar(formData);
-      const data = response.data;
-      console.log("upload success", data);
+      if (actionName === "avatar") {
+        const response = await uploadAvatar(formData);
 
-      setUser((prev) => ({ ...prev, avatar: response.data.avatar }));
+        const data = response.data;
+        console.log("upload success", data);
+
+        setUser((prev) => ({ ...prev, avatar: response.data.avatar }));
+      } else if (actionName === "banner") {
+        const response = await uploadBanner(formData);
+
+        const data = response.data;
+        console.log("upload success", data);
+
+        setUser((prev) => ({
+          ...prev,
+          profileBanner: response.data.profileBanner,
+        }));
+      }
 
       onClose();
     } catch (error) {
@@ -40,14 +57,17 @@ const UploadAvatar = ({ file, onClose }) => {
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-      <div className="bg-primary rounded-xl p-4 w-[90%] max-w-md">
-        <h2 className="text-lg font-semibold mb-2">Crop your avatar</h2>
+      <div className="bg-primary rounded-xl p-4 w-[90%] max-w-2xl">
+        <h2 className="text-lg font-semibold mb-2">{`Crop your ${
+          actionName === "avatar" ? "Avatar" : "Banner"
+        }`}</h2>
 
-        <AvatarCropper
+        <ImageCropper
           image={URL.createObjectURL(file)}
           crop={crop}
           setCrop={setCrop}
           onCropComplete={onCropComplete}
+          aspect={aspect}
         />
 
         <div className="flex justify-end gap-2 mt-4">
@@ -67,4 +87,4 @@ const UploadAvatar = ({ file, onClose }) => {
   );
 };
 
-export default UploadAvatar;
+export default UploadImage;

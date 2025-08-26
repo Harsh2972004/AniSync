@@ -11,11 +11,32 @@ import bannerVideo from "../assets/images/smaller-blue-blinking-eyes.mp4";
 import { CiImageOn, CiVideoOn } from "react-icons/ci";
 import SelectedAnimeView from "../components/SelectedAnimeView";
 import { motion, AnimatePresence } from "motion/react";
+import {
+  closestCorners,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 
 const AnimeList = () => {
-  const { user, userAvatar } = useAuth();
-  const { isLoading, animeList, animeInfo, listTitle, setListTitle } =
-    useUserContext();
+  const { user, userAvatar, userBanner } = useAuth();
+  const {
+    isLoading,
+    animeList,
+    setAnimeList,
+    animeInfo,
+    listTitle,
+    setListTitle,
+  } = useUserContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [view, setView] = useState(null); //view, edit
   const [selectedAnime, setSelectedAnime] = useState(null);
@@ -41,6 +62,30 @@ const AnimeList = () => {
   const onModalClose = () => {
     setModalOpen(false), setSelectedAnime(null);
   };
+
+  const getAnimePosition = (id) =>
+    animeList.findIndex((anime) => anime.id === id);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id === over.id) return;
+
+    setAnimeList((prev) => {
+      const originalPosition = getAnimePosition(active.id);
+      const newPosition = getAnimePosition(over.id);
+
+      return arrayMove(animeList, originalPosition, newPosition);
+    });
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+    useSensor(TouchSensor)
+  );
 
   return (
     <div className="flex flex-col">
@@ -85,7 +130,7 @@ const AnimeList = () => {
           {!bannerVideoOn ? (
             <motion.img
               key="image"
-              src={user.bannerImage || user.anilistBannerImage || bannerImage}
+              src={userBanner || user.anilistBannerImage || bannerImage}
               alt="banner-image"
               className="w-full h-full object-cover"
               initial={{ opacity: 0 }}
@@ -162,23 +207,35 @@ const AnimeList = () => {
             </div>
           )}
           {listTitle === "Favourites" && !isLoading && animeList.length > 0 && (
-            <div className="flex flex-col gap-4">
-              <h3 className="font-bold text-xl">Favourites</h3>
-              <div className="grid grid-cols-6 gap-10">
-                {animeList?.map((anime) => (
-                  <ListAnimeCard
-                    key={anime.id}
-                    title={
-                      anime.title.english ||
-                      anime.title.romaji ||
-                      anime.title.native
-                    }
-                    image={anime.coverImage.large}
-                    list={false}
-                  />
-                ))}
+            <DndContext
+              sensors={sensors}
+              onDragEnd={handleDragEnd}
+              collisionDetection={closestCorners}
+            >
+              <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-xl">Favourites</h3>
+                <SortableContext
+                  items={animeList}
+                  strategy={rectSortingStrategy}
+                >
+                  <div className="grid grid-cols-6 gap-10">
+                    {animeList?.map((anime) => (
+                      <ListAnimeCard
+                        key={anime.id}
+                        id={anime.id}
+                        title={
+                          anime.title.english ||
+                          anime.title.romaji ||
+                          anime.title.native
+                        }
+                        image={anime.coverImage.large}
+                        list={false}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
               </div>
-            </div>
+            </DndContext>
           )}
           {animeList?.length === 0 && (
             <div className="flex items-center justify-center text-gray-400">

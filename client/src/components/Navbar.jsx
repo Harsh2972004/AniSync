@@ -14,7 +14,12 @@ const Navbar = ({ home = false, details = false, list = false }) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const { user, userAvatar, logoutUser, isLoading } = useAuth();
+  const { user, userAvatar, userBanner, logoutUser, isLoading } = useAuth();
+
+  const createdAt = new Date(user?.createdAt);
+
+  const options = { day: "numeric", month: "short", year: "numeric" };
+  const formattedDate = createdAt.toLocaleDateString("en-GB", options);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,9 +56,8 @@ const Navbar = ({ home = false, details = false, list = false }) => {
           <Modal open={showModal} onClose={() => setShowModal(false)}>
             <ProfileSection
               name={user.name}
-              bannerImage={
-                user.bannerImage || user.anilistBannerImage || bannerImage
-              }
+              bannerImage={userBanner || user.anilistBannerImage || bannerImage}
+              createdAt={formattedDate}
               avatar={userAvatar || user.anilistAvatar || defaultAvatar}
               setShowModal={setShowModal}
               logoutUser={logoutUser}
@@ -62,24 +66,24 @@ const Navbar = ({ home = false, details = false, list = false }) => {
         )}
       </AnimatePresence>
       <div className="navbar-container">
-        <div className="flex flex-col items-center justify-center w-20">
-          <Link to="/">
-            <img src={logo} alt="logo" />
+        <div className="flex flex-col items-center justify-center">
+          <Link className="flex flex-col justify-center items-center" to="/">
+            <img className="w-14" src={logo} alt="logo" />
+            <h3 className="-mt-[10px] font-semibold">AniSync</h3>
           </Link>
-          {/* <h1 className=" text-[1.8rem] italic">AniSync</h1> */}
         </div>
         <div>
-          <ul className="flex space-x-6 text-lg">
-            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
+          <ul className="flex space-x-6 text-lg font-semibold">
+            <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/">Home</Link>
             </li>
-            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
+            <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/animeList">Anime List</Link>
             </li>
-            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
+            <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/mangaList">Manga List</Link>
             </li>
-            <li className="cursor-pointer hover:scale-[1.02] tranistion-all duration-75">
+            <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/browse">Browse</Link>
             </li>
           </ul>

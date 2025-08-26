@@ -9,6 +9,8 @@ import {
   resendOtp,
   uploadProfileAvatatr,
   getAvatar,
+  uploadBannerImage,
+  getBannerImage,
 } from "../../controllers/userController.js";
 import {
   otpLimiter,
@@ -51,7 +53,16 @@ router.post(
   uploadProfileAvatatr
 );
 
+router.post(
+  "/banner-image",
+  isAuthenticated,
+  upload.single("profileBanner"),
+  uploadBannerImage
+);
+
 router.get("/getAvatar/:filename", isAuthenticated, getAvatar);
+
+router.get("/get-banner-image/:filename", isAuthenticated, getBannerImage);
 
 router.get(
   "/auth/google",
