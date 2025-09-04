@@ -7,6 +7,7 @@ const LoginForm = ({
   handleLogin,
   handleInputChange,
   isLoading,
+  error,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -53,6 +54,7 @@ const LoginForm = ({
             )}
           </button>
         </div>
+        {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
       </div>
       <LoadingButton isLoading={isLoading} text={"Login"} />
     </form>

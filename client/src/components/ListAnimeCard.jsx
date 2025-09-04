@@ -17,6 +17,7 @@ const ListAnimeCard = ({
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
+    cursor: "grab",
   };
 
   return (
@@ -25,6 +26,8 @@ const ListAnimeCard = ({
       {...attributes}
       {...listeners}
       style={style}
+      onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
+      onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
       className=" w-44 relative rounded-md group"
     >
       <img

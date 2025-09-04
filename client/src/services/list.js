@@ -17,3 +17,9 @@ export const updateAnimeProgress = (animeId, status, progress, score, notes) =>
   API.put("/list/updateAnime", { animeId, status, progress, score, notes });
 
 export const getFavourites = () => API.get("/list/getFavourites");
+
+export const deleteFavourite = (animeId) =>
+  API.delete("/list/deleteFavourite", { data: { animeId } });
+
+export const deleteAnime = (animeId) =>
+  API.delete("/list/removeAnime", { data: { animeId } });

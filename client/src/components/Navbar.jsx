@@ -10,7 +10,12 @@ import { AnimatePresence } from "motion/react";
 import Modal from "./Modal";
 import ProfileSection from "./ProfileSection";
 
-const Navbar = ({ home = false, details = false, list = false }) => {
+const Navbar = ({
+  home = false,
+  details = false,
+  list = false,
+  banner = true,
+}) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +47,7 @@ const Navbar = ({ home = false, details = false, list = false }) => {
   return (
     <nav
       className={`top-0 w-full z-40 ${
-        home || details || list
+        home || (details && banner) || list
           ? lastScrollY > 30
             ? "bg-primary fixed"
             : "bg-opacity-65 bg-black fixed"
@@ -56,6 +61,7 @@ const Navbar = ({ home = false, details = false, list = false }) => {
           <Modal open={showModal} onClose={() => setShowModal(false)}>
             <ProfileSection
               name={user.name}
+              email={user.email}
               bannerImage={userBanner || user.anilistBannerImage || bannerImage}
               createdAt={formattedDate}
               avatar={userAvatar || user.anilistAvatar || defaultAvatar}

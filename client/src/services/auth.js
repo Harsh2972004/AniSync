@@ -18,6 +18,11 @@ export const requestResetPassword = (email) =>
 
 export const resetPassword = (data) => API.post("/user/reset-password", data);
 
+export const updateName = (name) => API.put("/user/update-username", { name });
+
+export const updatePassword = (newPassword, confirmPassword) =>
+  API.put("/user/update-password", { newPassword, confirmPassword });
+
 export const uploadAvatar = (file) => API.post("/user/profile-avatar", file);
 
 export const getAvatar = (filePath) =>

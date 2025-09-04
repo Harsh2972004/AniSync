@@ -11,6 +11,8 @@ import {
   getAvatar,
   uploadBannerImage,
   getBannerImage,
+  updateUserName,
+  updateUserPassword,
 } from "../../controllers/userController.js";
 import {
   otpLimiter,
@@ -36,6 +38,8 @@ router.post(
 );
 router.post("/reset-password", otpLimiter, resetPassword);
 
+router.put("/update-password", isAuthenticated, updateUserPassword);
+
 // router.get("/profile", isAuthenticated, getUserProfile);
 
 router.get("/auth/status", (req, res) => {
@@ -45,6 +49,8 @@ router.get("/auth/status", (req, res) => {
     res.json({ isAuthenticated: false });
   }
 });
+
+router.put("/update-username", isAuthenticated, updateUserName);
 
 router.post(
   "/profile-avatar",

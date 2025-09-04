@@ -1,7 +1,9 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { useUserContext } from "../context/UserListContext";
 import SelectedAnimeInput from "./SelectedAnimeInput";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { deleteAnime, deleteFavourite } from "../services/list";
 
 const SelectedAnimeEdit = ({
   id,
@@ -17,6 +19,7 @@ const SelectedAnimeEdit = ({
     updateAnimeInfo,
     isInFavourites,
     handleAddToFavourite,
+    getAnimeList,
   } = useUserContext();
 
   const [animeProgress, setAnimeProgress] = useState({
@@ -44,10 +47,10 @@ const SelectedAnimeEdit = ({
     try {
       const response = await updateAnimeInfo(
         currentAnime.animeId,
-        animeProgress.status,
-        animeProgress.progress,
-        animeProgress.score,
-        animeProgress.notes
+        animeProgress.status || currentAnime.status,
+        animeProgress.progress || currentAnime.progress,
+        animeProgress.score || currentAnime.score,
+        animeProgress.notes || currentAnime.notes
       );
       console.log("udpated:", response.data);
 
@@ -57,10 +60,10 @@ const SelectedAnimeEdit = ({
           anime.animeId === currentAnime.animeId
             ? {
                 ...anime,
-                status: animeProgress.status,
-                progress: animeProgress.progress,
-                score: animeProgress.score,
-                notes: animeProgress.notes,
+                status: animeProgress.status || currentAnime.status,
+                progress: animeProgress.progress || currentAnime.progress,
+                score: animeProgress.score || currentAnime.score,
+                notes: animeProgress.notes || currentAnime.notes,
               }
             : anime
         ),
@@ -79,10 +82,21 @@ const SelectedAnimeEdit = ({
 
   const inFavourites = isInFavourites(id);
 
+  const handleDeleteAnime = async (animeId) => {
+    try {
+      const response = await deleteAnime(animeId);
+      console.log(response.data);
+      getAnimeList();
+      setModalOpen(false);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
   return (
     <div>
       <img
-        className="w-full h-1/3 bg-cover rounded-t-lg"
+        className="w-full h-1/3 max-h-[210px] object-cover rounded-t-lg"
         src={bannerImage}
         alt={`
           ${title}-bannerImage`}
@@ -164,6 +178,12 @@ const SelectedAnimeEdit = ({
             />
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => handleDeleteAnime(id)}
+              className="p-2 border-2 border-red-500 rounded-md font-semibold text-sm text-red-500"
+            >
+              <MdDelete size={25} />
+            </button>
             <button
               onClick={() => handleAddToFavourite(id)}
               className=" p-2 border-2 rounded-md  font-semibold text-sm"

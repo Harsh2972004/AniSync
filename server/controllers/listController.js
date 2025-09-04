@@ -128,7 +128,7 @@ export const deleteFavourite = async (req, res) => {
   try {
     const user = await User.findById(userId);
 
-    user.favourites = user.favourites.filter((id) => id !== animeId);
+    user.favourites = user.favourites.filter((id) => id !== Number(animeId));
     await user.save();
 
     res.json({ success: true, favourites: user.favourites });

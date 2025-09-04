@@ -7,6 +7,7 @@ const RegisterForm = ({
   userDetails,
   handleInputChange,
   isLoading,
+  error,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,6 +29,9 @@ const RegisterForm = ({
           autoComplete="username"
           className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
+        {error.name && (
+          <p className="text-red-500 text-sm font-semibold">{error.name}</p>
+        )}
       </div>
       <div className="flex flex-col space-y-2">
         <label htmlFor="email">Email</label>
@@ -41,6 +45,9 @@ const RegisterForm = ({
           autoComplete="email"
           className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
+        {error.email && (
+          <p className="text-red-500 text-sm font-semibold">{error.email}</p>
+        )}
       </div>
       <div className="flex flex-col space-y-2">
         <label htmlFor="password">Password</label>
@@ -55,6 +62,7 @@ const RegisterForm = ({
             autoComplete="new-password"
             className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
           />
+
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
@@ -67,13 +75,9 @@ const RegisterForm = ({
             )}
           </button>
         </div>
-
-        <p className="text-sm text-gray-400 w-[400px]">
-          {userDetails.password
-            ? `* The password must be at least 8 characters long and it should
-          contain 1 UpperCase, 1 lowerCase, 1 number and 1 symbol`
-            : ""}
-        </p>
+        {error.password && (
+          <p className="text-red-500 text-sm font-semibold">{error.password}</p>
+        )}
       </div>
       {userDetails.password ? (
         <div className="flex flex-col space-y-2">
@@ -101,6 +105,11 @@ const RegisterForm = ({
               )}
             </button>
           </div>
+          {error.confirmPassword && (
+            <p className="text-red-500 text-sm font-semibold">
+              {error.confirmPassword}
+            </p>
+          )}
         </div>
       ) : null}
       <LoadingButton isLoading={isLoading} text={"Sign-up"} />

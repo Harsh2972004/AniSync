@@ -52,7 +52,7 @@ const Register = () => {
     } catch (error) {
       console.error("Error registering user:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Registration failed");
+        setError(error.response.data.errors || "Registration failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
@@ -72,11 +72,11 @@ const Register = () => {
       console.log("OTP verified successfully", response.data);
       setSuccess("OTP verified successfully! You can now log in.");
       setStep("form"); // Reset to form step after successful verification
-      navigate("/");
+      navigate("/login");
       localStorage.removeItem("registerForm");
       localStorage.removeItem("registerEmail");
     } catch (error) {
-      console.error("Error verifying OTP:", error);
+      console.error("Error verifying OTP:", error.response.data);
       if (error.response && error.response.data) {
         setError(error.response.data.message || "OTP verification failed");
       } else {
@@ -109,6 +109,7 @@ const Register = () => {
             handleRegister={handleRegister}
             userDetails={userDetails}
             isLoading={isLoading}
+            error={error}
           />
         )}
         {step === "otp" && (
@@ -118,6 +119,7 @@ const Register = () => {
             setOtp={setOtp}
             email={userDetails.email}
             isLoading={isLoading}
+            otpError={error}
           />
         )}
         <OAuthSection title={"register"} />

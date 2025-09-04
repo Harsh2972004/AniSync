@@ -12,6 +12,7 @@ import {
   updateAnimeProgress,
   addToFavourite,
   addToList,
+  deleteFavourite,
 } from "../services/list";
 
 const UserListContext = createContext();
@@ -22,17 +23,58 @@ export const UserListProvider = ({ children }) => {
   const [animeInfo, setAnimeInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddToList = async (id) => {
+  const getAnimeList = async () => {
     try {
-      if (animeInfo?.animeList.some((anime) => anime.animeId == id)) {
+      setIsLoading(true);
+      const [listResponse, favouritesResponse] = await Promise.all([
+        getList(),
+        getFavourites(),
+      ]);
+
+      const animeIds =
+        listTitle === "Favourites"
+          ? favouritesResponse.data.favourites.map((favourites) => favourites)
+          : listResponse.data.animeList.map((anime) => anime.animeId);
+      console.log(animeIds, listResponse.data, favouritesResponse.data);
+
+      if (animeIds.length === 0) {
+        setAnimeList([]);
+        setAnimeInfo({
+          animeList: listResponse.data?.animeList || [],
+          favourites: favouritesResponse.data?.favourites || [],
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const animeResponse = await getAnimeForList(animeIds);
+      setAnimeList(animeResponse.data);
+      setAnimeInfo({
+        animeList: listResponse.data?.animeList || [],
+        favourites: favouritesResponse.data?.favourites || [],
+      });
+      console.log(animeResponse.data);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddToList = async (id, status) => {
+    try {
+      if (isInList(id)) {
         console.log("already added to the list");
       } else {
         setAnimeInfo((prev) => ({
           ...prev,
           animeList: [...(prev?.animeList || []), { animeId: Number(id) }],
         }));
-        const response = await addToList(id);
-        console.log(response.data);
+        const response = await addToList(id, status);
+        console.log("list", response.data);
+        getAnimeList();
+
+        return response.data;
       }
     } catch (error) {
       console.log(
@@ -46,13 +88,23 @@ export const UserListProvider = ({ children }) => {
           (anime) => anime.animeId !== Number(id)
         ),
       }));
+
+      return { success: false, error: error.response?.data || error.message };
     }
   };
 
   const handleAddToFavourite = async (id) => {
     try {
-      if (animeInfo.favourites.some((anime) => anime == id)) {
-        console.log("already added to favourites");
+      if (isInFavourites(id)) {
+        setAnimeInfo((prev) => ({
+          ...prev,
+          favourites: prev?.favourites.filter(
+            (animeId) => animeId !== Number(id)
+          ),
+        }));
+        const response = await deleteFavourite(id);
+        console.log(response.data);
+        getAnimeList();
       } else {
         setAnimeInfo((prev) => ({
           ...prev,
@@ -61,6 +113,9 @@ export const UserListProvider = ({ children }) => {
 
         const response = await addToFavourite(id);
         console.log(response.data);
+
+        getAnimeList();
+        return response.data;
       }
     } catch (error) {
       console.log(
@@ -72,12 +127,14 @@ export const UserListProvider = ({ children }) => {
         ...prev,
         favourites: prev.favourites.filter((anime) => anime !== Number(id)),
       }));
+
+      return { success: false, error: error.response?.data || error.message };
     }
   };
 
   const isInList = useCallback(
     (animeId) =>
-      animeInfo?.animeList.some((anime) => anime.animeId === Number(animeId)),
+      animeInfo?.animeList?.some((anime) => anime.animeId === Number(animeId)),
     [animeInfo]
   );
 
@@ -88,44 +145,6 @@ export const UserListProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    const getAnimeList = async () => {
-      try {
-        setIsLoading(true);
-        const [listResponse, favouritesResponse] = await Promise.all([
-          getList(),
-          getFavourites(),
-        ]);
-
-        const animeIds =
-          listTitle === "Favourites"
-            ? favouritesResponse.data.favourites.map((favourites) => favourites)
-            : listResponse.data.animeList.map((anime) => anime.animeId);
-        console.log(animeIds, listResponse.data, favouritesResponse.data);
-
-        if (animeIds.length === 0) {
-          setAnimeList([]);
-          setAnimeInfo({
-            animeList: listResponse.data?.animeList || [],
-            favourites: favouritesResponse.data?.favourites || [],
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        const animeResponse = await getAnimeForList(animeIds);
-        setAnimeList(animeResponse.data);
-        setAnimeInfo({
-          animeList: listResponse.data?.animeList || [],
-          favourites: favouritesResponse.data?.favourites || [],
-        });
-        console.log(animeResponse.data);
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     getAnimeList();
   }, [listTitle]);
 
@@ -159,6 +178,7 @@ export const UserListProvider = ({ children }) => {
         isInList,
         handleAddToFavourite,
         handleAddToList,
+        getAnimeList,
       }}
     >
       {children}

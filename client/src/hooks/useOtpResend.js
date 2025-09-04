@@ -17,7 +17,7 @@ const useResendOtp = (email, purpose, cooldown = 120) => {
       setSuccess("OTP resent successfully! Please check your email.");
       setRemainingTime(cooldown);
     } catch (error) {
-      console.error("Error resending OTP:", error.response?.data);
+      console.error("Error resending OTP:", error.response?.data.message);
       if (error.response?.status === 429 && error.response.data.remaining) {
         setRemainingTime(error.response.data.retryAfter);
         setError(error.response.data.message);

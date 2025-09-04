@@ -13,6 +13,7 @@ const ForgotPasswordForm = ({
   handleResetPassword,
   hanldeRequestResetPassword,
   resetPasswordStep,
+  backendError,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -126,7 +127,11 @@ const ForgotPasswordForm = ({
             </div>
           </>
         )}
-
+        {backendError && (
+          <p className="text-red-500 text-sm font-semibold -mt-2">
+            {backendError}
+          </p>
+        )}
         <LoadingButton
           isLoading={isLoading}
           text={resetPasswordStep === "first" ? "Enter" : "Reset Password"}

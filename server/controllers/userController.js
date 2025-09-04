@@ -3,9 +3,8 @@ import { sendEmail } from "../config/email.js";
 import passport from "passport";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import path, { normalize } from "path";
+import path from "path";
 import fs from "fs";
-import { profile } from "console";
 
 export const sendVerificationEmail = async (user, req, res) => {
   try {
@@ -113,6 +112,12 @@ export const verifyEmail = async (req, res) => {
     if (user.isVerified) {
       return res.status(400).json({ message: "Email already verified" });
     }
+
+    if (!otp)
+      return res
+        .status(400)
+        .json({ message: "OTP is required, Check your Email." });
+
     if (
       !user.emailOTP ||
       user.emailOTP !== otp ||
@@ -140,7 +145,7 @@ export const requestPasswordReset = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      throw new Error("User not found");
     }
 
     const otp = crypto.randomInt(100000, 1000000).toString();
@@ -163,13 +168,21 @@ export const requestPasswordReset = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { email, otp, newPassword, confirmNewPassword } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user || !user.resestPassword) {
       return res.status(400).json({ message: "User not found." });
     }
+
+    if (!otp || !newPassword || !confirmNewPassword)
+      return res.status(400).json({ message: "Entering fields are required" });
+
+    if (newPassword !== confirmNewPassword)
+      return res
+        .status(400)
+        .json({ message: "confirm Password doesn't match" });
 
     if (user.resestPassword !== otp) {
       return res.status(400).json({ message: "Invalid OTP." });
@@ -199,12 +212,16 @@ export const resetPassword = async (req, res) => {
 };
 
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
   try {
-    const user = await User.register(name, email, password);
+    const user = await User.register(name, email, password, confirmPassword);
     await sendVerificationEmail(user, req, res);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    if (error.errors) {
+      return res.status(400).json({ errors: error.errors });
+    }
+
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -240,8 +257,60 @@ export const logoutUser = (req, res) => {
   }
 };
 
+export const updateUserPassword = async (req, res) => {
+  const { newPassword, confirmPassword } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "user not found" });
+
+    // if (!user.password)
+    //   return res.status(400).json({ error: "no password set" });
+
+    if (!newPassword || !confirmPassword)
+      return res.status(400).json({ error: "all fields are required" });
+
+    // const isMatch = await User.comparePassword(currentPassword);
+    // if (!isMatch) return res.status(400).json({ error: "incorrect password" });
+
+    if (newPassword !== confirmPassword)
+      return res.status(400).json({ error: "passwords do not match" });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "password updated successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 export const getUserProfile = async (req, res) => {
   res.status(200).json({ message: "Welcome to your profile", user: req.user });
+};
+
+export const updateUserName = async (req, res) => {
+  const userId = req.user.id;
+  const { name } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.name = name;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Username updated successfully", name: user.name });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+    console.log({ error: error.message });
+  }
 };
 
 export const uploadProfileAvatatr = async (req, res) => {

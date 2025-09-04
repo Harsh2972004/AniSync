@@ -22,6 +22,7 @@ const DetailsPage = () => {
   const [animeDetails, setAnimeDetails] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [statusDropdown, setStatusDropdown] = useState(false);
 
   const monthNames = [
     "January",
@@ -53,6 +54,10 @@ const DetailsPage = () => {
   const inFavourites = isInFavourites(id);
 
   const airingAt = animeDetails?.nextAiringEpisode?.airingAt;
+
+  const currentAnime = animeInfo?.animeList?.find(
+    (anime) => anime.animeId === Number(id)
+  );
 
   useEffect(() => {
     const fetchAnimeDetails = async () => {
@@ -112,6 +117,7 @@ const DetailsPage = () => {
       <>
         {animeDetails?.bannerImage && (
           <img
+            className="max-h-[320px] w-full object-cover"
             src={animeDetails?.bannerImage}
             alt={`${animeDetails?.title.english}-bannerImage`}
           />
@@ -130,11 +136,40 @@ const DetailsPage = () => {
               />
               <div className="w-full flex justify-between ">
                 <button
-                  onClick={() => handleAddToList(id)}
+                  onClick={() => setStatusDropdown(!statusDropdown)}
                   className="w-[80%] relative border-2 rounded-lg px-4 py-2 flex items-center justify-center"
                 >
-                  {inList ? "Added to List" : "Add to list"}
-                  <MdArrowDropDown className="absolute right-2" size={24} />
+                  {inList ? (
+                    currentAnime?.status ? (
+                      currentAnime.status.charAt(0).toUpperCase() +
+                      currentAnime.status.slice(1)
+                    ) : (
+                      "Loading..."
+                    )
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      Add to list
+                      <MdArrowDropDown className="absolute right-2" size={24} />
+                    </span>
+                  )}
+                  <div
+                    className={`${
+                      statusDropdown && !inList && "open"
+                    } absolute top-[120%] flex flex-col bg-secondary w-full rounded-lg dropdown hide-scrollbar space-y-3`}
+                  >
+                    <span onClick={() => handleAddToList(id, "planning")}>
+                      Planning
+                    </span>
+                    <span onClick={() => handleAddToList(id, "watching")}>
+                      Watching
+                    </span>
+                    <span onClick={() => handleAddToList(id, "completed")}>
+                      Completed
+                    </span>
+                    <span onClick={() => handleAddToList(id, "dropped")}>
+                      Dropped
+                    </span>
+                  </div>
                 </button>
                 <button
                   onClick={() => handleAddToFavourite(id)}

@@ -43,7 +43,7 @@ const Login = () => {
       setSuccess("Login successful!");
       navigate("/"); // Redirect to home page after login
     } catch (error) {
-      console.error("Error logging in user:", error);
+      console.error("Error logging in user:", error.response.data);
       if (error.response && error.response.data) {
         setError(error.response.data.message || "Login failed");
       } else {
@@ -123,6 +123,7 @@ const Login = () => {
             handleResetPassword={handleResetPassword}
             hanldeRequestResetPassword={handleRequestResetPassword}
             resetPasswordStep={resetPasswordStep}
+            backendError={error}
           />
         ) : (
           <LoginForm
@@ -130,6 +131,7 @@ const Login = () => {
             handleInputChange={handleInputChange}
             handleLogin={handleLogin}
             isLoading={isLoading}
+            error={error}
           />
         )}
         {forgotPassword ? null : (
@@ -137,7 +139,9 @@ const Login = () => {
             <div>
               <a
                 className="text-blue-400 cursor-pointer"
-                onClick={() => setForgotPassword(true)}
+                onClick={() => {
+                  setError(""), setForgotPassword(true);
+                }}
               >
                 Forgot Password?
               </a>

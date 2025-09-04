@@ -4,6 +4,7 @@ const LoadingButton = ({ isLoading, text }) => {
       <button
         type="submit"
         disabled={isLoading}
+        formNoValidate
         className="w-full font-semibold bg-btn_pink text-secondary px-4 py-2 rounded-lg hover:bg-secondary hover:text-btn_pink transition-colors mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {text}

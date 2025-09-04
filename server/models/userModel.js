@@ -102,23 +102,48 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.statics.register = async function (name, email, password) {
+userSchema.statics.register = async function (
+  name,
+  email,
+  password,
+  confirmPassword
+) {
+  const errors = {};
+
   //validation
-  if (!name || !email || !password) {
-    throw new Error("Please fill in all fields");
+  if (!name) {
+    errors.name = "Please enter a username";
   }
-  if (!validator.isEmail(email)) {
-    throw new Error("Please enter a valid email address");
+
+  if (!email) {
+    errors.email = "Please enter an email";
+  } else if (!validator.isEmail(email)) {
+    errors.email = "Please enter a valid email address";
   }
-  if (!validator.isStrongPassword(password)) {
-    throw new Error(
-      "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one symbol"
-    );
+
+  if (!password) {
+    errors.password = "Please enter a password";
+  } else if (!validator.isStrongPassword(password)) {
+    errors.password =
+      "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one symbol";
   }
+
+  if (!confirmPassword) {
+    errors.confirmPassword = "Please confirm your password.";
+  } else if (confirmPassword !== password) {
+    errors.confirmPassword = "Passwords doesn't match";
+  }
+
   //check if user already exists
   const existingUser = await this.findOne({ email });
   if (existingUser) {
-    throw new Error("Email already in use");
+    errors.email = "Email already in use";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    const err = new Error("Validation failed");
+    err.errors = errors; // 👈 attach the field errors
+    throw err;
   }
 
   //encrypt password
@@ -135,24 +160,34 @@ userSchema.statics.register = async function (name, email, password) {
 };
 
 userSchema.static.login = async function (email, password) {
-  //validation
-  if (!email || !password) {
-    throw new Error("Please fill in all fields");
-  }
-  if (!validator.isEmail(email)) {
-    throw new Error("Please enter a valid email address");
+  const errors = {};
+
+  if (!email) {
+    errors.email = "Please enter an email";
+  } else if (!validator.isEmail(email)) {
+    errors.email = "Please enter a valid email address";
   }
 
-  //check if user exists
+  if (!password) {
+    errors.password = "Please enter a password";
+  }
   const user = await this.findOne({ email });
-  if (!user) {
-    throw new Error("Invalid credentials");
+
+  if (Object.keys(errors).length === 0) {
+    if (!user) {
+      errors.credentials = "Invalid email or password";
+    } else {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        errors.credentials = "Invalid email or password";
+      }
+    }
   }
 
-  //check password
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error("Invalid credentials");
+  if (Object.keys(errors).length > 0) {
+    const err = new Error("Validation failed");
+    err.errors = errors;
+    throw err;
   }
 
   return user;

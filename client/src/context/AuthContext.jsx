@@ -70,6 +70,17 @@ export const AuthProvider = ({ children }) => {
     fetchUserBanner();
   }, [user?.profileBanner]);
 
+  const updateUser = async () => {
+    try {
+      const res = await API.get("/user/auth/status", { withCredentials: true });
+      if (res.data.isAuthenticated) {
+        setUser(res.data.user);
+      }
+    } catch (error) {
+      console.error("Failed to update user:", error);
+    }
+  };
+
   const registerUser = async (formdata) => {
     try {
       const res = await register(formdata);
@@ -91,7 +102,7 @@ export const AuthProvider = ({ children }) => {
         console.log("set user", res.data.user);
         setUser(res.data.user);
       }
-      setAuthChanged([(prev) => !prev]);
+      setAuthChanged((prev) => !prev);
 
       return res;
     } catch (error) {
@@ -104,7 +115,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await logout();
       setUser(null);
-      setAuthChanged([(prev) => !prev]);
+      setAuthChanged((prev) => !prev);
     } catch (error) {
       console.error("logout failed:", error);
     }
@@ -122,6 +133,7 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         logoutUser,
         registerUser,
+        updateUser,
       }}
     >
       {children}

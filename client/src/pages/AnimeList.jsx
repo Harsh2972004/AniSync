@@ -9,6 +9,8 @@ import { useUserContext } from "../context/UserListContext";
 import bannerImage from "../assets/images/AniSync-user-default-banner.png";
 import bannerVideo from "../assets/images/smaller-blue-blinking-eyes.mp4";
 import { CiImageOn, CiVideoOn } from "react-icons/ci";
+import { FaThList } from "react-icons/fa";
+import { IoGrid } from "react-icons/io5";
 import SelectedAnimeView from "../components/SelectedAnimeView";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -25,7 +27,10 @@ import {
   rectSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import ListAnimeTile from "../components/ListAnimeTile";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
@@ -41,6 +46,7 @@ const AnimeList = () => {
   const [view, setView] = useState(null); //view, edit
   const [selectedAnime, setSelectedAnime] = useState(null);
   const [bannerVideoOn, setBannerVideoOn] = useState(true);
+  const [viewStyle, setViewStyle] = useState("tile"); //tile, card
 
   const createdAt = new Date(user.createdAt);
 
@@ -211,27 +217,69 @@ const AnimeList = () => {
               sensors={sensors}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
+              modifiers={viewStyle === "tile" && [restrictToVerticalAxis]}
             >
               <div className="flex flex-col gap-4">
-                <h3 className="font-bold text-xl">Favourites</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-xl">Favourites</h3>
+                  <div className="flex gap-2">
+                    <button
+                      className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
+                      onClick={() => setViewStyle("tile")}
+                    >
+                      <FaThList />
+                    </button>
+                    <button
+                      className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
+                      onClick={() => setViewStyle("card")}
+                    >
+                      <IoGrid />
+                    </button>
+                  </div>
+                </div>
                 <SortableContext
                   items={animeList}
-                  strategy={rectSortingStrategy}
+                  strategy={
+                    viewStyle === "tile"
+                      ? verticalListSortingStrategy
+                      : rectSortingStrategy
+                  }
                 >
-                  <div className="grid grid-cols-6 gap-10">
-                    {animeList?.map((anime) => (
-                      <ListAnimeCard
-                        key={anime.id}
-                        id={anime.id}
-                        title={
-                          anime.title.english ||
-                          anime.title.romaji ||
-                          anime.title.native
-                        }
-                        image={anime.coverImage.large}
-                        list={false}
-                      />
-                    ))}
+                  <div
+                    className={
+                      viewStyle === "tile"
+                        ? "space-y-6"
+                        : "grid grid-cols-6 gap-10"
+                    }
+                  >
+                    {animeList?.map((anime, i) =>
+                      viewStyle === "tile" ? (
+                        <ListAnimeTile
+                          key={anime.id}
+                          id={anime.id}
+                          index={i + 1}
+                          title={
+                            anime.title.english ||
+                            anime.title.romaji ||
+                            anime.title.native
+                          }
+                          image={anime.coverImage.large}
+                          list={false}
+                        />
+                      ) : (
+                        <ListAnimeCard
+                          key={anime.id}
+                          id={anime.id}
+                          title={
+                            anime.title.english ||
+                            anime.title.romaji ||
+                            anime.title.native
+                          }
+                          image={anime.coverImage.large}
+                          list={false}
+                        />
+                      )
+                    )}
                   </div>
                 </SortableContext>
               </div>
