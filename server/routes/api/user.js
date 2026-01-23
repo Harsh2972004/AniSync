@@ -41,16 +41,8 @@ router.post("/reset-password", otpLimiter, resetPassword);
 
 router.put("/update-password", isAuthenticated, updateUserPassword);
 
-// router.get("/profile", isAuthenticated, getUserProfile);
-
 router.get("/auth/status", (req, res, next) => {
-  console.log("HOST:", req.headers.host);
-  console.log("ORIGIN:", req.headers.origin);
-  console.log("COOKIE_HEADER:", req.headers.cookie);
-  console.log("COOKIES_OBJ:", req.cookies);
-
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
-    console.log("JWT_INFO:", info?.message || info);
     if (err) return next(err);
     if (!user) return res.json({ isAuthenticated: false });
     return res.json({ isAuthenticated: true, user });
