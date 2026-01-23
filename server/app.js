@@ -23,7 +23,6 @@ dotenv.config();
 // const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware for CORS
 app.use(corsMiddleware);
@@ -93,4 +92,4 @@ app.use(errorHandler);
 //   }
 // });
 
-export default app
+export default app;

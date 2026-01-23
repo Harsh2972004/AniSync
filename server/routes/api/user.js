@@ -82,7 +82,7 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173/");
+    res.redirect(process.env.CLIENT_URL || "/");
   }
 );
 
@@ -96,7 +96,7 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173/");
+    res.redirect(process.env.CLIENT_URL || "/");
   }
 );
 
