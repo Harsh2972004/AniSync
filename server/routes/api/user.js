@@ -19,7 +19,7 @@ import {
   resendLimiter,
 } from "../../middleware/rateLimitMiddleware.js";
 import cooldownMiddleware from "../../middleware/cooldownMiddleware.js";
-import passport, { session } from "passport";
+import passport from "passport";
 import upload from "../../middleware/multerMiddlerware.js";
 import isAuthenticated from "../../middleware/isAuthenticated.js";
 import jwt from "jsonwebtoken"
