@@ -15,6 +15,7 @@ import passport from "./config/passport.js";
 import dotenv from "dotenv";
 import corsMiddleware from "./middleware/corsMiddleware.js";
 import errorHandler from "./middleware/errorHandler.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -31,23 +32,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
-// Session configuration
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none", 
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-    },
-  })
-);
+// vercel doesnt support memoryStore
+// // Session configuration
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "none", 
+//       maxAge: 1000 * 60 * 60 * 24, // 1 day
+//     },
+//   })
+// );
+
+app.use(cookieParser())
+
 //passport initialization
 app.use(passport.initialize());
-app.use(passport.session());
 
 //routes module
 app.use("/api/user", router);

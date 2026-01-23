@@ -19,15 +19,16 @@ import {
   resendLimiter,
 } from "../../middleware/rateLimitMiddleware.js";
 import cooldownMiddleware from "../../middleware/cooldownMiddleware.js";
-import passport from "passport";
+import passport, { session } from "passport";
 import upload from "../../middleware/multerMiddlerware.js";
 import isAuthenticated from "../../middleware/isAuthenticated.js";
+import jwt from "jsonwebtoken"
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/logout", logoutUser);
+router.post("/logout", logoutUser);
 router.post("/verify-email", otpLimiter, verifyEmail);
 router.post("/resend-otp", cooldownMiddleware, resendLimiter, resendOtp);
 router.post(
@@ -42,13 +43,10 @@ router.put("/update-password", isAuthenticated, updateUserPassword);
 
 // router.get("/profile", isAuthenticated, getUserProfile);
 
-router.get("/auth/status", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ isAuthenticated: true, user: req.user });
-  } else {
-    res.json({ isAuthenticated: false });
-  }
+router.get("/auth/status", isAuthenticated, (req, res) => {
+  res.json({ isAuthenticated: true, user: req.user });
 });
+
 
 router.put("/update-username", isAuthenticated, updateUserName);
 
@@ -72,30 +70,48 @@ router.get("/get-banner-image/:filename", isAuthenticated, getBannerImage);
 
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"], session: false })
 );
 
 router.get(
   "/auth/google/anisync",
   passport.authenticate("google", {
     failureRedirect: "/login",
-    session: true,
+    session: false
   }),
   (req, res) => {
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     res.redirect(process.env.CLIENT_URL || "/");
   }
 );
 
 // AniList authentication routes
-router.get("/auth/anilist", passport.authenticate("anilist"));
+router.get("/auth/anilist", passport.authenticate("anilist", {session:false}),);
 
 router.get(
   "/auth/anilist/anisync",
   passport.authenticate("anilist", {
     failureRedirect: "/login",
-    session: true,
+    session:false
   }),
   (req, res) => {
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     res.redirect(process.env.CLIENT_URL || "/");
   }
 );

@@ -5,6 +5,25 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import path from "path";
 import fs from "fs";
+import jwt from "jsonwebtoken"
+
+const signToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,      // Vercel is HTTPS
+  sameSite: "none",  // because frontend & backend are different Vercel domains
+  path: "/",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
+
+const sendTokenCookie = (user, res) => {
+  const token = signToken(user._id);
+  res.cookie("token", token, cookieOptions);
+};
+
 
 export const sendVerificationEmail = async (user, req, res, next) => {
   try {
@@ -42,7 +61,7 @@ export const resendOtp = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
-    const user = req.user;
+    const user = await User.findOne({email})
     if (!user) {
       const error = new Error("User not found");
       error.statusCode = 404;
@@ -244,35 +263,26 @@ export const registerUser = async (req, res, next) => {
 };
 
 export const loginUser = async (req, res, next) => {
-  passport.authenticate("local", { session: true }, (err, user, info) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({ message: info.message });
     }
-    req.login(user, { session: true }, (err) => {
-      if (err) {
-        return res.status(400).json({ message: err.message });
-      }
+
+   sendTokenCookie(user, res)
 
       return res.json({ name: user.name, email: user.email });
-    });
+    
   })(req, res, next);
 };
 
 export const logoutUser = (req, res) => {
-  try {
-    req.logout(function (err) {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed", error: err });
-      }
-      // Destroy session after logout
-      req.session.destroy(() => {
-        res.clearCookie("connect.sid"); // clear the session cookie (default name)
-        res.status(200).json({ message: "Logged out successfully" });
-      });
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 export const updateUserPassword = async (req, res, next) => {

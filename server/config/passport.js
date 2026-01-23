@@ -37,18 +37,42 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+const cookieExtractor = (req) => {
+  return req?.cookies?.token || null; // cookie name: "token"
+};
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: cookieExtractor,
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    async (payload, done) => {
+      try {
+        const user = await User.findById(payload.id);
+        if (!user) return done(null, false);
+        return done(null, user);
+      } catch (err) {
+        return done(err, false);
+      }
+    }
+  )
+);
+
+
+// vercel doesn't support memorystore
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
+
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const user = await User.findById(id);
+//     done(null, user);
+//   } catch (error) {
+//     done(error, null);
+//   }
+// });
 
 passport.use(
   new GoogleStrategy(
