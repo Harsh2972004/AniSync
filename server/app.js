@@ -58,14 +58,6 @@ app.use("/api/user", router);
 app.use("/api/anime", mediaRouter);
 app.use("/api/filters", filterRouter);
 app.use("/api/list", listRouter);
-app.get("/debug/auth", (req, res) => {
-  res.json({
-    hasCookiesObject: !!req.cookies,
-    tokenCookiePresent: !!req.cookies?.token,
-    nodeEnv: process.env.NODE_ENV,
-    hasJwtSecret: !!process.env.JWT_SECRET,
-  });
-});
 
 
 // Connect to MongoDB

@@ -159,7 +159,7 @@ userSchema.statics.register = async function (
   return user;
 };
 
-userSchema.static.login = async function (email, password) {
+userSchema.statics.login = async function (email, password) {
   const errors = {};
 
   if (!email) {
