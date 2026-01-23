@@ -1,5 +1,5 @@
-import { FaSlidersH } from "react-icons/fa";
 import FilterInput from "./FilterInput";
+import { FaFilter } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import useSearchHandler from "../hooks/useSearchHandler";
 import { useBrowse } from "../context/BrowseContext";
@@ -18,6 +18,7 @@ const Filters = () => {
   const { handleSearch, handleFilters } = useSearchHandler();
   const [filterValues, setFilterValues] = useState(null);
   const [filteredValues, setFilteredValues] = useState(filterValues);
+  const [expanded, setExpanded] = useState(false)
 
   const currentYear = new Date().getFullYear();
   const filterYears = Array.from(
@@ -77,14 +78,11 @@ const Filters = () => {
     );
 
     setFilteredValues((prev) => ({ ...prev, [name]: filtered }));
-
-    console.log(filtered);
   };
 
   useEffect(() => {
     const getFliters = async () => {
       const data = await filterEnums();
-      console.log("fetched data:", data.data);
       setFilterValues(data.data);
       setFilteredValues(data.data);
     };
@@ -93,78 +91,137 @@ const Filters = () => {
   }, []);
 
   return (
-    <div className="flex items-end justify-between gap-10">
-      <FilterInput
-        text="search"
-        search={true}
-        filters={filters}
-        handleChange={handleSearchChange}
-        inputValue={searchTerm}
-        onInputSubmit={onSearchSubmimit}
-        handleKeyPress={handleSearchKeyPress}
-        close={close}
-        setClose={setClose}
-        onSearchClose={onSearchClose}
-        submittedSearchTerm={submittedSearchTerm}
-      />
-      <FilterInput
-        text="genre"
-        handleChange={handleFilterChange}
-        filters={filters}
-        setFilters={setFilters}
-        inputValue={filters.genre}
-        handleKeyPress={handleFilterKeyPress}
-        filterValues={filteredValues?.genres}
-        filterKeys={"genre"}
-        onInputSubmit={onFiltersSubmit}
-      />
-      <FilterInput
-        text="seasonYear"
-        handleChange={handleFilterChange}
-        filters={filters}
-        setFilters={setFilters}
-        inputValue={filters.seasonYear}
-        handleKeyPress={handleFilterKeyPress}
-        filterValues={filterYears}
-        filterKeys={"seasonYear"}
-        onInputSubmit={onFiltersSubmit}
-      />
-      <FilterInput
-        text="season"
-        handleChange={handleFilterChange}
-        filters={filters}
-        setFilters={setFilters}
-        inputValue={filters.season}
-        handleKeyPress={handleFilterKeyPress}
-        filterValues={filteredValues?.season}
-        filterKeys={"season"}
-        onInputSubmit={onFiltersSubmit}
-      />
-      <FilterInput
-        text="format"
-        handleChange={handleFilterChange}
-        filters={filters}
-        setFilters={setFilters}
-        inputValue={filters.format}
-        handleKeyPress={handleFilterKeyPress}
-        filterValues={filteredValues?.format}
-        filterKeys={"format"}
-        onInputSubmit={onFiltersSubmit}
-      />
-      <div className="relative">
-        <button className="flex items-center justify-center bg-primary p-2 h-10 mt-auto rounded-md">
-          <FaSlidersH size={20} />
-        </button>
-        <div className="hidden grid-cols-3 gap-8 absolute right-0 top-[150%] rounded-lg p-6 bg-primary w-[45vw] z-10">
-          {/* <FilterInput width={false} text="streaming on" />
-          <FilterInput width={false} text="Country of origin" />
-          <FilterInput width={false} text="Sources" />
-          <FilterInput width={false} text="streaming on" />
-          <FilterInput width={false} text="Country of origin" />
-          <FilterInput width={false} text="Sources" /> */}
-        </div>
+    <>
+      <div className="hidden xl:flex items-end justify-between gap-10">
+        <FilterInput
+          text="search"
+          search={true}
+          filters={filters}
+          handleChange={handleSearchChange}
+          inputValue={searchTerm}
+          onInputSubmit={onSearchSubmimit}
+          handleKeyPress={handleSearchKeyPress}
+          close={close}
+          setClose={setClose}
+          onSearchClose={onSearchClose}
+          submittedSearchTerm={submittedSearchTerm}
+        />
+        <FilterInput
+          text="genre"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.genre}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.genres}
+          filterKeys={"genre"}
+          onInputSubmit={onFiltersSubmit}
+        />
+        <FilterInput
+          text="seasonYear"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.seasonYear}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filterYears}
+          filterKeys={"seasonYear"}
+          onInputSubmit={onFiltersSubmit}
+        />
+        <FilterInput
+          text="season"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.season}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.season}
+          filterKeys={"season"}
+          onInputSubmit={onFiltersSubmit}
+        />
+        <FilterInput
+          text="format"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.format}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.format}
+          filterKeys={"format"}
+          onInputSubmit={onFiltersSubmit}
+        />
       </div>
-    </div>
+      <div className="flex xl:hidden items-center justify-between py-2 rounded-md gap 2">
+        <FilterInput
+          text="search"
+          search={true}
+          filters={filters}
+          handleChange={handleSearchChange}
+          inputValue={searchTerm}
+          onInputSubmit={onSearchSubmimit}
+          handleKeyPress={handleSearchKeyPress}
+          close={close}
+          setClose={setClose}
+          onSearchClose={onSearchClose}
+          submittedSearchTerm={submittedSearchTerm}
+          onSmallerScreen={true}
+          width={false}
+          widthValue="w-[85%] mdl:w-[90%]"
+        />
+        <button onClick={() => setExpanded(!expanded)} className="bg-primary p-2 rounded-md">
+          <FaFilter size={20} />
+        </button>
+      </div>
+      <div className={`xl:hidden flex flex-wrap justify-between gap-y-4 bg-[#262535] p-4 transition-all duration-300 ${expanded ? "opacity-100 max-h-60 mt-6" : "opacity-0 max-h-0 mt-0"}`}>
+        <FilterInput
+          text="genre"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.genre}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.genres}
+          filterKeys={"genre"}
+          onInputSubmit={onFiltersSubmit}
+          width={false}
+        />
+        <FilterInput
+          text="seasonYear"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.seasonYear}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filterYears}
+          filterKeys={"seasonYear"}
+          onInputSubmit={onFiltersSubmit}
+          width={false}
+        />
+        <FilterInput
+          text="season"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.season}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.season}
+          filterKeys={"season"}
+          onInputSubmit={onFiltersSubmit}
+          width={false}
+        />
+        <FilterInput
+          text="format"
+          handleChange={handleFilterChange}
+          filters={filters}
+          setFilters={setFilters}
+          inputValue={filters.format}
+          handleKeyPress={handleFilterKeyPress}
+          filterValues={filteredValues?.format}
+          filterKeys={"format"}
+          onInputSubmit={onFiltersSubmit}
+          width={false}
+        /></div>
+    </>
   );
 };
 

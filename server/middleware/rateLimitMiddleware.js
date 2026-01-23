@@ -8,7 +8,6 @@ export const resendLimiter = rateLimit({
     return req.body.email || req.ip; // Fallback to IP if email is not provided
   },
   handler: (req, res) => {
-    console.log("resendLimiter hit for:", req.body.email || req.ip);
     res.status(429).json({
       status: "error",
       message: "Too many requests, please try again later.",
@@ -26,7 +25,6 @@ export const otpLimiter = rateLimit({
     return req.body.email || req.ip; // Fallback to IP if email is not provided
   },
   handler: (req, res) => {
-    console.log("resendLimiter hit for:", req.body.email || req.ip);
     res.status(429).json({
       status: "error",
       message: "Too many requests, please try again later.",

@@ -42,7 +42,6 @@ const Register = () => {
     setIsLoading(true);
     try {
       const response = await registerUser(userDetails);
-      console.log("user registered successfully", response.data);
       setSuccess(
         "Registration successful! Please check your email to verify your account."
       );
@@ -69,7 +68,6 @@ const Register = () => {
     try {
       // Assuming you have an API endpoint for OTP verification
       const response = await verifyEmail({ email: userDetails.email, otp });
-      console.log("OTP verified successfully", response.data);
       setSuccess("OTP verified successfully! You can now log in.");
       setStep("form"); // Reset to form step after successful verification
       navigate("/login");
@@ -99,7 +97,7 @@ const Register = () => {
 
   return (
     <div className="auth-page section-spacing bg-primary pb-8 flex flex-col justify-center gap-8 rounded-md">
-      <h1 className="font-bold text-center w-[400px] mx-auto text-[1.5rem] py-8 border-b-2 border-white">
+      <h1 className="font-bold text-center w-4/5 md:w-[400px] mx-auto text-[1.2rem] md:text-[1.5rem] py-8 border-b-2 border-white">
         Sign up to AniSync
       </h1>
       <div className="mx-14 flex flex-col items-center justify-start gap-8">

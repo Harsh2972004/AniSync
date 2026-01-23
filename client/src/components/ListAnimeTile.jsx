@@ -24,7 +24,7 @@ const ListAnimeTile = ({ index, id, title, image }) => {
       style={style}
       onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
       onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
-      className="px-6 py-2 flex items-center justify-between bg-primary rounded-md"
+      className="px-6 py-2 flex items-center justify-between bg-primary rounded-md touch-none"
     >
       <div className="flex items-center gap-4">
         <span className="font-bold">{`${index})`}</span>

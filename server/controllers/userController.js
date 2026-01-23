@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 import fs from "fs";
 
-export const sendVerificationEmail = async (user, req, res) => {
+export const sendVerificationEmail = async (user, req, res, next) => {
   try {
     // Generate a 6-digit OTP
     const otp = crypto.randomInt(100000, 1000000).toString();
@@ -25,28 +25,28 @@ export const sendVerificationEmail = async (user, req, res) => {
 
     await sendEmail(user.email, subject, html);
 
-    console.log(`Verification code sent to ${user.email}`);
     res.status(200).json({
       message: "Verification code sent",
     });
   } catch (error) {
-    console.error("Error sending verification code:", error);
-    res.status(500).json({ message: "Error sending verification code" });
+    next(error);
   }
 };
 
-export const resendOtp = async (req, res) => {
+export const resendOtp = async (req, res, next) => {
   const { email, purpose } = req.body;
 
   try {
     if (!email || !purpose) {
-      return res
-        .status(400)
-        .json({ message: "Email and purpose are required" });
+      const error = new Error("Email and purpose are required");
+      error.statusCode = 400;
+      return next(error);
     }
     const user = req.user;
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     const now = Date.now();
@@ -60,7 +60,9 @@ export const resendOtp = async (req, res) => {
 
     if (purpose === "verify") {
       if (user.isVerified) {
-        return res.status(400).json({ message: "User already verified" });
+        const error = new Error("User already verified");
+        error.statusCode = 400;
+        return next(error);
       }
 
       user.emailOTP = otp;
@@ -78,7 +80,9 @@ export const resendOtp = async (req, res) => {
       customMessage = "Your Password reset code is:";
       user.lastResetResend = now;
     } else {
-      return res.status(400).json({ message: "Invalid Purpose" });
+      const error = new Error("Invalid Purpose");
+      error.statusCode = 400;
+      return next(error);
     }
 
     await user.save();
@@ -95,28 +99,32 @@ export const resendOtp = async (req, res) => {
       message: "OTP resent successfully",
     });
   } catch (error) {
-    console.error("Error resending OTP:", error);
-    res.status(500).json({ message: "Error resending OTP" });
+    next(error);
   }
 };
 
-export const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res, next) => {
   const { email, otp } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      const error = new Error("User not found");
+      error.statusCode = 400;
+      return next(error);
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ message: "Email already verified" });
+      const error = new Error("Email already verified");
+      error.statusCode = 400;
+      return next(error);
     }
 
-    if (!otp)
-      return res
-        .status(400)
-        .json({ message: "OTP is required, Check your Email." });
+    if (!otp) {
+      const error = new Error("OTP is required, Check your Email.");
+      error.statusCode = 400;
+      return next(error);
+    }
 
     if (
       !user.emailOTP ||
@@ -124,7 +132,9 @@ export const verifyEmail = async (req, res) => {
       !user.emailOTPExpires ||
       user.emailOTPExpires < Date.now()
     ) {
-      return res.status(400).json({ message: "Invalid or expired OTP" });
+      const error = new Error("Invalid or expired OTP");
+      error.statusCode = 400;
+      return next(error);
     }
 
     user.isVerified = true;
@@ -134,8 +144,7 @@ export const verifyEmail = async (req, res) => {
 
     res.status(200).json({ message: "Email verified successfully" });
   } catch (error) {
-    console.error("Error verifying email:", error);
-    res.status(500).json({ message: "Error verifying email" });
+    next(error);
   }
 };
 
@@ -167,32 +176,42 @@ export const requestPasswordReset = async (req, res) => {
   }
 };
 
-export const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res, next) => {
   const { email, otp, newPassword, confirmNewPassword } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user || !user.resestPassword) {
-      return res.status(400).json({ message: "User not found." });
+      const error = new Error("User not found.");
+      error.statusCode = 400;
+      return next(error);
     }
 
-    if (!otp || !newPassword || !confirmNewPassword)
-      return res.status(400).json({ message: "Entering fields are required" });
+    if (!otp || !newPassword || !confirmNewPassword) {
+      const error = new Error("Entering fields are required");
+      error.statusCode = 400;
+      return next(error);
+    }
 
-    if (newPassword !== confirmNewPassword)
-      return res
-        .status(400)
-        .json({ message: "confirm Password doesn't match" });
+    if (newPassword !== confirmNewPassword) {
+      const error = new Error("confirm Password doesn't match");
+      error.statusCode = 400;
+      return next(error);
+    }
 
     if (user.resestPassword !== otp) {
-      return res.status(400).json({ message: "Invalid OTP." });
+      const error = new Error("Invalid OTP.");
+      error.statusCode = 400;
+      return next(error);
     }
 
     if (
       !user.resestPasswordExpires ||
       user.resestPasswordExpires < Date.now()
     ) {
-      return res.status(400).json({ message: "OTP has expired" });
+      const error = new Error("OTP has expired");
+      error.statusCode = 400;
+      return next(error);
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -206,22 +225,21 @@ export const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    console.error("Error resetting password:", error);
-    res.status(500).json({ message: "Error resetting password" });
+    next(error);
   }
 };
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
   try {
     const user = await User.register(name, email, password, confirmPassword);
-    await sendVerificationEmail(user, req, res);
+    await sendVerificationEmail(user, req, res, next);
   } catch (error) {
     if (error.errors) {
-      return res.status(400).json({ errors: error.errors });
+      // Mongoose validation errors will be handled by errorHandler
+      return next(error);
     }
-
-    return res.status(500).json({ error: err.message });
+    next(error);
   }
 };
 
@@ -257,25 +275,35 @@ export const logoutUser = (req, res) => {
   }
 };
 
-export const updateUserPassword = async (req, res) => {
+export const updateUserPassword = async (req, res, next) => {
   const { newPassword, confirmPassword } = req.body;
   const userId = req.user.id;
 
   try {
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "user not found" });
+    if (!user) {
+      const error = new Error("user not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     // if (!user.password)
     //   return res.status(400).json({ error: "no password set" });
 
-    if (!newPassword || !confirmPassword)
-      return res.status(400).json({ error: "all fields are required" });
+    if (!newPassword || !confirmPassword) {
+      const error = new Error("all fields are required");
+      error.statusCode = 400;
+      return next(error);
+    }
 
     // const isMatch = await User.comparePassword(currentPassword);
     // if (!isMatch) return res.status(400).json({ error: "incorrect password" });
 
-    if (newPassword !== confirmPassword)
-      return res.status(400).json({ error: "passwords do not match" });
+    if (newPassword !== confirmPassword) {
+      const error = new Error("passwords do not match");
+      error.statusCode = 400;
+      return next(error);
+    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -285,7 +313,7 @@ export const updateUserPassword = async (req, res) => {
 
     res.status(200).json({ message: "password updated successfully" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -293,13 +321,17 @@ export const getUserProfile = async (req, res) => {
   res.status(200).json({ message: "Welcome to your profile", user: req.user });
 };
 
-export const updateUserName = async (req, res) => {
+export const updateUserName = async (req, res, next) => {
   const userId = req.user.id;
   const { name } = req.body;
 
   try {
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     user.name = name;
     await user.save();
@@ -308,8 +340,7 @@ export const updateUserName = async (req, res) => {
       .status(200)
       .json({ message: "Username updated successfully", name: user.name });
   } catch (error) {
-    res.status(400).json({ error: error.message });
-    console.log({ error: error.message });
+    next(error);
   }
 };
 
@@ -341,17 +372,20 @@ export const uploadProfileAvatatr = async (req, res) => {
   }
 };
 
-export const getAvatar = async (req, res) => {
+export const getAvatar = async (req, res, next) => {
   const { filename } = req.params;
   try {
     const filePath = path.join(process.cwd(), "uploads", filename);
 
-    if (!fs.existsSync(filePath)) return res.status(404).send("File not found");
+    if (!fs.existsSync(filePath)) {
+      const error = new Error("File not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     res.sendFile(filePath);
   } catch (error) {
-    res.status(400).json({ error: error.message });
-    console.log({ error: error.message });
+    next(error);
   }
 };
 
@@ -380,16 +414,18 @@ export const uploadBannerImage = async (req, res) => {
   }
 };
 
-export const getBannerImage = async (req, res) => {
+export const getBannerImage = async (req, res, next) => {
   const { filename } = req.params;
   try {
     const filePath = path.join(process.cwd(), "uploads", filename);
-    if (!fs.existsSync(filePath))
-      res.status(404).json({ error: "banner image not found" });
+    if (!fs.existsSync(filePath)) {
+      const error = new Error("banner image not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     res.sendFile(filePath);
   } catch (error) {
-    res.status(400).json({ error: error.message });
-    console.log({ error: error.message });
+    next(error);
   }
 };

@@ -34,7 +34,7 @@ const Browse = () => {
   }, [searchParams]);
 
   return (
-    <div className="container-spacing space-y-6">
+    <div className="container-spacing xl:px-0 px-8 gap-y-6">
       <Filters />
 
       {mode === "default" && (

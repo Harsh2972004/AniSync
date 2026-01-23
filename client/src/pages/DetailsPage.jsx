@@ -9,6 +9,7 @@ import CharacterCard from "../components/CharacterCard";
 import EpisodeCard from "../components/EpisodeCard";
 import RecommendationsCard from "../components/RecommendationsCard";
 import { useUserContext } from "../context/UserListContext";
+import ResponsiveParagraph from "../components/ResponsiveParagraph";
 
 const DetailsPage = () => {
   const { id } = useParams();
@@ -59,16 +60,19 @@ const DetailsPage = () => {
     (anime) => anime.animeId === Number(id)
   );
 
+  // Memoizing the parsed description to prevent infinite re-renders
+  const parsedDescription = useMemo(() => {
+    return parse(animeDetails?.description || "");
+  }, [animeDetails?.description]);
+
   useEffect(() => {
     const fetchAnimeDetails = async () => {
       try {
         setIsLoading(true);
         const response = await getAnimeDetails(id);
         setAnimeDetails(response.data);
-        console.log(response.data);
-        console.log("animeInfo:", animeInfo, isInList);
       } catch (error) {
-        console.log("error fetching anime details:", error);
+        console.error("Error fetching anime details:", error);
       } finally {
         setIsLoading(false);
       }
@@ -117,16 +121,16 @@ const DetailsPage = () => {
       <>
         {animeDetails?.bannerImage && (
           <img
-            className="max-h-[320px] w-full object-cover"
+            className="hidden mdl:block xl:block xl:max-h-[320px] w-full xl:h-full object-cover"
             src={animeDetails?.bannerImage}
             alt={`${animeDetails?.title.english}-bannerImage`}
           />
         )}
         <div className="bg-primary">
-          <div className="container-spacing grid grid-cols-[auto_1fr] gap-y-10 gap-x-14 ">
+          <div className="container-spacing px-8 mdl:px-14 xl:px-0 grid mdl:grid-cols-[auto_1fr] gap-y-10 gap-x-14 ">
             <div className="flex flex-col gap-4">
               <img
-                className="-mt-32 w-[300px] max-h-[390px] aspect-auto shadow-lg"
+                className="xl:-mt-32 w-full mdl:w-[300px] xl:max-h-[390px] aspect-auto shadow-lg"
                 src={animeDetails?.coverImage.extraLarge}
                 alt={`${
                   animeDetails?.title.english ||
@@ -189,14 +193,14 @@ const DetailsPage = () => {
                   animeDetails?.title.romaji ||
                   animeDetails?.title.native}
               </h1>
-              <p className="text-md text-gray-300">
-                {parse(animeDetails?.description || "")}
-              </p>
+              <ResponsiveParagraph text={parsedDescription} />
             </div>
           </div>
         </div>
-        <div className="container-spacing grid grid-cols-[auto_1fr] grid-rows-[auto] gap-14">
-          <div className="w-[300px] row-span-2  ">
+
+        {/* formats and genres */}
+        <div className="container-spacing px-8 mdl:px-14 xl:px-0 grid mdl:grid-cols-[auto_1fr] grid-rows-[auto] gap-14">
+          <div className="xl:w-[300px] row-span-2  ">
             <div className="bg-primary rounded-lg py-6 px-8 flex flex-col  gap-4">
               <div>
                 <h1 className="font-bold">Format</h1>
@@ -273,7 +277,9 @@ const DetailsPage = () => {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-5 gap-x-8 gap-y-2">
+
+          {/* relations */}
+          <div className="grid grid-cols-3 xl:grid-cols-5 gap-x-8 gap-y-2">
             <h3 className="col-span-5 font-bold text-lg">Relations</h3>
             {filteredRelations?.map((relation, index) => (
               <RelationCard
@@ -284,7 +290,9 @@ const DetailsPage = () => {
               />
             ))}
           </div>
-          <div className="grid grid-cols-2 grid-rows-3 gap-4 w-full">
+
+          {/* Voice actors and characters */}
+          <div className="grid xl:grid-cols-2 grid-rows-3 gap-4 w-full">
             {animeDetails?.characters.edges.map((edge) => (
               <CharacterCard
                 key={edge.node.name.full}
@@ -298,27 +306,28 @@ const DetailsPage = () => {
             ))}
           </div>
         </div>
-        <div className="container-spacing grid grid-cols-[auto_1fr] grid-rows-[auto] gap-8">
-          <div className="w-[560px] h-[315px] flex flex-col gap-2">
+
+        {/* Trailer and Episodes */}
+        <div className="container-spacing px-8 mdl:px-14 xl:px-0 grid xl:grid-cols-[560px_1fr] grid-rows-[auto] gap-8">
+          <div className="xl:w-[560px] xl:h-[315px] flex flex-col gap-2">
             <h3 className="text-lg font-bold">Trailer</h3>
 
             {animeDetails?.trailer?.site === "youtube" && (
               <div>
                 <iframe
-                  width="560"
-                  height="315"
                   src={`https://www.youtube.com/embed/${animeDetails.trailer.id}`}
                   title="YouTube trailer"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  className="rounded-md"
+                  className="rounded-md h-[200px] w-full mdl:h-[380px] xl:w-[560px] xl:h-[320px]"
                 ></iframe>
               </div>
             )}
           </div>
+
           <div className="flex flex-col gap-2">
             <h3 className="text-lg font-bold">Watch</h3>
-            <div className="grid grid-cols-3 grid-rows-2 gap-x-8 gap-y-6">
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-6">
               {animeDetails?.streamingEpisodes?.map((ep, index) => {
                 if (index < 6) {
                   return (
@@ -334,9 +343,11 @@ const DetailsPage = () => {
             </div>
           </div>
         </div>
-        <div className="container-spacing flex flex-col gap-4 pt-0">
+
+        {/* recommendations */}
+        <div className="container-spacing px-8 mdl:px-14 mt-8 xl:px-0 flex flex-col gap-4 pt-0">
           <h3 className="text-lg font-bold">Recommendations</h3>
-          <div className="flex flex-wrap justify-between gap-8">
+          <div className="flex flex-wrap justify-between mdl:justify-start xl:justify-between gap-14 mdl:gap-24 xl:gap-8">
             {animeDetails?.recommendations.edges.map((edge) => (
               <RecommendationsCard
                 key={edge.node.mediaRecommendation.id}

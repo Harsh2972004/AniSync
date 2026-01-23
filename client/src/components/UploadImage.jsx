@@ -31,17 +31,9 @@ const UploadImage = ({ file, onClose, aspect, actionName }) => {
 
       if (actionName === "avatar") {
         const response = await uploadAvatar(formData);
-
-        const data = response.data;
-        console.log("upload success", data);
-
         setUser((prev) => ({ ...prev, avatar: response.data.avatar }));
       } else if (actionName === "banner") {
         const response = await uploadBanner(formData);
-
-        const data = response.data;
-        console.log("upload success", data);
-
         setUser((prev) => ({
           ...prev,
           profileBanner: response.data.profileBanner,
@@ -50,7 +42,7 @@ const UploadImage = ({ file, onClose, aspect, actionName }) => {
 
       onClose();
     } catch (error) {
-      console.log("upload failed:", error);
+      console.error("Upload failed:", error);
     } finally {
       setLoading(false);
     }

@@ -88,8 +88,6 @@ passport.use(
       callbackURL: process.env.ANILIST_CALLBACK_URL,
     },
     async (accessToken, refreshToken, params, profile, done) => {
-      console.log("AniList accessToken:", accessToken);
-      console.log("AniList params:", params);
       try {
         // Fetch AniList user profile using axios
         const response = await axios.post(

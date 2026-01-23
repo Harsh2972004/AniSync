@@ -14,6 +14,7 @@ import listRouter from "./routes/api/list.js";
 import passport from "./config/passport.js";
 import dotenv from "dotenv";
 import corsMiddleware from "./middleware/corsMiddleware.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 dotenv.config();
 
@@ -39,8 +40,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // set to true in production with HTTPS
-      sameSite: "lax", // can use 'none' if on HTTPS
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax", 
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
@@ -61,6 +62,9 @@ connectDB();
 app.use("/", (req, res) => {
   res.send("Welcome to the Anime API Server!");
 });
+
+// Error handler middleware - MUST be after all routes
+app.use(errorHandler);
 
 // //redirecting all HTTP traffic to HTTPS
 // http
@@ -84,5 +88,7 @@ app.use("/", (req, res) => {
 // });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`Server is running on port ${PORT}`);
+  }
 });

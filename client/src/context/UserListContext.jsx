@@ -35,7 +35,6 @@ export const UserListProvider = ({ children }) => {
         listTitle === "Favourites"
           ? favouritesResponse.data.favourites.map((favourites) => favourites)
           : listResponse.data.animeList.map((anime) => anime.animeId);
-      console.log(animeIds, listResponse.data, favouritesResponse.data);
 
       if (animeIds.length === 0) {
         setAnimeList([]);
@@ -53,9 +52,8 @@ export const UserListProvider = ({ children }) => {
         animeList: listResponse.data?.animeList || [],
         favourites: favouritesResponse.data?.favourites || [],
       });
-      console.log(animeResponse.data);
     } catch (error) {
-      console.log(error.message);
+      console.error("Error fetching anime list:", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -64,14 +62,13 @@ export const UserListProvider = ({ children }) => {
   const handleAddToList = async (id, status) => {
     try {
       if (isInList(id)) {
-        console.log("already added to the list");
+        // Already in list
       } else {
         setAnimeInfo((prev) => ({
           ...prev,
           animeList: [...(prev?.animeList || []), { animeId: Number(id) }],
         }));
         const response = await addToList(id, status);
-        console.log("list", response.data);
         getAnimeList();
 
         return response.data;
@@ -103,7 +100,6 @@ export const UserListProvider = ({ children }) => {
           ),
         }));
         const response = await deleteFavourite(id);
-        console.log(response.data);
         getAnimeList();
       } else {
         setAnimeInfo((prev) => ({
@@ -112,8 +108,6 @@ export const UserListProvider = ({ children }) => {
         }));
 
         const response = await addToFavourite(id);
-        console.log(response.data);
-
         getAnimeList();
         return response.data;
       }
@@ -159,7 +153,7 @@ export const UserListProvider = ({ children }) => {
       );
       return response;
     } catch (error) {
-      console.log("error updating", error.message, error.response?.data);
+      console.error("Error updating anime:", error.message, error.response?.data);
     }
   };
 

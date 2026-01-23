@@ -21,7 +21,7 @@
   }
 
   .auth-page {
-    @apply max-w-[40%] mx-auto w-full px-layout;
+    @apply max-w-[90%] xl:max-w-[40%] mx-auto w-full md:px-layout;
   }
 
   .section-spacing {
@@ -31,7 +31,7 @@
 
 @layer utilities {
   .navbar-spacing {
-    @apply py-nav;
+    @apply py-6 px-8 mdl:px-14 xl:py-nav xl:px-0;
   }
 
   .my-gradient-border {
@@ -86,6 +86,17 @@
     .hide-scrollbar::-webkit-scrollbar {
       display: none; /* Chrome, Safari, and Opera */
     }
+
+    @keyframes floaty {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(4px); }
+      100% { transform: translateY(0); }
+    }
+    
+    .floaty {
+      animation: floaty 1.6s ease-in-out infinite;
+    }
+    
 
     @keyframes shimmer {
       100% {

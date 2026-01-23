@@ -19,9 +19,9 @@ const OTPForm = ({
   return (
     <form
       onSubmit={handleOtpVerification}
-      className="w-auto flex flex-col space-y-6 text-white"
+      className="w-full md:w-auto flex flex-col space-y-6 text-white"
     >
-      <h3 className="w-[400px]">
+      <h3 className="md:w-[400px]">
         An OTP has been sent to your email:{" "}
         <span className="font-semibold text-blue-500">{email}</span>
       </h3>
@@ -34,7 +34,7 @@ const OTPForm = ({
           placeholder="OTP"
           id="otp"
           name="otp"
-          className="w-[400px] h-12 p-2 rounded-md bg-secondary"
+          className="w-full md:w-[400px] h-12 p-2 rounded-md bg-secondary"
         />
         {otpError && (
           <p className="text-red-500 text-sm font-semibold -mt-2">{otpError}</p>

@@ -52,19 +52,18 @@ const SelectedAnimeEdit = ({
         animeProgress.score || currentAnime.score,
         animeProgress.notes || currentAnime.notes
       );
-      console.log("udpated:", response.data);
 
       setAnimeInfo((prev) => ({
         ...prev,
         animeList: prev.animeList.map((anime) =>
           anime.animeId === currentAnime.animeId
             ? {
-                ...anime,
-                status: animeProgress.status || currentAnime.status,
-                progress: animeProgress.progress || currentAnime.progress,
-                score: animeProgress.score || currentAnime.score,
-                notes: animeProgress.notes || currentAnime.notes,
-              }
+              ...anime,
+              status: animeProgress.status || currentAnime.status,
+              progress: animeProgress.progress || currentAnime.progress,
+              score: animeProgress.score || currentAnime.score,
+              notes: animeProgress.notes || currentAnime.notes,
+            }
             : anime
         ),
       }));
@@ -76,7 +75,7 @@ const SelectedAnimeEdit = ({
       });
       setModalOpen(false);
     } catch (error) {
-      console.log("updation failed:", error.message, error.response.data);
+      console.error("Update failed:", error.message, error.response?.data);
     }
   };
 
@@ -85,53 +84,52 @@ const SelectedAnimeEdit = ({
   const handleDeleteAnime = async (animeId) => {
     try {
       const response = await deleteAnime(animeId);
-      console.log(response.data);
       getAnimeList();
       setModalOpen(false);
     } catch (error) {
-      console.log(error.response.data);
+      console.error("Delete failed:", error.response?.data);
     }
   };
 
   return (
     <div>
       <img
-        className="w-full h-1/3 max-h-[210px] object-cover rounded-t-lg"
+        className="w-full h-[15vh] lg:h-1/3 lg:max-h-[210px] object-cover rounded-t-lg"
         src={bannerImage}
         alt={`
           ${title}-bannerImage`}
       />
-      <div className="w-[90%] mx-auto mt-8 flex">
+      <div className="w-[90%] pb-4 px-2 lg:p-0 mx-auto mt-8 flex flex-col lg:flex-row gap-10 lg:gap-0">
         <div className="flex gap-4 basis-1/2">
           <img
-            className="w-40 max-h-[220px] rounded-md"
+            className="w-20 lg:w-40 max-h-[120px] lg:max-h-[220px] rounded-md"
             src={coverImage}
             alt={`${title}-coverImage`}
           />
           <div className="space-y-4">
-            <h1 className="text-xl font-bold max-w-[75%] border-b-2">
+            <h1 className="text-lg lg:text-xl font-bold lg:max-w-[75%] border-b-2">
               {title}
             </h1>
             <div className="space-y-1">
-              <p className="text-gray-300">
+              <p className="text-sm md:text-base text-gray-300">
                 Status:{" "}
                 <span className="font-semibold">
                   {currentAnime.status[0]?.toUpperCase() +
                     currentAnime.status.slice(1)}
                 </span>
               </p>
-              <p className="text-gray-300">
+              <p className="text-sm md:text-base text-gray-300">
                 Progress:{" "}
                 <span className="font-semibold">{currentAnime.progress}</span>
               </p>
-              <p className="text-gray-300">
+              <p className="text-sm md:text-base text-gray-300">
                 Score:{" "}
                 <span className="font-semibold">{currentAnime.score}</span>
               </p>
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 grid-rows-3 gap-8 justify-between items-start basis-1/2">
+        <div className="overflow-scroll grid md:grid-cols-2 grid-rows-3 gap-8 justify-between items-start basis-1/2">
           {/* status */}
           <SelectedAnimeInput
             id={id}

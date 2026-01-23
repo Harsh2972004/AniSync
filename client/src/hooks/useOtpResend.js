@@ -13,7 +13,6 @@ const useResendOtp = (email, purpose, cooldown = 120) => {
     setIsLoading(true);
     try {
       const response = await resendOtp(email, purpose);
-      console.log("OTP resent successfully", response.data);
       setSuccess("OTP resent successfully! Please check your email.");
       setRemainingTime(cooldown);
     } catch (error) {

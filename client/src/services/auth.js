@@ -1,4 +1,4 @@
-import API from "./api";
+import { API } from "./api";
 
 export const register = (data) =>
   API.post("/user/register", data, { withCredentials: true });

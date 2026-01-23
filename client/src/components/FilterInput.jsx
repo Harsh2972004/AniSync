@@ -18,6 +18,8 @@ const FilterInput = ({
   setClose,
   onSearchClose,
   submittedSearchTerm,
+  onSmallerScreen,
+  widthValue
 }) => {
   const [show, setShow] = useState(false);
   const capitalizeLetter = (string) => {
@@ -28,8 +30,8 @@ const FilterInput = ({
   };
 
   return (
-    <div className={`relative flex flex-col gap-2 ${width && "w-[15%]"}`}>
-      <label htmlFor={text}>
+    <div className={`relative flex flex-col gap-2 ${width ? "w-[15%]" : widthValue ? widthValue : "w-[35vw]"}`}>
+      <label className={`${onSmallerScreen && "hidden"}`} htmlFor={text}>
         {capitalizeLetter(text === "seasonYear" ? "year" : text)}
       </label>
       <div className="flex items-center justify-between relative w-full">
@@ -43,21 +45,18 @@ const FilterInput = ({
           onClick={
             !search
               ? () => {
-                  setShow(true);
-                }
+                setShow(true);
+              }
               : null
           }
           placeholder={capitalizeLetter(text === "seasonYear" ? "year" : text)}
           autoComplete="off"
-          className={`px-4 py-2 rounded-md w-full ${
-            width ? "bg-primary" : "bg-secondary"
-          }`}
+          className={`px-4 py-2 rounded-md w-full bg-primary`}
         />
         <button
           onClick={onInputSubmit}
-          className={`absolute ${
-            search ? "right-2" : "right-1"
-          } top-1/2 -translate-y-1/2`}
+          className={`absolute ${search ? "right-2" : "right-1"
+            } top-1/2 -translate-y-1/2`}
         >
           {search ? (
             submittedSearchTerm || close ? (
@@ -98,9 +97,8 @@ const FilterInput = ({
       </div>
       {!search && (
         <div
-          className={`w-full hide-scrollbar flex flex-col gap-2 absolute top-[120%] z-10 bg-primary rounded-lg dropdown ${
-            show ? "open" : ""
-          }`}
+          className={`w-full hide-scrollbar flex flex-col gap-2 absolute top-[120%] z-10 bg-primary rounded-lg dropdown ${show ? "open" : ""
+            }`}
         >
           {filterValues?.map((value, index) => (
             <span

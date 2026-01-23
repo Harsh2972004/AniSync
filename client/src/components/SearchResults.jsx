@@ -19,7 +19,7 @@ const SearchResults = ({ submittedSearchTerm, title, filters }) => {
   return (
     <section className="container-spacing flex flex-col w-full gap-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{title}</h1>
+        <h1 className="text-2xl font-bold w-[60%]">{title}</h1>
         {uniqueSearchResults.length > 0 && (
           <span className="text-gray-500">
             {uniqueSearchResults.length} result
@@ -38,16 +38,16 @@ const SearchResults = ({ submittedSearchTerm, title, filters }) => {
           </p>
         </div>
       )}
-      {isLoading && (
+      {/* {isLoading && (
         <div className="text-center py-12">
           <p className="text-gray-400 text-lg">
             Searching results for "{submittedSearchTerm}"
           </p>
           <p className="text-gray-500 mt-2">please wait.. </p>
         </div>
-      )}
+      )} */}
 
-      <div className="grid grid-cols-4 gap-x-10 gap-y-20 w-full">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-10 gap-y-20 w-full">
         {uniqueSearchResults.map((anime, index) => {
           const isLast = index === uniqueSearchResults.length - 1;
           return (

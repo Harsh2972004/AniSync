@@ -3,11 +3,11 @@ const RelationCard = ({ image, title, relationType }) => {
   return (
     <div className="flex flex-col gap-2">
       <img
-        className="w-32 max-h-[180px] aspect-auto rounded-md"
+        className="xl:w-32 xl:max-h-[180px] aspect-auto rounded-md"
         src={image}
         alt={title}
       />
-      <p className="text-xs w-32">{relation}</p>
+      <p className="text-[10px] xl:text-xs w-32">{relation}</p>
     </div>
   );
 };

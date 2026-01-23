@@ -13,7 +13,7 @@ const AnimeListSection = ({
         <h3 className="font-bold text-xl">
           {status?.[0].toUpperCase() + status?.slice(1)}
         </h3>
-        <div className="grid grid-cols-6 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-10">
           {animeList?.map((anime) => {
             const info = animeInfo?.animeList.find(
               (i) => i.animeId === anime.id

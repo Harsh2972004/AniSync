@@ -2,7 +2,7 @@ import { fetchFromAnilist } from "./anilistHelper.js";
 import { paginatedMediaQuery } from "./anilistQueries.js";
 import axios from "axios";
 
-export const searchMedia = (mediaType) => async (req, res) => {
+export const searchMedia = (mediaType) => async (req, res, next) => {
   const query = req.query.search;
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
   const perPage = parseInt(req.query.perPage, 10) || 10; // Use perPage from request or default to 10
@@ -10,8 +10,6 @@ export const searchMedia = (mediaType) => async (req, res) => {
   const format = req.query.format;
   const seasonYear = req.query.seasonYear;
   const season = req.query.season;
-
-  console.log("Search request:", { query, page, perPage, mediaType });
 
   try {
     const data = await fetchFromAnilist({
@@ -29,8 +27,6 @@ export const searchMedia = (mediaType) => async (req, res) => {
       },
     });
 
-    console.log("AniList response:", data);
-
     const mediaList = data.Page.media.map((media) => ({
       id: media.id,
       title: media.title,
@@ -43,15 +39,13 @@ export const searchMedia = (mediaType) => async (req, res) => {
     const pageInfo = data.Page.pageInfo;
     res.json({ mediaList, pageInfo });
   } catch (error) {
-    console.error("Error fetching data from Anilist API:", error.message);
-    res.status(500).json({ error: "Failed to fetch data" });
+    next(error);
   }
 };
 
-export const getTrendingMedia = (mediaType) => async (req, res) => {
+export const getTrendingMedia = (mediaType) => async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
   const perPage = parseInt(req.query.perPage, 10) || 10;
-  console.log(page, perPage);
   try {
     const data = await fetchFromAnilist({
       query: paginatedMediaQuery,
@@ -75,8 +69,7 @@ export const getTrendingMedia = (mediaType) => async (req, res) => {
     const pageInfo = data.Page.pageInfo;
     res.json({ mediaList, pageInfo });
   } catch (error) {
-    console.error("Error fetching data from Anilist API:", error.message);
-    res.status(500).json({ error: "Failed to fetch data" });
+    next(error);
   }
 };
 
@@ -112,7 +105,7 @@ export const getAllTimePopularMedia = (mediaType) => async (req, res) => {
   }
 };
 
-export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
+export const getPopularThisSeasonMedia = (mediaType) => async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
   const perPage = parseInt(req.query.perPage, 10) || 10;
   // determine the current season and year
@@ -132,8 +125,6 @@ export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
   if (month >= 10 && month <= 12) {
     season = "FALL";
   }
-
-  console.log(season, year);
 
   try {
     const data = await fetchFromAnilist({
@@ -160,8 +151,7 @@ export const getPopularThisSeasonMedia = (mediaType) => async (req, res) => {
     const pageInfo = data.Page.pageInfo;
     res.json({ mediaList, pageInfo });
   } catch (error) {
-    console.error("Error fetching data from Anilist API:", error.message);
-    res.status(500).json({ error: "Failed to fetch data" });
+    next(error);
   }
 };
 
@@ -188,7 +178,6 @@ export const getUpcomingNextSeasonMedia = (mediaType) => async (req, res) => {
     nextSeason = "WINTER";
     nextYear = year + 1;
   }
-  console.log(nextSeason, year);
 
   try {
     const data = await fetchFromAnilist({
@@ -220,10 +209,12 @@ export const getUpcomingNextSeasonMedia = (mediaType) => async (req, res) => {
   }
 };
 
-export const getMedia = (mediaType) => async (req, res) => {
+export const getMedia = (mediaType) => async (req, res, next) => {
   const animeId = parseInt(req.params.id, 10);
   if (isNaN(animeId)) {
-    return res.status(400).json({ error: "Invalid anime ID" });
+    const error = new Error("Invalid anime ID");
+    error.statusCode = 400;
+    return next(error);
   }
   const graphqlQuery = {
     query: `
@@ -362,15 +353,16 @@ export const getMedia = (mediaType) => async (req, res) => {
     );
     res.json(response.data.data.Media);
   } catch (error) {
-    console.error("Error fetching anime details:", error.message);
-    res.status(500).json({ error: "Failed to fetch anime details" });
+    next(error);
   }
 };
 
-export const getListAnime = async (req, res) => {
+export const getListAnime = async (req, res, next) => {
   const perPage = parseInt(req.query.perPage, 10) || 10;
   if (!req.query.id_in) {
-    return res.status(400).json({ error: "Missing 'id_in' query parameter" });
+    const error = new Error("Missing 'id_in' query parameter");
+    error.statusCode = 400;
+    return next(error);
   }
   const ids = req.query.id_in?.split(",").map(Number);
 
@@ -412,8 +404,6 @@ export const getListAnime = async (req, res) => {
     );
     res.json(response.data.data.Page.media);
   } catch (error) {
-    console.error("Error fetching anime list:", error.message);
-    console.error("AniList Error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to fetch anime list" });
+    next(error);
   }
 };

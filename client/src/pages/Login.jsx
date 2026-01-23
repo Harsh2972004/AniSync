@@ -39,7 +39,6 @@ const Login = () => {
     setIsLoading(true);
     try {
       const response = await loginUser(userDetails);
-      console.log("User logged in successfully", response.data);
       setSuccess("Login successful!");
       navigate("/"); // Redirect to home page after login
     } catch (error) {
@@ -62,7 +61,6 @@ const Login = () => {
     setResetPasswordStep("first");
     try {
       const response = await requestResetPassword(userDetails.email);
-      console.log("Password reset request successful", response.data);
       setSuccess("Please check your email for the OTP to reset your password.");
       setResetPasswordStep("second");
     } catch (error) {
@@ -88,7 +86,6 @@ const Login = () => {
         otp,
         newPassword: userDetails.password,
       });
-      console.log("Password reset successful", response.data);
       setSuccess("Password reset successfully! You can now log in.");
       setResetPasswordStep("first");
       setForgotPassword(false);
@@ -109,10 +106,10 @@ const Login = () => {
 
   return (
     <div className="auth-page section-spacing font-montserrat bg-primary flex flex-col items-center justify-center rounded-md">
-      <h1 className="mx-auto text-center w-[400px] text-[1.5rem] py-8 border-b-2 border-white font-bold">
+      <h1 className="mx-auto text-center w-4/5 md:w-[400px] text-[1.2rem] md:text-[1.5rem] py-8 border-b-2 border-white font-bold">
         {forgotPassword ? "Reset Password" : "Login to AniSync"}
       </h1>
-      <div className="flex flex-col gap-10 mx-14 flex-1 justify-center items-center my-10">
+      <div className="flex flex-col gap-10 w-full md:mx-14 flex-1 justify-center items-center my-10">
         {forgotPassword ? (
           <ForgotPasswordForm
             otp={otp}

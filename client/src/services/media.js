@@ -1,16 +1,16 @@
-import API from "./api";
+import { animeAPI } from "./api";
 
 export const getTrendingAnime = (perPage, page) =>
-  API.get(`/anime/trending-anime?perPage=${perPage}&page=${page}`);
+  animeAPI.get(`/anime/trending-anime?perPage=${perPage}&page=${page}`);
 
 export const getAllTimePopularAnime = (perPage, page) =>
-  API.get(`/anime/popular/all-time-anime?perPage=${perPage}&page=${page}`);
+  animeAPI.get(`/anime/popular/all-time-anime?perPage=${perPage}&page=${page}`);
 
 export const getPopularThisSeasonAnime = (perPage, page) =>
-  API.get(`/anime/popular/this-season?perPage=${perPage}&page=${page}`);
+  animeAPI.get(`/anime/popular/this-season?perPage=${perPage}&page=${page}`);
 
 export const getUpcomingNextSeasonAnime = (perPage, page) =>
-  API.get(`/anime/upcoming/next-season?perPage=${perPage}&page=${page}`);
+  animeAPI.get(`/anime/upcoming/next-season?perPage=${perPage}&page=${page}`);
 
 export const getSearchedAnime = (perPage, page, query, filters) => {
   const cleanedFilters = Object.fromEntries(
@@ -27,14 +27,13 @@ export const getSearchedAnime = (perPage, page, query, filters) => {
   });
 
   const url = `/anime/search-anime?${params.toString()}`;
-  console.log(url, filters);
-  return API.get(url);
+  return animeAPI.get(url);
 };
 
 export const filterEnums = () => {
-  return API.get("/filters");
+  return animeAPI.get("/filters");
 };
 
 export const getAnimeDetails = (id) => {
-  return API.get(`/anime/animeDetails/${id}`);
+  return animeAPI.get(`/anime/animeDetails/${id}`);
 };

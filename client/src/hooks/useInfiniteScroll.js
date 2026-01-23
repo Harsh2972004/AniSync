@@ -19,18 +19,12 @@ const useInfiniteScroll = (
 
   const lastAnimeRef = useCallback(
     (node) => {
-      console.log(node);
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((enteries) => {
         if (enteries[0].isIntersecting && !isLoading && hasMore) {
-          console.log("setting page from the observer");
-          setPage((prev) => {
-            console.log("setting page:", prev);
-
-            return prev + 1;
-          });
+          setPage((prev) => prev + 1);
         }
       });
 
@@ -80,7 +74,7 @@ const useInfiniteScroll = (
           });
         }
       } catch (error) {
-        console.log({ "an error occurred fetching anime": error });
+        console.error("Error fetching anime:", error);
       } finally {
         setIsLoading(false);
       }
@@ -94,7 +88,7 @@ const useInfiniteScroll = (
       setData([]);
       setPage(1);
       setHasMore(true);
-      setIsLoading(false);
+      setIsLoading(true);
     }
     isCacheLoaded.current = false;
   }, deps);

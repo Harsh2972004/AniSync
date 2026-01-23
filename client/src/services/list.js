@@ -1,4 +1,4 @@
-import API from "./api";
+import { API } from "./api";
 
 export const addToList = (animeId, status, progress = 1, score = 1, notes) =>
   API.post("/list/addAnime", { animeId, status, progress, score, notes });

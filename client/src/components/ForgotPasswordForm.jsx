@@ -32,7 +32,7 @@ const ForgotPasswordForm = ({
             ? hanldeRequestResetPassword
             : handleResetPassword
         }
-        className="w-auto flex flex-col space-y-6 text-white"
+        className="w-4/5 md:w-auto flex flex-col space-y-6 text-white"
       >
         {resetPasswordStep === "second" ? (
           <h3 className="w-[400px]">
@@ -54,7 +54,7 @@ const ForgotPasswordForm = ({
                 name="email"
                 autoComplete="email"
                 placeholder="Enter your email"
-                className="w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
+                className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
             </div>
           </>

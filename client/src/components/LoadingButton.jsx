@@ -1,6 +1,6 @@
 const LoadingButton = ({ isLoading, text }) => {
   return (
-    <div className="relative w-full">
+    <div className="relativew w-full">
       <button
         type="submit"
         disabled={isLoading}

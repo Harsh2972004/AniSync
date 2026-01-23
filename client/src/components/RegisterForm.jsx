@@ -15,7 +15,7 @@ const RegisterForm = ({
   return (
     <form
       onSubmit={handleRegister}
-      className="w-auto flex flex-col space-y-6 text-white"
+      className="w-full md:w-auto flex flex-col space-y-6 text-white"
     >
       <div className="flex flex-col space-y-2">
         <label htmlFor="name">Username</label>
@@ -27,7 +27,7 @@ const RegisterForm = ({
           name="name"
           id="name"
           autoComplete="username"
-          className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
+          className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
         {error.name && (
           <p className="text-red-500 text-sm font-semibold">{error.name}</p>
@@ -43,7 +43,7 @@ const RegisterForm = ({
           name="email"
           id="email"
           autoComplete="email"
-          className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
+          className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
         {error.email && (
           <p className="text-red-500 text-sm font-semibold">{error.email}</p>
@@ -51,7 +51,7 @@ const RegisterForm = ({
       </div>
       <div className="flex flex-col space-y-2">
         <label htmlFor="password">Password</label>
-        <div className="relative w-[400px]">
+        <div className="relative w-full md:w-[400px]">
           <input
             onChange={handleInputChange}
             value={userDetails.password}
@@ -60,7 +60,7 @@ const RegisterForm = ({
             name="password"
             id="password"
             autoComplete="new-password"
-            className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
+            className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
           />
 
           <button
@@ -82,7 +82,7 @@ const RegisterForm = ({
       {userDetails.password ? (
         <div className="flex flex-col space-y-2">
           <label htmlFor="confirmPassword">Confirm Password</label>
-          <div className="relative w-[400px]">
+          <div className="relative w-full md:w-[400px]">
             <input
               onChange={handleInputChange}
               value={userDetails.confirmPassword}
@@ -91,7 +91,7 @@ const RegisterForm = ({
               name="confirmPassword"
               id="confirmPassword"
               autoComplete="new-password"
-              className="w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
+              className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
             />
             <button
               type="button"

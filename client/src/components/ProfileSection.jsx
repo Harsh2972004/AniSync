@@ -27,6 +27,9 @@ const ProfileSection = ({
   const [aspect, setAspect] = useState(null);
   const [actionName, setActionName] = useState(null);
 
+  const domain = (email.match(/@(.+)$/) || [, ""])[1];
+
+
   const handleNameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -42,27 +45,22 @@ const ProfileSection = ({
   const handleSubmitName = async (input) => {
     try {
       const response = await updateName(input);
-
-      console.log("name changed:", response.data.name);
-
       updateUser();
       setUsername("");
     } catch (error) {
-      console.log("name updation failed:", error.message, error.response);
+      console.error("Name update failed:", error.message, error.response);
     }
   };
 
   const handleSubmitPassword = async (newPassword, confirmPassword) => {
     try {
       const response = await updatePassword(newPassword, confirmPassword);
-
-      console.log("password changed: ", response.data.message);
       updateUser();
       setPassword("");
       setConfirmPassword("");
       setError("");
     } catch (error) {
-      console.log("password updation failed:", error.message, error.response);
+      console.error("Password update failed:", error.message, error.response);
       setError(error.response.data.error);
     }
   };
@@ -96,7 +94,7 @@ const ProfileSection = ({
         className="relative group overflow-hidden"
       >
         <img
-          className="rounded-t-lg"
+          className="rounded-t-lg h-[15vh] lg:h-auto object-cover"
           src={bannerImage}
           alt={`${name}-banner`}
         />
@@ -104,14 +102,14 @@ const ProfileSection = ({
           <GrGallery size={24} />
         </div>
       </div>
-      <div className="w-[90%] mx-auto mt-8 flex gap-10 justify-center ">
+      <div className="w-[90%] mx-auto mt-8 flex flex-col lg:flex-row gap-10 justify-center ">
         <div className="flex gap-4 relative">
           <div
             onClick={handleAvatarClick}
-            className="relative group w-32 h-32 rounded-lg overflow-hidden"
+            className="relative group w-14 h-14 md:w-20 md:h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden"
           >
             <img
-              className="w-32 h-32 object-cover object-center rounded-lg"
+              className="object-cover object-center rounded-lg"
               src={avatar}
               alt={`${name}-avatar`}
             />
@@ -120,8 +118,8 @@ const ProfileSection = ({
             </div>
           </div>
           <div className="">
-            <h1 className="text-xl font-bold">{name}</h1>
-            <p>{email}</p>
+            <h1 className="lg:text-xl font-bold">{name}</h1>
+            {domain !== "anilist.local" && <p className="text-xs md:text-sm lg:text-base">{email}</p>}
             <p className="text-sm text-gray-400">User since {createdAt}</p>
             <button
               className="text-red-500 border-2 border-red-500 px-4 h-10 rounded-lg w-[100px] mt-4"
@@ -134,7 +132,7 @@ const ProfileSection = ({
             </button>
           </div>
         </div>
-        <div className="flex gap-8">
+        <div className="flex gap-8 flex-col md:flex-row px-4 pb-8">
           <div className="flex flex-col gap-2">
             <label htmlFor="name">Change Name</label>
             <input

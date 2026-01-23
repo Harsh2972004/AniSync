@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import ListBar from "../components/ListBar";
 import ListAnimeCard from "../components/ListAnimeCard";
@@ -90,8 +90,14 @@ const AnimeList = () => {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
-    useSensor(TouchSensor)
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 8 }
+    })
   );
+
+  useEffect(() => {
+    document.body.style.overflow = modalOpen ? "hidden" : "";
+  }, [modalOpen])
 
   return (
     <div className="flex flex-col">
@@ -131,7 +137,7 @@ const AnimeList = () => {
           </Modal>
         )}
       </AnimatePresence>
-      <div className="relative group">
+      <div className="relative hidden lg:block group">
         <AnimatePresence mode="wait">
           {!bannerVideoOn ? (
             <motion.img
@@ -165,6 +171,13 @@ const AnimeList = () => {
           {!bannerVideoOn ? <CiVideoOn size={24} /> : <CiImageOn size={24} />}
         </button>
       </div>
+
+      {/* banner on smaller devices */}
+      <img
+        src={userBanner || user.anilistBannerImage || bannerImage}
+        alt="banner-image"
+        className="lg:hidden w-full h-[25vh] md:h-[30vh] object-cover"
+      />
       <div className="container-spacing flex flex-col gap-8 h-full">
         <ListBar
           username={user.name}
@@ -179,7 +192,7 @@ const AnimeList = () => {
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white animate-loading-bar" />
           </div>
         )}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden px-[5vw] md:px-[3vw] lg:px-0">
           {listTitle === "Anime List" && !isLoading && (
             <div className="space-y-10">
               <AnimeListSection
@@ -249,7 +262,7 @@ const AnimeList = () => {
                     className={
                       viewStyle === "tile"
                         ? "space-y-6"
-                        : "grid grid-cols-6 gap-10"
+                        : "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-10"
                     }
                   >
                     {animeList?.map((anime, i) =>
@@ -287,11 +300,9 @@ const AnimeList = () => {
           )}
           {animeList?.length === 0 && (
             <div className="flex items-center justify-center text-gray-400">
-              <p>{`No Anime ${
-                listTitle === "Favourites" ? "Favourited" : "in the list."
-              }. Try adding anime to the ${
-                listTitle === "Favourites" ? "favourites..." : "list..."
-              }`}</p>
+              <p>{`No Anime ${listTitle === "Favourites" ? "Favourited" : "in the list."
+                }. Try adding anime to the ${listTitle === "Favourites" ? "favourites..." : "list..."
+                }`}</p>
             </div>
           )}
         </div>

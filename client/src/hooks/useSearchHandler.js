@@ -14,7 +14,6 @@ const useSearchHandler = () => {
     setMode("filtered");
     setSubmittedSearchTerm(trimmed);
     navigate(`/browse?mode=search&title=${encodeURIComponent(trimmed)}`);
-    console.log(trimmed);
   };
 
   const handleFilters = () => {
@@ -35,9 +34,7 @@ const useSearchHandler = () => {
           navigate("/browse");
           return [];
         }
-        console.log("Searching for:", submittedSearchTerm, "page:", page);
         const response = await getSearchedAnime(20, page, searchQuery, filters);
-        console.log("Search response:", response.data);
         return response.data.mediaList || [];
       } catch (error) {
         console.error("Error fetching search results:", error);

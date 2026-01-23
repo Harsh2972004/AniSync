@@ -14,7 +14,7 @@ const LoginForm = ({
   return (
     <form
       onSubmit={handleLogin}
-      className="w-auto flex flex-col space-y-6 text-white"
+      className="w-4/5 md:w-auto flex flex-col space-y-6 text-white"
     >
       <div className="flex flex-col space-y-2">
         <label htmlFor="email">Email</label>
@@ -26,12 +26,12 @@ const LoginForm = ({
           name="email"
           autoComplete="email"
           placeholder="Enter your email"
-          className="w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
+          className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
         />
       </div>
       <div className="flex flex-col space-y-2">
         <label htmlFor="password">password</label>
-        <div className="relative w-[400px]">
+        <div className="relative w-full md:w-[400px]">
           <input
             onChange={handleInputChange}
             value={userDetails.password}
@@ -40,7 +40,7 @@ const LoginForm = ({
             name="password"
             autoComplete="current-password"
             placeholder="Enter your password"
-            className="w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
+            className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
           />
           <button
             type="button"

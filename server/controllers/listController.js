@@ -1,6 +1,6 @@
 import { User } from "../models/userModel.js";
 
-export const addAnime = async (req, res) => {
+export const addAnime = async (req, res, next) => {
   const { animeId, status, progress, score, notes } = req.body;
   const userId = req.user._id;
 
@@ -11,29 +11,31 @@ export const addAnime = async (req, res) => {
     );
 
     if (alreadyExist) {
-      return res.status(400).json({ error: "Anime Already in list" });
+      const error = new Error("Anime Already in list");
+      error.statusCode = 400;
+      return next(error);
     }
 
     user.animeList.push({ animeId, status, progress, score, notes });
     await user.save();
     res.json({ succes: true, animeList: user.animeList });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getFullAnimeList = async (req, res) => {
+export const getFullAnimeList = async (req, res, next) => {
   const userId = req.user._id;
 
   try {
     const user = await User.findById(userId);
     res.json({ animeList: user.animeList });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const updateAnime = async (req, res) => {
+export const updateAnime = async (req, res, next) => {
   const { animeId, status, progress, score, notes } = req.body;
   const userId = req.user._id;
 
@@ -44,7 +46,9 @@ export const updateAnime = async (req, res) => {
     );
 
     if (!anime) {
-      return res.status(404).json({ error: "Anime not found in the list." });
+      const error = new Error("Anime not found in the list.");
+      error.statusCode = 404;
+      return next(error);
     }
 
     // Update fields
@@ -56,11 +60,11 @@ export const updateAnime = async (req, res) => {
     await user.save();
     res.json({ success: true, animeList: user.animeList });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const deleteAnime = async (req, res) => {
+export const deleteAnime = async (req, res, next) => {
   const userId = req.user._id;
   const { animeId } = req.body;
 
@@ -70,11 +74,11 @@ export const deleteAnime = async (req, res) => {
     await user.save();
     res.json({ succes: true });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const deleteAllAnime = async (req, res) => {
+export const deleteAllAnime = async (req, res, next) => {
   const userId = req.user._id;
 
   try {
@@ -84,11 +88,11 @@ export const deleteAllAnime = async (req, res) => {
     await user.save();
     res.json({ success: true, message: "Anime list cleared" });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
-export const addToFavourite = async (req, res) => {
+export const addToFavourite = async (req, res, next) => {
   const userId = req.user._id;
   const { animeId } = req.body;
 
@@ -99,29 +103,31 @@ export const addToFavourite = async (req, res) => {
     );
 
     if (alreadyExist) {
-      return res.status(400).json({ error: "Anime already in list" });
+      const error = new Error("Anime already in list");
+      error.statusCode = 400;
+      return next(error);
     }
 
     user.favourites.push(animeId);
     await user.save();
     res.json({ success: true, favourites: user.favourites });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getFavourites = async (req, res) => {
+export const getFavourites = async (req, res, next) => {
   const userId = req.user._id;
 
   try {
     const user = await User.findById(userId);
     res.json({ success: true, favourites: user.favourites });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const deleteFavourite = async (req, res) => {
+export const deleteFavourite = async (req, res, next) => {
   const userId = req.user._id;
   const { animeId } = req.body;
 
@@ -133,11 +139,11 @@ export const deleteFavourite = async (req, res) => {
 
     res.json({ success: true, favourites: user.favourites });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const deleteAllFavourites = async (req, res) => {
+export const deleteAllFavourites = async (req, res, next) => {
   const userId = req.user._id;
 
   try {
@@ -147,6 +153,6 @@ export const deleteAllFavourites = async (req, res) => {
 
     res.json({ success: true, message: "favourites cleared" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };

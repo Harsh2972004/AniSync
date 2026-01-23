@@ -6,7 +6,7 @@ import {
   logout,
   register,
 } from "../services/auth";
-import API from "../services/api";
+import { API } from "../services/api";
 
 const AuthContext = createContext();
 
@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         });
         if (res.data.isAuthenticated) {
-          console.log(res.data.isAuthenticated);
           setUser(res.data.user);
         } else {
           setUser(null);
@@ -99,7 +98,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await login(formData);
       if (res.data.user) {
-        console.log("set user", res.data.user);
         setUser(res.data.user);
       }
       setAuthChanged((prev) => !prev);
