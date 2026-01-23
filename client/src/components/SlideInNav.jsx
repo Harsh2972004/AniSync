@@ -8,8 +8,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { AnimatePresence } from "motion/react";
 import Modal from "./Modal";
 import ProfileSection from "./ProfileSection";
-
-
+import defaultAvatar from "../assets/images/user-default-avatar.png";
 
 const SlideInNav = ({ hide, setHide }) => {
   const [isMounted, setIsMounted] = useState(false);
