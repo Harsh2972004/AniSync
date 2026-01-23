@@ -43,8 +43,17 @@ router.put("/update-password", isAuthenticated, updateUserPassword);
 
 // router.get("/profile", isAuthenticated, getUserProfile);
 
-router.get("/auth/status", isAuthenticated, (req, res) => {
-  res.json({ isAuthenticated: true, user: req.user });
+router.get("/auth/status", (req, res, next) => {
+  console.log("cookie token exists?", !!req.cookies?.token);
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    console.log("jwt err:", err);
+    console.log("jwt info:", info);
+    console.log("jwt user:", user?._id);
+
+    if (err) return next(err);
+    if (!user) return res.json({ isAuthenticated: false });
+    return res.json({ isAuthenticated: true, user });
+  })(req, res, next);
 });
 
 

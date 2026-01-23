@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("auth status check failed:", error);
+        setUser(null)
       } finally {
         setIsLoading(false);
       }
