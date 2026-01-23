@@ -87,8 +87,10 @@ app.use(errorHandler);
 //   console.log(`Server is running on https://localhost:${PORT}`);
 // });
 
-app.listen(PORT, "0.0.0.0", () => {
-  if (process.env.NODE_ENV !== "production") {
-    console.log(`Server is running on port ${PORT}`);
-  }
-});
+// app.listen(PORT, "0.0.0.0", () => {
+//   if (process.env.NODE_ENV !== "production") {
+//     console.log(`Server is running on port ${PORT}`);
+//   }
+// });
+
+export default app
