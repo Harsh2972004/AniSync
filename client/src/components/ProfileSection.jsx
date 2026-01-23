@@ -109,7 +109,7 @@ const ProfileSection = ({
             className="relative group w-14 h-14 md:w-20 md:h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden"
           >
             <img
-              className="object-cover object-center rounded-lg"
+              className="w-full object-cover object-center rounded-lg"
               src={avatar}
               alt={`${name}-avatar`}
             />

@@ -6,7 +6,7 @@ export const register = (data) =>
 export const login = (data) =>
   API.post("/user/login", data, { withCredentials: true });
 
-export const logout = () => API.get("/user/logout", { withCredentials: true });
+export const logout = () => API.post("/user/logout", { withCredentials: true });
 
 export const verifyEmail = (data) => API.post("/user/verify-email", data);
 
