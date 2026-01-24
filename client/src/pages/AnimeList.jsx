@@ -297,7 +297,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
-                          gaurd={guard}
+                          guard={guard}
                         />
                       )
                     )}

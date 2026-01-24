@@ -12,20 +12,21 @@ const ListAnimeCard = ({
   onEditClick,
   onViewClick,
   list = true,
-  gaurd
+  guard
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
+  const isDragging = Boolean(transform)
+
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
-    cursor: "grab",
   };
 
   return (
     <Link to={`/${id}`}
-      onClick={e => {
+      onClickCapture={e => {
         if (!guard.shouldAllowClick()) {
           e.preventDefault()
           e.stopPropagation()
@@ -36,13 +37,11 @@ const ListAnimeCard = ({
         {...attributes}
         {...listeners}
         style={style}
-        onMouseDown={(e) => {
-          if (!list) {
-            (e.currentTarget.style.cursor = "grabbing")
-          }
-        }}
-        onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
-        className="w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none"
+        className={`w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none ${list
+          ? "cursor-default"
+          : isDragging
+            ? "cursor-grabbing"
+            : "cursor-grab"}`}
         onPointerDownCapture={guard.onPointerDown}
         onPointerMoveCapture={guard.onPointerMove}
         onPointerUpCapture={guard.onPointerUp}
