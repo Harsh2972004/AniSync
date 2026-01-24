@@ -137,7 +137,7 @@ const AnimeList = () => {
           </Modal>
         )}
       </AnimatePresence>
-      <div className="relative hidden lg:block group max-w-[40vh]">
+      <div className="relative hidden lg:block group max-h-[40vh]">
         <AnimatePresence mode="wait">
           {!bannerVideoOn ? (
             <motion.img

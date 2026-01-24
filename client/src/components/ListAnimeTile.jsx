@@ -34,9 +34,9 @@ const ListAnimeTile = ({ index, id, title, image }) => {
         <img className="w-10 rounded-md" src={image} alt={`${title}-image`} />
         <h4 className="text-sm font-semibold">{title}</h4>
       </div>
-      <div>
+      <div className="flex items-center justify-center gap-2">
         <Link to={`/${id}`}>
-          <FaEye />
+          <FaEye size={22} />
         </Link>
         <span>{score ? score : "—"}</span>
       </div>
