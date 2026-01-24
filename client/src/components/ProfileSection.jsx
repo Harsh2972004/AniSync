@@ -122,7 +122,7 @@ const ProfileSection = ({
             {domain !== "anilist.local" && <p className="text-xs md:text-sm lg:text-base">{email}</p>}
             <p className="text-sm text-gray-400">User since {createdAt}</p>
             <button
-              className="text-red-500 border-2 border-red-500 px-4 h-10 rounded-lg w-[100px] mt-4"
+              className="text-red-100 border-2 border-red-500 px-4 h-10 rounded-lg w-[100px] mt-4"
               onClick={() => {
                 logoutUser();
                 setShowModal(false);
