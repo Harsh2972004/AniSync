@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useUserContext } from "../context/UserListContext";
 import { Link } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
 
 const ListAnimeTile = ({ index, id, title, image }) => {
   const { animeInfo } = useUserContext();
@@ -35,7 +36,7 @@ const ListAnimeTile = ({ index, id, title, image }) => {
       </div>
       <div>
         <Link to={`/${id}`}>
-          <button>View Anime</button>
+          <FaEye />
         </Link>
         <span>{score ? score : "—"}</span>
       </div>
