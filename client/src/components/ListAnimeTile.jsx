@@ -3,15 +3,12 @@ import { CSS } from "@dnd-kit/utilities";
 import { useUserContext } from "../context/UserListContext";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
-import guard, { useClickGuard } from "../hooks/useClickGuard"
 
-const ListAnimeTile = ({ index, id, title, image }) => {
+const ListAnimeTile = ({ index, id, title, image, guard }) => {
   const { animeInfo } = useUserContext();
 
   const anime = animeInfo.animeList.find((anime) => anime.animeId == id);
   const score = anime?.score;
-
-  const { onPointerDown, onPointerMove, onPointerUp, shouldAllowClick } = useClickGuard()
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -31,10 +28,10 @@ const ListAnimeTile = ({ index, id, title, image }) => {
       onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
       onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
       className="px-6 py-2 flex items-center justify-between bg-primary rounded-md touch-none"
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
+      onPointerDownCapture={guard.onPointerDown}
+      onPointerMoveCapture={guard.onPointerMove}
+      onPointerUpCapture={guard.onPointerUp}
+      onPointerCancelCapture={guard.onPointerUp}
     >
       <div className="flex items-center gap-4">
         <span className="font-bold">{`${index})`}</span>

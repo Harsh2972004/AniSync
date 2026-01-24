@@ -54,7 +54,7 @@ const AnimeList = () => {
   const options = { day: "numeric", month: "short", year: "numeric" };
   const formattedDate = createdAt.toLocaleDateString("en-GB", options);
 
-  const { markDraggedNow } = useClickGuard()
+  const guard = useClickGuard()
 
   const onEditCardClick = (animeCardInfo, info) => {
     setModalOpen(true);
@@ -76,7 +76,7 @@ const AnimeList = () => {
     animeList.findIndex((anime) => anime.id === id);
 
   const handleDragEnd = (event) => {
-    markDraggedNow()
+    guard.markDraggedNow()
 
     const { active, over } = event;
 
@@ -84,8 +84,8 @@ const AnimeList = () => {
     if (active.id === over.id) return;
 
     setAnimeList((prev) => {
-      const originalPosition = getAnimePosition(active.id);
-      const newPosition = getAnimePosition(over.id);
+      const originalPosition = getAnimePosition(active.id, prev);
+      const newPosition = getAnimePosition(over.id, prev);
 
       return arrayMove(prev, originalPosition, newPosition);
     });
@@ -284,6 +284,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
+                          guard={guard}
                         />
                       ) : (
                         <ListAnimeCard
