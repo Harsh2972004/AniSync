@@ -34,6 +34,12 @@ const ListAnimeCard = ({
 
   return (
     <Link to={`/${id}`}
+      onPointerDownCapture={(e) => {
+        if (shouldBlockClick?.()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
       onClickCapture={(e) => {
         if (shouldBlockClick?.()) {
           e.preventDefault();

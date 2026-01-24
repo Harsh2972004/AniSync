@@ -56,6 +56,12 @@ const AnimeList = () => {
 
   const guard = useClickGuard()
 
+  const justDraggedUntilRef = useRef(0);
+  const isDraggingRef = useRef(0)
+
+  const shouldBlockClick = () => isDraggingRef.current || Date.now() < justDraggedUntilRef.current;
+
+
   const onEditCardClick = (animeCardInfo, info) => {
     setModalOpen(true);
     setSelectedAnime([animeCardInfo, info]);
@@ -73,19 +79,9 @@ const AnimeList = () => {
   };
 
   const getAnimePosition = (id, list) =>
-    animeList.findIndex((anime) => anime.id === id);
-
-  const justDraggedUntilRef = useRef(0);
-
-
-  const shouldBlockClick = () => Date.now() < justDraggedUntilRef.current;
-
+    list.findIndex((anime) => anime.id === id);
 
   const handleDragEnd = (event) => {
-    justDraggedUntilRef.current = Date.now() + 500; // 500ms window
-
-    guard.markDraggedNow()
-
     const { active, over } = event;
 
     if (!over) return
@@ -246,7 +242,19 @@ const AnimeList = () => {
           {listTitle === "Favourites" && !isLoading && animeList.length > 0 && (
             <DndContext
               sensors={sensors}
-              onDragEnd={handleDragEnd}
+              onDragStart={() => {
+                isDraggingRef.current = true;
+                justDraggedUntilRef.current = Date.now() + 800;
+              }}
+              onDragCancel={() => {
+                isDraggingRef.current = false;
+                justDraggedUntilRef.current = Date.now() + 800;
+              }}
+              onDragEnd={(event) => {
+                isDraggingRef.current = false;
+                justDraggedUntilRef.current = Date.now() + 800; // block after drop too
+                handleDragEnd(event);
+              }}
               collisionDetection={closestCorners}
               modifiers={viewStyle === "tile" && [restrictToVerticalAxis]}
             >
