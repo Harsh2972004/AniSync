@@ -24,10 +24,18 @@ const ListAnimeCard = ({
     transform: CSS.Transform.toString(transform),
   };
 
+  const noop = () => { }
+  const safeGuard = guard ?? {
+    onPointerDown: noop,
+    onPointerMove: noop,
+    onPointerUp: noop,
+    shouldAllowClick: () => true,
+  }
+
   return (
     <Link to={`/${id}`}
       onClickCapture={e => {
-        if (!guard.shouldAllowClick()) {
+        if (!safeGuard.shouldAllowClick()) {
           e.preventDefault()
           e.stopPropagation()
         }
@@ -42,10 +50,10 @@ const ListAnimeCard = ({
           : isDragging
             ? "cursor-grabbing"
             : "cursor-grab"}`}
-        onPointerDownCapture={guard.onPointerDown}
-        onPointerMoveCapture={guard.onPointerMove}
-        onPointerUpCapture={guard.onPointerUp}
-        onPointerCancelCapture={guard.onPointerUp}
+        onPointerDownCapture={safeGuard.onPointerDown}
+        onPointerMoveCapture={safeGuard.onPointerMove}
+        onPointerUpCapture={safeGuard.onPointerUp}
+        onPointerCancelCapture={safeGuard.onPointerUp}
       >
         <img
           className="rounded-md w-full max-h-[220px]"
