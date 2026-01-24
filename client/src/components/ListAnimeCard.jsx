@@ -23,7 +23,7 @@ const ListAnimeCard = ({
   };
 
   return (
-    <Link ref={"172463"}>
+    <Link to={`/${id}`}>
       <div
         ref={setNodeRef}
         {...attributes}
