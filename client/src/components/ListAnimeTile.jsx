@@ -18,25 +18,28 @@ const ListAnimeTile = ({ index, id, title, image }) => {
     cursor: "grab",
   };
   return (
-    <Link to={`/${id}`}>
-      <div
-        ref={setNodeRef}
-        {...attributes}
-        {...listeners}
-        style={style}
-        onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
-        onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
-        className="px-6 py-2 flex items-center justify-between bg-primary rounded-md touch-none"
-      >
-        <div className="flex items-center gap-4">
-          <span className="font-bold">{`${index})`}</span>
-          <img className="w-10 rounded-md" src={image} alt={`${title}-image`} />
-          <h4 className="text-sm font-semibold">{title}</h4>
-        </div>
 
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
+      onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
+      className="px-6 py-2 flex items-center justify-between bg-primary rounded-md touch-none"
+    >
+      <div className="flex items-center gap-4">
+        <span className="font-bold">{`${index})`}</span>
+        <img className="w-10 rounded-md" src={image} alt={`${title}-image`} />
+        <h4 className="text-sm font-semibold">{title}</h4>
+      </div>
+      <div>
+        <Link to={`/${id}`}>
+          <button>View Anime</button>
+        </Link>
         <span>{score ? score : "—"}</span>
       </div>
-    </Link>
+    </div>
   );
 };
 
