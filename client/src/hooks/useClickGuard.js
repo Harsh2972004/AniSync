@@ -21,13 +21,10 @@ export function useClickGuard({ moveThreshold = 6, suppressMs = 350 } = {}) {
   }, [moveThreshold]);
 
   const onPointerUp = useCallback(() => {
-    // ✅ if we dragged, suppress click for a bit
     if (start.current.moved) {
       suppressUntil.current = Date.now() + suppressMs;
     }
     start.current.active = false;
-    // IMPORTANT: do NOT keep moved=true forever
-    // We keep it true until click is checked, then reset in shouldAllowClick
   }, [suppressMs]);
 
   const markDraggedNow = useCallback(() => {
@@ -39,7 +36,6 @@ export function useClickGuard({ moveThreshold = 6, suppressMs = 350 } = {}) {
     const now = Date.now();
     const blocked = now < suppressUntil.current || start.current.moved;
 
-    // ✅ reset moved after decision, so next normal click can work
     start.current.moved = false;
 
     return !blocked;

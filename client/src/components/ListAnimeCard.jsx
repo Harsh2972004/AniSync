@@ -29,16 +29,22 @@ const ListAnimeCard = ({
     onPointerDown: noop,
     onPointerMove: noop,
     onPointerUp: noop,
-    shouldAllowClick: () => true,
   }
 
   return (
     <Link to={`/${id}`}
       onClickCapture={e => {
-        if (!safeGuard.shouldAllowClick()) {
-          e.preventDefault()
-          e.stopPropagation()
+        if (isDragging) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
         }
+
+        if (guard && !guard.shouldAllowClick()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
       }}>
       <div
         ref={setNodeRef}
