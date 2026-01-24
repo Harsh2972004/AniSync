@@ -12,6 +12,7 @@ const ListAnimeCard = ({
   onEditClick,
   onViewClick,
   list = true,
+  gaurd
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -23,15 +24,29 @@ const ListAnimeCard = ({
   };
 
   return (
-    <Link to={`/${id}`}>
+    <Link to={`/${id}`}
+      onClick={e => {
+        if (!guard.shouldAllowClick()) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }}>
       <div
         ref={setNodeRef}
         {...attributes}
         {...listeners}
         style={style}
-        onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
+        onMouseDown={(e) => {
+          if (!list) {
+            (e.currentTarget.style.cursor = "grabbing")
+          }
+        }}
         onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
         className="w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none"
+        onPointerDownCapture={guard.onPointerDown}
+        onPointerMoveCapture={guard.onPointerMove}
+        onPointerUpCapture={guard.onPointerUp}
+        onPointerCancelCapture={guard.onPointerUp}
       >
         <img
           className="rounded-md w-full max-h-[220px]"

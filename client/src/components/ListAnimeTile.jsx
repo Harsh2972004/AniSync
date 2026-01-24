@@ -41,11 +41,12 @@ const ListAnimeTile = ({ index, id, title, image, guard }) => {
       <div className="flex items-center justify-center gap-2">
         <Link to={`/${id}`}
           onClick={e => {
-            if (!shouldAllowClick()) {
+            if (!guard.shouldAllowClick()) {
               e.preventDefault()
               e.stopPropagation()
             }
           }}
+          className="p-2 bg-secondary"
         >
           <FaEye size={22} />
         </Link>
