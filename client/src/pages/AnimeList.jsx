@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import ListBar from "../components/ListBar";
 import ListAnimeCard from "../components/ListAnimeCard";
@@ -75,7 +75,15 @@ const AnimeList = () => {
   const getAnimePosition = (id, list) =>
     animeList.findIndex((anime) => anime.id === id);
 
+  const justDraggedUntilRef = useRef(0);
+
+
+  const shouldBlockClick = () => Date.now() < justDraggedUntilRef.current;
+
+
   const handleDragEnd = (event) => {
+    justDraggedUntilRef.current = Date.now() + 500; // 500ms window
+
     guard.markDraggedNow()
 
     const { active, over } = event;
@@ -207,6 +215,7 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
+                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="watching"
@@ -214,6 +223,7 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
+                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="completed"
@@ -221,6 +231,7 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
+                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="dropped"
@@ -228,6 +239,7 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
+                shouldBlockClick={shouldBlockClick}
               />
             </div>
           )}
@@ -298,6 +310,7 @@ const AnimeList = () => {
                           image={anime.coverImage.large}
                           list={false}
                           guard={guard}
+                          shouldBlockClick={shouldBlockClick}
                         />
                       )
                     )}

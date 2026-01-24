@@ -6,6 +6,7 @@ const AnimeListSection = ({
   animeList,
   onEditCardClick,
   onViewCardClick,
+  shouldBlockClick
 }) => {
   return (
     animeInfo?.animeList.find((i) => i.status === status) && (
@@ -33,6 +34,7 @@ const AnimeListSection = ({
                     anime.title.native
                   }
                   image={anime.coverImage.large}
+                  shouldBlockClick={shouldBlockClick}
                 />
               )
             );

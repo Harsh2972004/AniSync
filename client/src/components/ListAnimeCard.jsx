@@ -12,7 +12,8 @@ const ListAnimeCard = ({
   onEditClick,
   onViewClick,
   list = true,
-  guard
+  guard,
+  shouldBlockClick
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -33,18 +34,11 @@ const ListAnimeCard = ({
 
   return (
     <Link to={`/${id}`}
-      onClickCapture={e => {
-        if (isDragging) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-
-        if (guard && !guard.shouldAllowClick()) {
+      onClickCapture={(e) => {
+        if (shouldBlockClick?.()) {
           e.preventDefault();
           e.stopPropagation();
         }
-
       }}>
       <div
         ref={setNodeRef}
@@ -72,13 +66,21 @@ const ListAnimeCard = ({
         {list && (
           <div className="absolute right-2 top-2 flex gap-1">
             <button
-              onClick={onViewClick}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onViewClick?.(e);
+              }}
               className="lg:opacity-0 group-hover:opacity-100 p-1 bg-black/70 rounded-lg transition-all duration-200"
             >
               <FaEye size={20} />
             </button>
             <button
-              onClick={onEditClick}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onEditClick?.(e);
+              }}
               className="lg:opacity-0 group-hover:opacity-100 p-1 bg-black/70 rounded-lg transition-all duration-200"
             >
               <MdEdit size={20} />
