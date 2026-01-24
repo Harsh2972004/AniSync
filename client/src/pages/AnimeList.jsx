@@ -31,6 +31,7 @@ import {
 } from "@dnd-kit/sortable";
 import ListAnimeTile from "../components/ListAnimeTile";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { useClickGuard } from "../hooks/useClickGuard";
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
@@ -53,6 +54,8 @@ const AnimeList = () => {
   const options = { day: "numeric", month: "short", year: "numeric" };
   const formattedDate = createdAt.toLocaleDateString("en-GB", options);
 
+  const { markDraggedNow } = useClickGuard()
+
   const onEditCardClick = (animeCardInfo, info) => {
     setModalOpen(true);
     setSelectedAnime([animeCardInfo, info]);
@@ -73,15 +76,18 @@ const AnimeList = () => {
     animeList.findIndex((anime) => anime.id === id);
 
   const handleDragEnd = (event) => {
+    markDraggedNow()
+
     const { active, over } = event;
 
+    if (!over) return
     if (active.id === over.id) return;
 
     setAnimeList((prev) => {
       const originalPosition = getAnimePosition(active.id);
       const newPosition = getAnimePosition(over.id);
 
-      return arrayMove(animeList, originalPosition, newPosition);
+      return arrayMove(prev, originalPosition, newPosition);
     });
   };
 
