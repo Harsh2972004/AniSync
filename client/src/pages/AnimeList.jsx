@@ -48,6 +48,11 @@ const AnimeList = () => {
   const [bannerVideoOn, setBannerVideoOn] = useState(true);
   const [viewStyle, setViewStyle] = useState("tile"); //tile, card
 
+  const [reorderMode, setReorderMode] = useState(false);
+  const [dirtyOrder, setDirtyOrder] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+
   const createdAt = new Date(user.createdAt);
 
   const options = { day: "numeric", month: "short", year: "numeric" };
@@ -243,6 +248,12 @@ const AnimeList = () => {
                   <div className="flex gap-2">
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
+                      onClick={() => setReorderMode(!reorderMode)}
+                    >
+                      <RiListOrdered />
+                    </button>
+                    <button
+                      className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
                       onClick={() => setViewStyle("tile")}
                     >
                       <FaThList />
@@ -296,8 +307,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
-                          guard={guard}
-                          shouldBlockClick={shouldBlockClick}
+                          reorderMode={reorderMode}
                         />
                       )
                     )}

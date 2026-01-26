@@ -4,14 +4,14 @@ import { useUserContext } from "../context/UserListContext";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 
-const ListAnimeTile = ({ index, id, title, image }) => {
+const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
   const { animeInfo } = useUserContext();
 
   const anime = animeInfo.animeList.find((anime) => anime.animeId == id);
   const score = anime?.score;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id, disabled: !reorderMode });
 
   const style = {
     transition,
@@ -23,7 +23,7 @@ const ListAnimeTile = ({ index, id, title, image }) => {
     <div
       ref={setNodeRef}
       {...attributes}
-      {...listeners}
+      {...(reorderMode ? listeners : {})}
       style={style}
       onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
       onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
@@ -37,7 +37,7 @@ const ListAnimeTile = ({ index, id, title, image }) => {
       <div className="flex items-center justify-center gap-4">
         <Link to={`/${id}`}
           onClick={e => {
-            if (!guard.shouldAllowClick()) {
+            if (reorderMode) {
               e.preventDefault()
               e.stopPropagation()
             }

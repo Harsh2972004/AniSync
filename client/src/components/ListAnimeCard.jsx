@@ -12,9 +12,10 @@ const ListAnimeCard = ({
   onEditClick,
   onViewClick,
   list = true,
+  reorderMode
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id, disabled: !reorderMode });
 
   const isDragging = Boolean(transform)
 
@@ -25,9 +26,8 @@ const ListAnimeCard = ({
 
   return (
     <Link to={`/${id}`}
-
       onClickCapture={(e) => {
-        if ("write here") {
+        if (reorderMode) {
           e.preventDefault();
           e.stopPropagation();
         }
@@ -35,7 +35,7 @@ const ListAnimeCard = ({
       <div
         ref={setNodeRef}
         {...attributes}
-        {...listeners}
+        {...(reorderMode ? listeners : {})}
         style={style}
         className={`w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none ${list
           ? "cursor-default"
