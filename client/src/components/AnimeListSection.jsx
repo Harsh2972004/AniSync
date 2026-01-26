@@ -25,6 +25,7 @@ const AnimeListSection = ({
                 <ListAnimeCard
                   onEditClick={() => onEditCardClick(anime, info)}
                   onViewClick={() => onViewCardClick(anime, info)}
+                  id={anime.id}
                   key={anime.id}
                   title={
                     anime.title.english ||

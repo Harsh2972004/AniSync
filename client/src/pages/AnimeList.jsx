@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import ListBar from "../components/ListBar";
 import ListAnimeCard from "../components/ListAnimeCard";
@@ -31,6 +31,9 @@ import {
 } from "@dnd-kit/sortable";
 import ListAnimeTile from "../components/ListAnimeTile";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { RiListOrdered } from "react-icons/ri";
+import { API } from "../services/api";
+
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
@@ -39,14 +42,32 @@ const AnimeList = () => {
     animeList,
     setAnimeList,
     animeInfo,
+    setAnimeInfo,
     listTitle,
     setListTitle,
+    getAnimeList
   } = useUserContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [view, setView] = useState(null); //view, edit
   const [selectedAnime, setSelectedAnime] = useState(null);
   const [bannerVideoOn, setBannerVideoOn] = useState(true);
   const [viewStyle, setViewStyle] = useState("tile"); //tile, card
+
+  const [reorderMode, setReorderMode] = useState(false);
+  const [dirtyOrder, setDirtyOrder] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const originalRef = useRef([])
+
+  const startReorder = () => {
+    originalRef.current = animeList
+    setReorderMode(true)
+  }
+
+  const cancelReorder = () => {
+    setAnimeList(originalRef.current)
+    setDirtyOrder(false)
+    setReorderMode(false)
+  }
 
   const createdAt = new Date(user.createdAt);
 
@@ -69,20 +90,41 @@ const AnimeList = () => {
     setModalOpen(false), setSelectedAnime(null);
   };
 
-  const getAnimePosition = (id) =>
-    animeList.findIndex((anime) => anime.id === id);
+  const getAnimePosition = (id, list) =>
+    list.findIndex((anime) => anime.id === id);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
+    if (!over) return
     if (active.id === over.id) return;
 
     setAnimeList((prev) => {
-      const originalPosition = getAnimePosition(active.id);
-      const newPosition = getAnimePosition(over.id);
+      const originalPosition = getAnimePosition(active.id, prev);
+      const newPosition = getAnimePosition(over.id, prev);
 
-      return arrayMove(animeList, originalPosition, newPosition);
+      return arrayMove(prev, originalPosition, newPosition);
     });
+    setDirtyOrder(true)
+  };
+
+  const handleSaveOrder = async () => {
+    setIsSaving(true);
+    try {
+      const orderedIds = animeList.map((anime) => anime.id);
+      await API.put(
+        "/user/favourites/order",
+        { favourites: orderedIds },
+        { withCredentials: true }
+      );
+
+      setAnimeInfo((prev) => ({ ...prev, favourites: orderedIds }))
+
+      setDirtyOrder(false);
+      setReorderMode(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const sensors = useSensors(
@@ -137,7 +179,7 @@ const AnimeList = () => {
           </Modal>
         )}
       </AnimatePresence>
-      <div className="relative hidden lg:block group">
+      <div className="relative hidden lg:block group max-h-[40vh]">
         <AnimatePresence mode="wait">
           {!bannerVideoOn ? (
             <motion.img
@@ -228,6 +270,7 @@ const AnimeList = () => {
           {listTitle === "Favourites" && !isLoading && animeList.length > 0 && (
             <DndContext
               sensors={sensors}
+
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
               modifiers={viewStyle === "tile" && [restrictToVerticalAxis]}
@@ -235,7 +278,13 @@ const AnimeList = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-xl">Favourites</h3>
-                  <div className="flex gap-2">
+                  {!reorderMode ? <div className="flex gap-2">
+                    <button
+                      className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
+                      onClick={startReorder}
+                    >
+                      <RiListOrdered size={22} />
+                    </button>
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
                       onClick={() => setViewStyle("tile")}
@@ -248,7 +297,11 @@ const AnimeList = () => {
                     >
                       <IoGrid />
                     </button>
-                  </div>
+                  </div> :
+                    <div className="flex gap-4">
+                      <button className="px-4 py-2 border-2 rounded-lg" onClick={cancelReorder}>Cancel</button>
+                      <button className="px-4 py-2 border-2 border-btn_pink text-btn_pink hover:bg-btn_pink hover:text-black hover:font-semibold rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
+                    </div>}
                 </div>
                 <SortableContext
                   items={animeList}
@@ -278,6 +331,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
+                          reorderMode={reorderMode}
                         />
                       ) : (
                         <ListAnimeCard
@@ -290,6 +344,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
+                          reorderMode={reorderMode}
                         />
                       )
                     )}
@@ -307,7 +362,7 @@ const AnimeList = () => {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
