@@ -12,8 +12,6 @@ const ListAnimeCard = ({
   onEditClick,
   onViewClick,
   list = true,
-  guard,
-  shouldBlockClick
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -25,23 +23,11 @@ const ListAnimeCard = ({
     transform: CSS.Transform.toString(transform),
   };
 
-  const noop = () => { }
-  const safeGuard = guard ?? {
-    onPointerDown: noop,
-    onPointerMove: noop,
-    onPointerUp: noop,
-  }
-
   return (
     <Link to={`/${id}`}
-      onPointerDownCapture={(e) => {
-        if (shouldBlockClick?.()) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }}
+
       onClickCapture={(e) => {
-        if (shouldBlockClick?.()) {
+        if ("write here") {
           e.preventDefault();
           e.stopPropagation();
         }
@@ -56,10 +42,6 @@ const ListAnimeCard = ({
           : isDragging
             ? "cursor-grabbing"
             : "cursor-grab"}`}
-        onPointerDownCapture={safeGuard.onPointerDown}
-        onPointerMoveCapture={safeGuard.onPointerMove}
-        onPointerUpCapture={safeGuard.onPointerUp}
-        onPointerCancelCapture={safeGuard.onPointerUp}
       >
         <img
           className="rounded-md w-full max-h-[220px]"

@@ -31,7 +31,6 @@ import {
 } from "@dnd-kit/sortable";
 import ListAnimeTile from "../components/ListAnimeTile";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { useClickGuard } from "../hooks/useClickGuard";
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
@@ -53,14 +52,6 @@ const AnimeList = () => {
 
   const options = { day: "numeric", month: "short", year: "numeric" };
   const formattedDate = createdAt.toLocaleDateString("en-GB", options);
-
-  const guard = useClickGuard()
-
-  const justDraggedUntilRef = useRef(0);
-  const isDraggingRef = useRef(0)
-
-  const shouldBlockClick = () => isDraggingRef.current || Date.now() < justDraggedUntilRef.current;
-
 
   const onEditCardClick = (animeCardInfo, info) => {
     setModalOpen(true);
@@ -211,7 +202,6 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
-                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="watching"
@@ -219,7 +209,6 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
-                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="completed"
@@ -227,7 +216,6 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
-                shouldBlockClick={shouldBlockClick}
               />
               <AnimeListSection
                 status="dropped"
@@ -235,24 +223,15 @@ const AnimeList = () => {
                 animeInfo={animeInfo}
                 onEditCardClick={onEditCardClick}
                 onViewCardClick={onViewCardClick}
-                shouldBlockClick={shouldBlockClick}
               />
             </div>
           )}
           {listTitle === "Favourites" && !isLoading && animeList.length > 0 && (
             <DndContext
               sensors={sensors}
-              onDragStart={() => {
-                isDraggingRef.current = true;
-                justDraggedUntilRef.current = Date.now() + 800;
-              }}
-              onDragCancel={() => {
-                isDraggingRef.current = false;
-                justDraggedUntilRef.current = Date.now() + 800;
-              }}
+
               onDragEnd={(event) => {
-                isDraggingRef.current = false;
-                justDraggedUntilRef.current = Date.now() + 800; // block after drop too
+
                 handleDragEnd(event);
               }}
               collisionDetection={closestCorners}
