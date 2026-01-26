@@ -295,6 +295,7 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
+                          reorderMode={reorderMode}
                         />
                       ) : (
                         <ListAnimeCard
@@ -313,17 +314,17 @@ const AnimeList = () => {
                     )}
                   </div>
                 </SortableContext>
-                {
-                  reorderMode && (
-                    <div className="flex gap-4">
-                      <button onClick={setReorderMode(false)}>Cancel</button>
-                      <button>Save</button>
-                    </div>
-                  )
-                }
               </div>
             </DndContext>
           )}
+          {
+            reorderMode && (
+              <div className="flex gap-4">
+                <button onClick={setReorderMode(false)}>Cancel</button>
+                <button>Save</button>
+              </div>
+            )
+          }
           {animeList?.length === 0 && (
             <div className="flex items-center justify-center text-gray-400">
               <p>{`No Anime ${listTitle === "Favourites" ? "Favourited" : "in the list."
