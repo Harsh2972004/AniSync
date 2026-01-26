@@ -45,7 +45,7 @@ const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
     return CardBody
   }
 
-  return <Link to={`/${id}`}>{CardBody}</Link>
+  return <Link to={`/${id}`} className="block w-full">{CardBody}</Link>
 };
 
 export default ListAnimeTile;
