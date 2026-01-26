@@ -229,7 +229,7 @@ const AnimeList = () => {
           setTitle={setListTitle}
         />
         {isLoading && (
-          <div className="flex justify-center items-center h-80 text-gray-400">
+          <div className="flex justify-center items-center h-screen text-gray-400">
             <p>Loading please wait...</p>
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white animate-loading-bar" />
           </div>
