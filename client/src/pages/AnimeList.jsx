@@ -42,8 +42,10 @@ const AnimeList = () => {
     animeList,
     setAnimeList,
     animeInfo,
+    setAnimeInfo,
     listTitle,
     setListTitle,
+    getAnimeList
   } = useUserContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [view, setView] = useState(null); //view, edit
@@ -115,6 +117,9 @@ const AnimeList = () => {
         { favourites: orderedIds },
         { withCredentials: true }
       );
+
+      setAnimeInfo((prev) => ({ ...prev, favourites: orderedIds }))
+
       setDirtyOrder(false);
       setReorderMode(false);
     } finally {

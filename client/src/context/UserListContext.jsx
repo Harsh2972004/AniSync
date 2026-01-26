@@ -23,6 +23,14 @@ export const UserListProvider = ({ children }) => {
   const [animeInfo, setAnimeInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const orderByIds = (items, ids) => {
+    const map = new Map(items.map((a) => [Number(a.id), a]));
+    const ordered = ids.map((id) => map.get(Number(id))).filter(Boolean);
+    const rest = items.filter((a) => !ids.includes(Number(a.id)));
+    return [...ordered, ...rest];
+  };
+
+
   const getAnimeList = async () => {
     try {
       setIsLoading(true);
@@ -31,10 +39,12 @@ export const UserListProvider = ({ children }) => {
         getFavourites(),
       ]);
 
+      const favIds = favouritesResponse.data.favourites
+      const listIds = listResponse.data.animeList.map((anime) => anime.animeId);
       const animeIds =
         listTitle === "Favourites"
-          ? favouritesResponse.data.favourites.map((favourites) => favourites)
-          : listResponse.data.animeList.map((anime) => anime.animeId);
+          ? favIds
+          : listIds;
 
       if (animeIds.length === 0) {
         setAnimeList([]);
@@ -47,7 +57,13 @@ export const UserListProvider = ({ children }) => {
       }
 
       const animeResponse = await getAnimeForList(animeIds);
-      setAnimeList(animeResponse.data);
+
+      const fetched = animeResponse.data || []
+
+      const finalList = listTitle === "Favourites" ? orderByIds(fetched, favIds) : fetched
+
+      setAnimeList(finalList);
+
       setAnimeInfo({
         animeList: listResponse.data?.animeList || [],
         favourites: favouritesResponse.data?.favourites || [],
