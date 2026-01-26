@@ -236,10 +236,7 @@ const AnimeList = () => {
             <DndContext
               sensors={sensors}
 
-              onDragEnd={(event) => {
-
-                handleDragEnd(event);
-              }}
+              onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
               modifiers={viewStyle === "tile" && [restrictToVerticalAxis]}
             >
@@ -320,7 +317,7 @@ const AnimeList = () => {
           {
             reorderMode && (
               <div className="flex gap-4">
-                <button onClick={setReorderMode(false)}>Cancel</button>
+                <button onClick={() => setReorderMode(false)}>Cancel</button>
                 <button>Save</button>
               </div>
             )
@@ -334,7 +331,7 @@ const AnimeList = () => {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
