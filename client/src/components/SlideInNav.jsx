@@ -17,7 +17,7 @@ const SlideInNav = ({ hide, setHide }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const { user, userAvatar, userBanner, logoutUser, isLoading } = useAuth();
+  const { user, logoutUser, isLoading } = useAuth();
 
   const createdAt = new Date(user?.createdAt);
 
@@ -63,9 +63,9 @@ const SlideInNav = ({ hide, setHide }) => {
             <ProfileSection
               name={user.name}
               email={user.email}
-              bannerImage={userBanner || user.anilistBannerImage || bannerImage}
+              bannerImage={user?.profileBannerUrl || user.anilistBannerImage || bannerImage}
               createdAt={formattedDate}
-              avatar={userAvatar || user.anilistAvatar || defaultAvatar}
+              avatar={user?.avatarUrl || user.anilistAvatar || defaultAvatar}
               setShowModal={setShowModal}
               logoutUser={logoutUser}
             />
@@ -129,7 +129,7 @@ const SlideInNav = ({ hide, setHide }) => {
             >
               <img
                 className="w-12 h-12 object-cover object-center rounded-full"
-                src={userAvatar || user.anilistAvatar || defaultAvatar}
+                src={user?.avatarUrl || user.anilistAvatar || defaultAvatar}
                 alt=""
               />
 

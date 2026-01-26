@@ -1,5 +1,5 @@
-import { fetchFromAnilist } from "./anilistHelper.js";
-import { paginatedMediaQuery } from "./anilistQueries.js";
+import { fetchFromAnilist } from "../utils/anilistHelper.js";
+import { paginatedMediaQuery } from "../utils/anilistQueries.js";
 import axios from "axios";
 
 export const searchMedia = (mediaType) => async (req, res, next) => {

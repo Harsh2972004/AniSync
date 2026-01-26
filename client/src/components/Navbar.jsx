@@ -22,7 +22,7 @@ const Navbar = ({
   const [hide, setHide] = useState(false);
   const [lastScrollY, setLastScrollY] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const { user, userAvatar, userBanner, logoutUser, isLoading } = useAuth();
+  const { user, logoutUser, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "home";
   });
@@ -73,9 +73,9 @@ const Navbar = ({
             <ProfileSection
               name={user.name}
               email={user.email}
-              bannerImage={userBanner || user.anilistBannerImage || bannerImage}
+              bannerImage={user?.profileBannerUrl || user.anilistBannerImage || bannerImage}
               createdAt={formattedDate}
-              avatar={userAvatar || user.anilistAvatar || defaultAvatar}
+              avatar={user?.avatarUrl || user.anilistAvatar || defaultAvatar}
               setShowModal={setShowModal}
               logoutUser={logoutUser}
             />
@@ -120,7 +120,7 @@ const Navbar = ({
           >
             <img
               className="w-8 h-8 object-cover object-center rounded-full"
-              src={userAvatar || user.anilistAvatar || defaultAvatar}
+              src={user?.avatarUrl || user.anilistAvatar || defaultAvatar}
               alt=""
             />
 
