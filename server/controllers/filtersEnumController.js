@@ -1,5 +1,5 @@
-import { fetchFromAnilist } from "./anilistHelper.js";
-import { introspectionQuery } from "./anilistQueries.js";
+import { fetchFromAnilist } from "../utils/anilistHelper.js";
+import { introspectionQuery } from "../utils/anilistQueries.js";
 
 let cachedFilters = null;
 let lastFetched = null;

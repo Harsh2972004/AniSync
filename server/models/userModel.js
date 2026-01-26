@@ -44,11 +44,19 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    avatar: {
+    avatarUrl: {
       type: String,
       default: null,
     },
-    profileBanner: {
+    avatarPublicId: {
+      type: String,
+      default: null
+    },
+    profileBannerUrl: {
+      type: String,
+      default: null,
+    },
+    profileBannerPublicId: {
       type: String,
       default: null,
     },
@@ -142,7 +150,7 @@ userSchema.statics.register = async function (
 
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
-    err.errors = errors; 
+    err.errors = errors;
     throw err;
   }
 

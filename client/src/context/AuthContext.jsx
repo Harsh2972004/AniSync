@@ -1,7 +1,5 @@
 import { useContext, useState, useEffect, createContext } from "react";
 import {
-  getAvatar,
-  getBannerImage,
   login,
   logout,
   register,
@@ -12,8 +10,6 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [userAvatar, setUserAvatar] = useState(null);
-  const [userBanner, setUserBanner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [authChanged, setAuthChanged] = useState(false);
 
@@ -37,38 +33,6 @@ export const AuthProvider = ({ children }) => {
     };
     fetchUser();
   }, [authChanged]);
-
-  useEffect(() => {
-    const fetchUserAvatar = async () => {
-      if (!user || !user.avatar) return setUserAvatar(null);
-
-      try {
-        const response = await getAvatar(user.avatar);
-        const avatarUrl = URL.createObjectURL(response.data);
-        setUserAvatar(avatarUrl);
-      } catch (error) {
-        console.error("Failed to fetch avatar:", error);
-      }
-    };
-
-    fetchUserAvatar();
-  }, [user?.avatar]);
-
-  useEffect(() => {
-    const fetchUserBanner = async () => {
-      if (!user || !user.profileBanner) return setUserBanner(null);
-
-      try {
-        const response = await getBannerImage(user.profileBanner);
-        const bannerUrl = URL.createObjectURL(response.data);
-        setUserBanner(bannerUrl);
-      } catch (error) {
-        console.error("Failed to fetch banner:", error);
-      }
-    };
-
-    fetchUserBanner();
-  }, [user?.profileBanner]);
 
   const updateUser = async () => {
     try {
@@ -125,9 +89,6 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        userAvatar,
-        userBanner,
-        setUserAvatar,
         isLoading,
         loginUser,
         logoutUser,

@@ -36,7 +36,7 @@ import { API } from "../services/api";
 
 
 const AnimeList = () => {
-  const { user, userAvatar, userBanner } = useAuth();
+  const { user } = useAuth();
   const {
     isLoading,
     animeList,
@@ -184,7 +184,7 @@ const AnimeList = () => {
           {!bannerVideoOn ? (
             <motion.img
               key="image"
-              src={userBanner || user.anilistBannerImage || bannerImage}
+              src={user?.profileBannerUrl || user.anilistBannerImage || bannerImage}
               alt="banner-image"
               className="w-full h-full object-cover"
               initial={{ opacity: 0 }}
@@ -216,14 +216,14 @@ const AnimeList = () => {
 
       {/* banner on smaller devices */}
       <img
-        src={userBanner || user.anilistBannerImage || bannerImage}
+        src={user?.profileBannerUrl || user.anilistBannerImage || bannerImage}
         alt="banner-image"
         className="lg:hidden w-full h-[25vh] md:h-[30vh] object-cover"
       />
       <div className="container-spacing flex flex-col gap-8 h-full">
         <ListBar
           username={user.name}
-          avatar={userAvatar || user.anilistAvatar}
+          avatar={user?.avatarUrl || user.anilistAvatar}
           formattedDate={formattedDate}
           title={listTitle}
           setTitle={setListTitle}

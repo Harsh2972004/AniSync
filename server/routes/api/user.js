@@ -8,9 +8,7 @@ import {
   resetPassword,
   resendOtp,
   uploadProfileAvatatr,
-  getAvatar,
   uploadBannerImage,
-  getBannerImage,
   updateUserName,
   updateUserPassword,
   updateUserFavouritesOrder,
@@ -67,10 +65,6 @@ router.post(
   upload.single("profileBanner"),
   uploadBannerImage
 );
-
-router.get("/getAvatar/:filename", isAuthenticated, getAvatar);
-
-router.get("/get-banner-image/:filename", isAuthenticated, getBannerImage);
 
 router.put("/favourites/order", isAuthenticated, updateUserFavouritesOrder);
 

@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 import fs from "fs";
 import jwt from "jsonwebtoken"
+import { uploadBufferToCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.js";
 
 const signToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -61,7 +62,7 @@ export const resendOtp = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email })
     if (!user) {
       const error = new Error("User not found");
       error.statusCode = 404;
@@ -268,10 +269,10 @@ export const loginUser = async (req, res, next) => {
       return res.status(400).json({ message: info.message });
     }
 
-   sendTokenCookie(user, res)
+    sendTokenCookie(user, res)
 
-      return res.json({ name: user.name, email: user.email });
-    
+    return res.json({ name: user.name, email: user.email });
+
   })(req, res, next);
 };
 
@@ -354,118 +355,106 @@ export const updateUserName = async (req, res, next) => {
   }
 };
 
-export const uploadProfileAvatatr = async (req, res) => {
+export const uploadProfileAvatatr = async (req, res, next) => {
   try {
     const id = req.user.id;
 
-    // Fetch user to get old avatar
-    const user = await User.findById(id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    // Delete old avatar if it exists
-    if (user.avatar) {
-      const oldPath = path.join(process.cwd(), "uploads", user.avatar);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath); // delete old file
-      }
+    if (!req.file?.buffer) {
+      const err = new Error("no image uploaded")
+      err.statusCode = 400
+      return next(err)
     }
 
-    const normalizePath = req.file.path.replace(/\\/g, "/");
-    const profileAvatar = normalizePath.split("/").pop();
+    const user = await User.findById(id)
+    if (!user) {
+      const err = new Error("User not found");
+      err.statusCode = 404;
+      return next(err);
+    }
 
-    user.avatar = profileAvatar;
+    // delete old avatar from cloudinary
+    await deleteFromCloudinary(user.avatarPublicId);
+
+    // upload new
+    const result = await uploadBufferToCloudinary({
+      buffer: req.file.buffer,
+      folder: "anisync/avatars",
+      publicId: `user_${id}_avatar`,
+    });
+
+    user.avatarUrl = result.secure_url;
+    user.avatarPublicId = result.public_id;
     await user.save();
 
-    res.json({ message: "profile Updated", avatar: profileAvatar });
+    res.json({ message: "Avatar updated", avatarUrl: user.avatarUrl });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error)
   }
 };
 
-export const getAvatar = async (req, res, next) => {
-  const { filename } = req.params;
-  try {
-    const filePath = path.join(process.cwd(), "uploads", filename);
-
-    if (!fs.existsSync(filePath)) {
-      const error = new Error("File not found");
-      error.statusCode = 404;
-      return next(error);
-    }
-
-    res.sendFile(filePath);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const uploadBannerImage = async (req, res) => {
+export const uploadBannerImage = async (req, res, next) => {
   try {
     const id = req.user.id;
 
+    if (!req.file?.buffer) {
+      const err = new Error("No image uploaded");
+      err.statusCode = 400;
+      return next(err);
+    }
+
     const user = await User.findById(id);
-    if (!user) return res.status(404).json({ error: "user not found." });
-
-    if (user.profileBanner) {
-      const oldPath = path.join(process.cwd(), "uploads", user.profileBanner);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
+    if (!user) {
+      const err = new Error("User not found");
+      err.statusCode = 404;
+      return next(err);
     }
 
-    const normalizedPath = req.file.path.replace(/\\/g, "/");
-    const profileBanner = normalizedPath.split("/").pop();
+    await deleteFromCloudinary(user.profileBannerPublicId);
 
-    user.profileBanner = profileBanner;
+    const result = await uploadBufferToCloudinary({
+      buffer: req.file.buffer,
+      folder: "anisync/banners",
+      publicId: `user_${id}_banner`,
+    });
+
+    user.profileBannerUrl = result.secure_url;
+    user.profileBannerPublicId = result.public_id;
     await user.save();
-    res.json({ message: "banner Updated", profileBanner });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
-export const getBannerImage = async (req, res, next) => {
-  const { filename } = req.params;
-  try {
-    const filePath = path.join(process.cwd(), "uploads", filename);
-    if (!fs.existsSync(filePath)) {
-      const error = new Error("banner image not found");
-      error.statusCode = 404;
-      return next(error);
-    }
+    res.json({ message: "Banner updated", bannerUrl: user.profileBannerUrl });
 
-    res.sendFile(filePath);
   } catch (error) {
-    next(error);
+    next(error)
   }
 };
 
 export const updateUserFavouritesOrder = async (req, res, next) => {
   try {
     const userId = req.user.id
-    const {favourites} = req.body
-    
-if(!Array.isArray(favourites)){
-  const err = new Error("Favourites must be an array")
-  err.statusCode = 400
-  return next(err)
-}
-// validate all are numbers
-if (!favourites.every((id) => Number.isFinite(Number(id)))) {
-  const err = new Error("Invalid favourites ids");
-  err.statusCode = 400;
-  return next(err);
-}
+    const { favourites } = req.body
 
-const user = await User.findByIdAndUpdate(
-  userId,
-  { favourites: favourites.map(Number) },
-  { new: true }
-)
+    if (!Array.isArray(favourites)) {
+      const err = new Error("Favourites must be an array")
+      err.statusCode = 400
+      return next(err)
+    }
+    // validate all are numbers
+    if (!favourites.every((id) => Number.isFinite(Number(id)))) {
+      const err = new Error("Invalid favourites ids");
+      err.statusCode = 400;
+      return next(err);
+    }
 
-res.status(200).json({ message: "Favourites order saved", favourites: user.favourites });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { favourites: favourites.map(Number) },
+      { new: true }
+    )
 
-  } catch(error){
+    res.status(200).json({ message: "Favourites order saved", favourites: user.favourites });
+
+  } catch (error) {
     next(error)
   }
 }
