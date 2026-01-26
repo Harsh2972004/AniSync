@@ -105,7 +105,7 @@ const Navbar = ({
             {/* <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/mangaList">Manga List</Link>
             </li> */}
-            <li onClick={() => setActive("browse")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${activeTab === "browse" ? "underline" : ""}`}>
+            <li onClick={() => setActiveTab("browse")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${activeTab === "browse" ? "underline" : ""}`}>
               <Link to="/browse">Browse</Link>
             </li>
           </ul>
