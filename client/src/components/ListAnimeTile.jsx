@@ -3,10 +3,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useUserContext } from "../context/UserListContext";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
-import { isDragging } from "motion/react";
 
 const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
   const { animeInfo } = useUserContext();
+
+  const isDragging = Boolean(transform)
 
   const anime = animeInfo.animeList.find((anime) => anime.animeId == id);
   const score = anime?.score;
