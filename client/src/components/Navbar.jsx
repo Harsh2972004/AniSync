@@ -23,7 +23,13 @@ const Navbar = ({
   const [lastScrollY, setLastScrollY] = useState("");
   const [showModal, setShowModal] = useState(false);
   const { user, userAvatar, userBanner, logoutUser, isLoading } = useAuth();
-  const [active, setActive] = useState("home")
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeTab") || "home";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   const createdAt = new Date(user?.createdAt);
 
