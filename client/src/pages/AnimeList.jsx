@@ -249,9 +249,9 @@ const AnimeList = () => {
                   <div className="flex gap-2">
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
-                      onClick={() => setReorderMode(!reorderMode)}
+                      onClick={() => setReorderMode(true)}
                     >
-                      <RiListOrdered />
+                      <RiListOrdered size={22} />
                     </button>
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
