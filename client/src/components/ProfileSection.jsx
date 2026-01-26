@@ -94,7 +94,7 @@ const ProfileSection = ({
         className="relative group overflow-hidden"
       >
         <img
-          className="rounded-t-lg h-[15vh] lg:h-auto object-cover"
+          className="rounded-t-lg h-[15vh] w-full lg:h-auto object-cover"
           src={bannerImage}
           alt={`${name}-banner`}
         />
