@@ -31,6 +31,7 @@ import {
 } from "@dnd-kit/sortable";
 import ListAnimeTile from "../components/ListAnimeTile";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { RiListOrdered } from "react-icons/ri";
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
