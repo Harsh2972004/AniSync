@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { uploadAvatar, uploadBanner } from "../services/auth";
 import ImageCropper from "./ImageCropper";
 import { useAuth } from "../context/AuthContext";
