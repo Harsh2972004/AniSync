@@ -28,7 +28,7 @@ const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
       onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
       onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
       className={`px-6 py-2 flex items-center justify-between bg-primary rounded-md ${reorderMode ? "touch-none " : "touch-manipulation"} ${!reorderMode
-        ? "cursor-default" : isDragging ? "cursor-grabbing"
+        ? "cursor-default" : isDragging && reorderMode ? "cursor-grabbing"
           : "cursor-grab"
         }`}
 
