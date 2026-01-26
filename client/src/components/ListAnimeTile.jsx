@@ -7,8 +7,6 @@ import { FaEye } from "react-icons/fa";
 const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
   const { animeInfo } = useUserContext();
 
-  const isDragging = Boolean(transform)
-
   const anime = animeInfo.animeList.find((anime) => anime.animeId == id);
   const score = anime?.score;
 
@@ -19,6 +17,9 @@ const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
     transition,
     transform: CSS.Transform.toString(transform),
   };
+
+  const isDragging = Boolean(transform)
+
   return (
 
     <div
