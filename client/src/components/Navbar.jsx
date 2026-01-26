@@ -93,13 +93,13 @@ const Navbar = ({
             <li onClick={() => setActive("home")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${active === "home" ? "underline" : ""}`}>
               <Link to="/">Home</Link>
             </li>
-            <li onClick={() => setActive("list")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${active === "home" ? "underline" : ""}`}>
+            <li onClick={() => setActive("list")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${active === "list" ? "underline" : ""}`}>
               <Link to="/animeList">Anime List</Link>
             </li>
             {/* <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/mangaList">Manga List</Link>
             </li> */}
-            <li onClick={() => setActive("browse")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${active === "home" ? "underline" : ""}`}>
+            <li onClick={() => setActive("browse")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${active === "browse" ? "underline" : ""}`}>
               <Link to="/browse">Browse</Link>
             </li>
           </ul>
