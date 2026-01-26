@@ -295,7 +295,7 @@ const AnimeList = () => {
                   </div> :
                     <div className="flex gap-4">
                       <button className="px-4 py-2 border-2 rounded-lg" onClick={cancelReorder}>Cancel</button>
-                      <button className="px-4 py-2 border-2 border-btn_pink text-btn_pink hover:bg-btn_pink hover:text-black rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
+                      <button className="px-4 py-2 border-2 border-btn_pink text-btn_pink hover:bg-btn_pink hover:text-black hover:font-semibold rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
                     </div>}
                 </div>
                 <SortableContext
