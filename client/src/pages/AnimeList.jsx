@@ -313,6 +313,14 @@ const AnimeList = () => {
                     )}
                   </div>
                 </SortableContext>
+                {
+                  reorderMode && (
+                    <div className="flex gap-4">
+                      <button onClick={setReorderMode(false)}>Cancel</button>
+                      <button>Save</button>
+                    </div>
+                  )
+                }
               </div>
             </DndContext>
           )}
