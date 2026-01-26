@@ -294,7 +294,6 @@ const AnimeList = () => {
                           }
                           image={anime.coverImage.large}
                           list={false}
-                          guard={guard}
                         />
                       ) : (
                         <ListAnimeCard
