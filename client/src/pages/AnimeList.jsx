@@ -88,7 +88,7 @@ const AnimeList = () => {
     setModalOpen(false), setSelectedAnime(null);
   };
 
-  const getAnimePosition = (id, list = []) =>
+  const getAnimePosition = (id, list) =>
     list.findIndex((anime) => anime.id === id);
 
   const handleDragEnd = (event) => {
