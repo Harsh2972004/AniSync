@@ -32,6 +32,8 @@ import {
 import ListAnimeTile from "../components/ListAnimeTile";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { RiListOrdered } from "react-icons/ri";
+import { API } from "../services/api";
+
 
 const AnimeList = () => {
   const { user, userAvatar, userBanner } = useAuth();
@@ -271,7 +273,7 @@ const AnimeList = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-xl">Favourites</h3>
-                  {reorderMode ? <div className="flex gap-2">
+                  {!reorderMode ? <div className="flex gap-2">
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
                       onClick={startReorder}
