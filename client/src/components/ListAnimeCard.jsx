@@ -37,9 +37,9 @@ const ListAnimeCard = ({
         {...attributes}
         {...(reorderMode ? listeners : {})}
         style={style}
-        className={`w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none ${list
+        className={`w-[40vw] md:w-[20vw] xl:w-44 relative rounded-md group touch-none ${reorderMode ? "touch-none " : "touch-manipulation"} ${list
           ? "cursor-default"
-          : isDragging
+          : isDragging && reorderMode
             ? "cursor-grabbing"
             : "cursor-grab"}`}
       >

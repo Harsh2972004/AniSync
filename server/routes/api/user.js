@@ -13,6 +13,7 @@ import {
   getBannerImage,
   updateUserName,
   updateUserPassword,
+  updateUserFavouritesOrder,
 } from "../../controllers/userController.js";
 import {
   otpLimiter,
@@ -71,6 +72,8 @@ router.get("/getAvatar/:filename", isAuthenticated, getAvatar);
 
 router.get("/get-banner-image/:filename", isAuthenticated, getBannerImage);
 
+router.put("/favourites/order", isAuthenticated, updateUserFavouritesOrder);
+
 router.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"], session: false })
@@ -97,13 +100,13 @@ router.get(
 );
 
 // AniList authentication routes
-router.get("/auth/anilist", passport.authenticate("anilist", {session:false}),);
+router.get("/auth/anilist", passport.authenticate("anilist", { session: false }),);
 
 router.get(
   "/auth/anilist/anisync",
   passport.authenticate("anilist", {
     failureRedirect: "/login",
-    session:false
+    session: false
   }),
   (req, res) => {
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });

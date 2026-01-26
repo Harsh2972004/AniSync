@@ -439,3 +439,33 @@ export const getBannerImage = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateUserFavouritesOrder = async (req, res, next) => {
+  try {
+    const userId = req.user.id
+    const {favourites} = req.body
+    
+if(!Array.isArray(favourites)){
+  const err = new Error("Favourites must be an array")
+  err.statusCode = 400
+  return next(err)
+}
+// validate all are numbers
+if (!favourites.every((id) => Number.isFinite(Number(id)))) {
+  const err = new Error("Invalid favourites ids");
+  err.statusCode = 400;
+  return next(err);
+}
+
+const user = await User.findByIdAndUpdate(
+  userId,
+  { favourites: favourites.map(Number) },
+  { new: true }
+)
+
+res.status(200).json({ message: "Favourites order saved", favourites: user.favourites });
+
+  } catch(error){
+    next(error)
+  }
+}

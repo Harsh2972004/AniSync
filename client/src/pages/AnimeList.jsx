@@ -52,7 +52,18 @@ const AnimeList = () => {
   const [reorderMode, setReorderMode] = useState(false);
   const [dirtyOrder, setDirtyOrder] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const originalRef = useRef([])
 
+  const startReorder = () => {
+    originalRef.current = animeList
+    setReorderMode(true)
+  }
+
+  const cancelReorder = () => {
+    setAnimeList(originalRef.current)
+    setDirtyOrder(false)
+    setReorderMode(false)
+  }
 
   const createdAt = new Date(user.createdAt);
 
@@ -90,6 +101,23 @@ const AnimeList = () => {
 
       return arrayMove(prev, originalPosition, newPosition);
     });
+    setDirtyOrder(true)
+  };
+
+  const handleSaveOrder = async () => {
+    setIsSaving(true);
+    try {
+      const orderedIds = animeList.map((anime) => anime.id);
+      await API.put(
+        "/user/favourites/order",
+        { favourites: orderedIds },
+        { withCredentials: true }
+      );
+      setDirtyOrder(false);
+      setReorderMode(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const sensors = useSensors(
@@ -243,10 +271,10 @@ const AnimeList = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-xl">Favourites</h3>
-                  <div className="flex gap-2">
+                  {reorderMode ? <div className="flex gap-2">
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
-                      onClick={() => setReorderMode(true)}
+                      onClick={startReorder}
                     >
                       <RiListOrdered size={22} />
                     </button>
@@ -262,7 +290,11 @@ const AnimeList = () => {
                     >
                       <IoGrid />
                     </button>
-                  </div>
+                  </div> :
+                    <div className="flex gap-4">
+                      <button className="p-4 border-2 rounded-lg" onClick={cancelReorder}>Cancel</button>
+                      <button className="p-4 border-2 border-btn_pink hover:bg-btn_pink hover:text-black rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
+                    </div>}
                 </div>
                 <SortableContext
                   items={animeList}
@@ -317,8 +349,8 @@ const AnimeList = () => {
           {
             reorderMode && (
               <div className="flex gap-4">
-                <button onClick={() => setReorderMode(false)}>Cancel</button>
-                <button>Save</button>
+                <button className="p-4 border-2 rounded-lg" onClick={() => setReorderMode(false)}>Cancel</button>
+                <button className="p-4 border-2 border-btn_pink hover:bg-btn_pink hover:text-black rounded-lg ">Save</button>
               </div>
             )
           }
