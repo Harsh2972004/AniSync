@@ -294,8 +294,8 @@ const AnimeList = () => {
                     </button>
                   </div> :
                     <div className="flex gap-4">
-                      <button className="p-4 border-2 rounded-lg" onClick={cancelReorder}>Cancel</button>
-                      <button className="p-4 border-2 border-btn_pink hover:bg-btn_pink hover:text-black rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
+                      <button className="px-4 py-2 border-2 rounded-lg" onClick={cancelReorder}>Cancel</button>
+                      <button className="px-4 py-2 border-2 border-btn_pink hover:bg-btn_pink hover:text-black rounded-lg " disabled={!dirtyOrder || isSaving} onClick={handleSaveOrder}>{isSaving ? "Saving.." : "Save"}</button>
                     </div>}
                 </div>
                 <SortableContext
@@ -348,14 +348,6 @@ const AnimeList = () => {
               </div>
             </DndContext>
           )}
-          {
-            reorderMode && (
-              <div className="flex gap-4">
-                <button className="p-4 border-2 rounded-lg" onClick={() => setReorderMode(false)}>Cancel</button>
-                <button className="p-4 border-2 border-btn_pink hover:bg-btn_pink hover:text-black rounded-lg ">Save</button>
-              </div>
-            )
-          }
           {animeList?.length === 0 && (
             <div className="flex items-center justify-center text-gray-400">
               <p>{`No Anime ${listTitle === "Favourites" ? "Favourited" : "in the list."
