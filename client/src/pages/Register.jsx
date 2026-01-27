@@ -51,7 +51,7 @@ const Register = () => {
     } catch (error) {
       console.error("Error registering user:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.errors || "Registration failed");
+        setError(error.response.data.message || "Registration failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
