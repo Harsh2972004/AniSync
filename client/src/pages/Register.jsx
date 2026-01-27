@@ -23,7 +23,7 @@ const Register = () => {
   ); // "form" or "otp"
   const [otp, setOtp] = useState("");
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
