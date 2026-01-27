@@ -263,12 +263,31 @@ export const registerUser = async (req, res, next) => {
 };
 
 export const loginUser = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // manual validation FIRST
+  const errors = {};
+  if (!email) errors.email = "Please enter an email";
+  if (!password) errors.password = "Please enter a password";
+
+  if (Object.keys(errors).length > 0) {
+    const err = new Error("Validation failed");
+    err.errors = errors;
+    err.statusCode = 400;
+    return next(err);
+  }
+
   passport.authenticate("local", { session: false }, (err, user, info) => {
-    if (err || !user) {
-      return res.status(400).json({ message: info.message });
+    if (err) return next(err);
+
+    if (!user) {
+      const err = new Error("Invalid credentials");
+      err.errors = { credentials: info.message };
+      err.statusCode = 400;
+      return next(err);
     }
 
-    sendTokenCookie(user, res)
+    sendTokenCookie(user, res);
 
     return res.json({
       user: {
