@@ -3,8 +3,7 @@ import { sendEmail } from "../config/email.js";
 import passport from "passport";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import path from "path";
-import fs from "fs";
+import validator from "validator";
 import jwt from "jsonwebtoken"
 import { uploadBufferToCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.js";
 
@@ -267,8 +266,24 @@ export const loginUser = async (req, res, next) => {
 
   // manual validation FIRST
   const errors = {};
-  if (!email) errors.email = "Please enter an email";
+  if (!email) {
+    errors.email = "Please enter an email";
+  } else if (!validator.isEmail(email)) {
+    errors.email = "Please enter a valid email address";
+  }
   if (!password) errors.password = "Please enter a password";
+
+  if (Object.keys(errors).length === 0) {
+    const user = await this.findOne({ email });
+    if (!user) {
+      errors.credentials = "Invalid email or password";
+    } else {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        errors.credentials = "Invalid email or password";
+      }
+    }
+  }
 
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
