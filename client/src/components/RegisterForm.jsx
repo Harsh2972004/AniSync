@@ -29,8 +29,8 @@ const RegisterForm = ({
           autoComplete="username"
           className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
-        {error && (
-          <p className="text-red-500 text-sm font-semibold">{error}</p>
+        {error.name && (
+          <p className="text-red-500 text-sm font-semibold">{error.name}</p>
         )}
       </div>
       <div className="flex flex-col space-y-2">
@@ -45,8 +45,8 @@ const RegisterForm = ({
           autoComplete="email"
           className="w-full md:w-[400px] h-12 p-2 rounded-lg border-2 border-gray-600 bg-secondary"
         />
-        {error && (
-          <p className="text-red-500 text-sm font-semibold">{error}</p>
+        {error.email && (
+          <p className="text-red-500 text-sm font-semibold">{error.email}</p>
         )}
       </div>
       <div className="flex flex-col space-y-2">
@@ -75,8 +75,8 @@ const RegisterForm = ({
             )}
           </button>
         </div>
-        {error && (
-          <p className="text-red-500 text-sm font-semibold">{error}</p>
+        {error.password && (
+          <p className="text-red-500 text-sm font-semibold">{error.password}</p>
         )}
       </div>
       {userDetails.password ? (
@@ -105,9 +105,9 @@ const RegisterForm = ({
               )}
             </button>
           </div>
-          {error && (
+          {error.confirmPassword && (
             <p className="text-red-500 text-sm font-semibold">
-              {error}
+              {error.confirmPassword}
             </p>
           )}
         </div>

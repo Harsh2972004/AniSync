@@ -150,6 +150,7 @@ userSchema.statics.register = async function (
 
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
+    err.statusCode = 400
     err.errors = errors;
     throw err;
   }

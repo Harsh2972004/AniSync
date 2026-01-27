@@ -1,55 +1,50 @@
 const errorHandler = (err, req, res, next) => {
-  // Get the error message
-  let error = { ...err };
-  error.message = err.message;
+  const statusCode = err.statusCode || 500;
 
-  // Log error for debugging (in development)
   if (process.env.NODE_ENV === "development") {
-    console.error("Error:", err);
+    console.error("ERROR:", err);
   }
 
-  // Mongoose Bad ObjectId (invalid MongoDB ID format)
-  if (err.name === "CastError") {
-    const message = "Resource not found";
-    error = { message, statusCode: 404 };
+  // custom validation errors
+  if (err.errors && typeof err.errors === "object") {
+    return res.status(statusCode).json({
+      success: false,
+      errors: err.errors,
+    });
   }
 
-  // Mongoose Duplicate Key (trying to create duplicate unique field)
+  // Mongoose duplicate key
   if (err.code === 11000) {
-    const message = "Duplicate field value entered";
-    error = { message, statusCode: 400 };
+    return res.status(400).json({
+      success: false,
+      message: "Duplicate field value entered",
+    });
   }
 
-  // Mongoose Validation Error (required fields missing, invalid data)
+  // Mongoose validation
   if (err.name === "ValidationError") {
-    const message = Object.values(err.errors)
-      .map((val) => val.message)
-      .join(", ");
-    error = { message, statusCode: 400 };
+    return res.status(400).json({
+      success: false,
+      message: Object.values(err.errors)
+        .map((e) => e.message)
+        .join(", "),
+    });
   }
 
-  // JWT Errors
+  // JWT
   if (err.name === "JsonWebTokenError") {
-    const message = "Invalid token";
-    error = { message, statusCode: 401 };
+    return res.status(401).json({
+      success: false,
+      message: "Invalid token",
+    });
   }
-
-  if (err.name === "TokenExpiredError") {
-    const message = "Token expired";
-    error = { message, statusCode: 401 };
-  }
-
-  const statusCode = error.statusCode || 500;
-
-  const message =
-    process.env.NODE_ENV === "production" && statusCode === 500
-      ? "Internal Server Error"
-      : error.message;
 
   res.status(statusCode).json({
     success: false,
-    message: message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    message:
+      process.env.NODE_ENV === "production" && statusCode === 500
+        ? "Something went wrong. Please try again later."
+        : err.message,
   });
 };
 
