@@ -34,7 +34,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     try {
@@ -44,7 +44,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in user:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data || "Login failed");
+        setError(error.response.data.errors || "Login failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
@@ -55,7 +55,7 @@ const Login = () => {
 
   const handleRequestResetPassword = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     setResetPasswordStep("first");

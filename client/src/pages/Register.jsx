@@ -37,7 +37,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     try {
@@ -62,7 +62,7 @@ const Register = () => {
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
 
     try {

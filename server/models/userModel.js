@@ -170,6 +170,7 @@ userSchema.statics.register = async function (
 
 userSchema.statics.login = async function (email, password) {
   const errors = {};
+  let user
 
   if (!email) {
     errors.email = "Please enter an email";
@@ -180,9 +181,9 @@ userSchema.statics.login = async function (email, password) {
   if (!password) {
     errors.password = "Please enter a password";
   }
-  const user = await this.findOne({ email });
 
   if (Object.keys(errors).length === 0) {
+    user = await this.findOne({ email });
     if (!user) {
       errors.credentials = "Invalid email or password";
     } else {
