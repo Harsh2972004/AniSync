@@ -66,7 +66,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error requesting password reset:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Password reset failed");
+        setError(error.response.dat?.message || "Password reset failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
