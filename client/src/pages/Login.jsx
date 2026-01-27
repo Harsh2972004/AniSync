@@ -44,7 +44,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in user:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Login failed");
+        setError(error.response.data.errors || "Login failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
@@ -66,7 +66,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error requesting password reset:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.errors || "Password reset failed");
+        setError(error.response.data.message || "Password reset failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
