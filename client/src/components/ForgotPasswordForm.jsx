@@ -127,9 +127,9 @@ const ForgotPasswordForm = ({
             </div>
           </>
         )}
-        {backendError && (
+        {backendError?.general && (
           <p className="text-red-500 text-sm font-semibold -mt-2">
-            {backendError}
+            {backendError.general}
           </p>
         )}
         <LoadingButton
