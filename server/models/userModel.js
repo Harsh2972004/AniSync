@@ -196,6 +196,7 @@ userSchema.statics.login = async function (email, password) {
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
     err.errors = errors;
+    err.statusCode = 400;
     throw err;
   }
 
