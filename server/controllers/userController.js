@@ -274,11 +274,11 @@ export const loginUser = async (req, res, next) => {
   if (!password) errors.password = "Please enter a password";
 
   if (Object.keys(errors).length === 0) {
-    const user = await this.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       errors.credentials = "Invalid email or password";
     } else {
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = bcrypt.compare(password, user.password);
       if (!isMatch) {
         errors.credentials = "Invalid email or password";
       }
