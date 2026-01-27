@@ -18,7 +18,7 @@ const Login = () => {
   const [resetPasswordStep, setResetPasswordStep] = useState("first");
   const [forgotPassword, setForgotPassword] = useState(false);
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [success, setSuccess] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
