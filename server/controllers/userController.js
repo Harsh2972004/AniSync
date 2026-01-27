@@ -191,8 +191,7 @@ export const requestPasswordReset = async (req, res) => {
     await sendEmail(user.email, subject, html);
     res.status(200).json({ message: "Password reset code sent to your email" });
   } catch (error) {
-    console.error("Error requesting password reset:", error);
-    res.status(500).json({ message: "Error requesting password reset" });
+    next(error);
   }
 };
 
@@ -271,7 +270,15 @@ export const loginUser = async (req, res, next) => {
 
     sendTokenCookie(user, res)
 
-    return res.json({ name: user.name, email: user.email });
+    return res.json({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatarUrl,
+        profileBanner: user.profileBannerUrl,
+      }
+    });
 
   })(req, res, next);
 };
