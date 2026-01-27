@@ -44,7 +44,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in user:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.errors || "Login failed");
+        setError(error.response.data || "Login failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
