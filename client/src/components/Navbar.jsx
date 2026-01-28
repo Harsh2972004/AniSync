@@ -23,13 +23,6 @@ const Navbar = ({
   const [lastScrollY, setLastScrollY] = useState("");
   const [showModal, setShowModal] = useState(false);
   const { user, logoutUser, isLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeTab") || "home";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
 
   const createdAt = new Date(user?.createdAt);
 
@@ -96,16 +89,16 @@ const Navbar = ({
         </div>
         <div className="hidden xl:block">
           <ul className="flex space-x-6 text-lg font-semibold">
-            <li onClick={() => setActiveTab("home")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${activeTab === "home" ? "underline" : ""}`}>
+            <li className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75`}>
               <Link to="/">Home</Link>
             </li>
-            <li onClick={() => setActiveTab("list")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${activeTab === "list" ? "underline" : ""}`}>
+            <li className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75`}>
               <Link to="/animeList">Anime List</Link>
             </li>
             {/* <li className="cursor-pointer hover:scale-[1.05] tranistion-all duration-75">
               <Link to="/mangaList">Manga List</Link>
             </li> */}
-            <li onClick={() => setActiveTab("browse")} className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75 ${activeTab === "browse" ? "underline" : ""}`}>
+            <li className={`cursor-pointer hover:scale-[1.05] tranistion-all duration-75`}>
               <Link to="/browse">Browse</Link>
             </li>
           </ul>
