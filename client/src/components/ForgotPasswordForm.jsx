@@ -89,9 +89,9 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
-              {backendError?.password && (
+              {backendError?.newPassword && (
                 <p className="text-red-500 text-sm font-semibold -mt-2">
-                  {backendError.password}
+                  {backendError.newPassword}
                 </p>
               )}
             </div>
@@ -120,9 +120,9 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
-              {backendError?.newPassword && (
+              {backendError?.confirmPassword && (
                 <p className="text-red-500 text-sm font-semibold -mt-2">
-                  {backendError.newPassword}
+                  {backendError.confirmPassword}
                 </p>
               )}
             </div>
