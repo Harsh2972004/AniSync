@@ -171,6 +171,11 @@ export const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
 
   try {
+
+    if (!email) {
+      throw new Error("Enter your email")
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       throw new Error("User not found");

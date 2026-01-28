@@ -56,6 +56,10 @@ const ForgotPasswordForm = ({
                 placeholder="Enter your email"
                 className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
+              {backendError?.general && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.general}
+                </p>)}
             </div>
           </>
         ) : (
