@@ -120,9 +120,9 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
-              {backendError?.confirmPassword && (
+              {backendError?.confirmNewPassword && (
                 <p className="text-red-500 text-sm font-semibold -mt-2">
-                  {backendError.confirmPassword}
+                  {backendError.confirmNewPassword}
                 </p>
               )}
             </div>
@@ -138,23 +138,23 @@ const ForgotPasswordForm = ({
                 placeholder="Enter your OTP"
                 className="w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
+              {backendError?.otp && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.otp}
+                </p>
+              )}
             </div>
           </>
         )}
-        {backendError?.otp && (
+        {backendError?.general && (
           <p className="text-red-500 text-sm font-semibold -mt-2">
-            {backendError.otp}
+            {backendError.general}
           </p>
         )}
         <LoadingButton
           isLoading={isLoading}
           text={resetPasswordStep === "first" ? "Enter" : "Reset Password"}
         />
-        {backendError?.general && (
-          <p className="text-red-500 text-sm font-semibold -mt-2">
-            {backendError.general}
-          </p>
-        )}
       </form>
       {resetPasswordStep === "second" && (
         <OtpResendButton
