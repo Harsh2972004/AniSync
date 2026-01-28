@@ -128,20 +128,29 @@ export const verifyEmail = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      const error = new Error("User not found");
-      error.statusCode = 400;
-      return next(error);
+      const err = new Error("Validation failed");
+      err.statusCode = 404;
+      err.errors = {
+        email: "No account found with this email",
+      };
+      return next(err);
     }
 
     if (user.isVerified) {
       const error = new Error("Email already verified");
       error.statusCode = 400;
+      error.errors = {
+        verified: "Email already verified"
+      }
       return next(error);
     }
 
     if (!otp) {
       const error = new Error("OTP is required, Check your Email.");
       error.statusCode = 400;
+      error.errors = {
+        otp: "OTP is required, check your email"
+      }
       return next(error);
     }
 
@@ -153,6 +162,9 @@ export const verifyEmail = async (req, res, next) => {
     ) {
       const error = new Error("Invalid or expired OTP");
       error.statusCode = 400;
+      error.errors = {
+        otp: "Invalid or expired OTP"
+      }
       return next(error);
     }
 
