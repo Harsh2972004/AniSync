@@ -167,18 +167,28 @@ export const verifyEmail = async (req, res, next) => {
   }
 };
 
-export const requestPasswordReset = async (req, res) => {
+export const requestPasswordReset = async (req, res, next) => {
   const { email } = req.body;
 
   try {
 
     if (!email) {
-      throw new Error("Enter your email")
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = {
+        email: "Please enter your email",
+      };
+      return next(err);
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error("User not found");
+      const err = new Error("Validation failed");
+      err.statusCode = 404;
+      err.errors = {
+        email: "No account found with this email",
+      };
+      return next(err);
     }
 
     const otp = crypto.randomInt(100000, 1000000).toString();
@@ -203,54 +213,69 @@ export const resetPassword = async (req, res, next) => {
   const { email, otp, newPassword, confirmNewPassword } = req.body;
 
   try {
+    const errors = {};
+
+    if (!email) errors.email = "Email is required";
+    if (!otp) errors.otp = "OTP is required";
+    if (!newPassword) errors.newPassword = "Password is required";
+    if (!confirmNewPassword)
+      errors.confirmNewPassword = "Please confirm your password";
+
+    if (newPassword && confirmNewPassword && newPassword !== confirmNewPassword) {
+      errors.confirmNewPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = errors;
+      return next(err);
+    }
+
     const user = await User.findOne({ email });
+
     if (!user || !user.resestPassword) {
-      const error = new Error("User not found.");
-      error.statusCode = 400;
-      return next(error);
-    }
-
-    if (!otp || !newPassword || !confirmNewPassword) {
-      const error = new Error("Entering fields are required");
-      error.statusCode = 400;
-      return next(error);
-    }
-
-    if (newPassword !== confirmNewPassword) {
-      const error = new Error("confirm Password doesn't match");
-      error.statusCode = 400;
-      return next(error);
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = {
+        general: "Invalid reset request",
+      };
+      return next(err);
     }
 
     if (user.resestPassword !== otp) {
-      const error = new Error("Invalid OTP.");
-      error.statusCode = 400;
-      return next(error);
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = {
+        otp: "Invalid OTP",
+      };
+      return next(err);
     }
 
-    if (
-      !user.resestPasswordExpires ||
-      user.resestPasswordExpires < Date.now()
-    ) {
-      const error = new Error("OTP has expired");
-      error.statusCode = 400;
-      return next(error);
+    if (user.resestPasswordExpires < Date.now()) {
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = {
+        otp: "OTP has expired",
+      };
+      return next(err);
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-    user.password = hashedPassword;
+    user.password = await bcrypt.hash(newPassword, salt);
 
-    // Clear the reset password fields
     user.resestPassword = null;
     user.resestPasswordExpires = null;
     await user.save();
 
-    res.status(200).json({ message: "Password reset successfully" });
+    res.status(200).json({
+      message: "Password reset successfully",
+    });
   } catch (error) {
     next(error);
   }
 };
+
 
 export const registerUser = async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;

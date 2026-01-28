@@ -95,7 +95,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error resetting password:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data || "Password reset failed");
+        setError(error.response.data.errors || "Password reset failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }

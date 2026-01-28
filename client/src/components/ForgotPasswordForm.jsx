@@ -56,9 +56,9 @@ const ForgotPasswordForm = ({
                 placeholder="Enter your email"
                 className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
-              {backendError?.general && (
+              {backendError?.email && (
                 <p className="text-red-500 text-sm font-semibold -mt-2">
-                  {backendError.general}
+                  {backendError?.email}
                 </p>)}
             </div>
           </>
@@ -89,6 +89,11 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
+              {backendError?.password && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.password}
+                </p>
+              )}
             </div>
             <div className="flex flex-col space-y-2">
               <label htmlFor="confirmPassword">Confirm Password</label>
@@ -115,6 +120,11 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
+              {backendError?.newPassword && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.newPassword}
+                </p>
+              )}
             </div>
             <div className="flex flex-col space-y-2">
               <label htmlFor="otp">Enter OTP</label>
@@ -131,15 +141,20 @@ const ForgotPasswordForm = ({
             </div>
           </>
         )}
-        {backendError?.general && (
+        {backendError?.otp && (
           <p className="text-red-500 text-sm font-semibold -mt-2">
-            {backendError.general}
+            {backendError.otp}
           </p>
         )}
         <LoadingButton
           isLoading={isLoading}
           text={resetPasswordStep === "first" ? "Enter" : "Reset Password"}
         />
+        {backendError?.general && (
+          <p className="text-red-500 text-sm font-semibold -mt-2">
+            {backendError.general}
+          </p>
+        )}
       </form>
       {resetPasswordStep === "second" && (
         <OtpResendButton
