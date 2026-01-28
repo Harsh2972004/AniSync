@@ -76,7 +76,7 @@ const Register = () => {
     } catch (error) {
       console.error("Error verifying OTP:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.error || "OTP verification failed");
+        setError(error.response.data.errors || "OTP verification failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
