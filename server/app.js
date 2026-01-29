@@ -2,7 +2,7 @@ import express from "express";
 // import fs from "fs";
 // import path from "path";
 // import https from "https";
-import http from "http";
+// import http from "http";
 // import { fileURLToPath } from "url";
 // import { dirname } from "path";
 import connectDB from "./config/db.js";
@@ -87,13 +87,13 @@ app.use(errorHandler);
 // );
 
 // sslServer.listen(PORT, () => {
-//   console.log(`Server is running on https://localhost:${PORT}`);
+//   console.log(`Server is running on https://localhost:${process.env.PORT}`);
 // });
 
-// app.listen(PORT, "0.0.0.0", () => {
-//   if (process.env.NODE_ENV !== "production") {
-//     console.log(`Server is running on port ${PORT}`);
-//   }
-// });
+app.listen(process.env.PORT, "0.0.0.0", () => {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`Server is running on port ${process.env.PORT}`);
+  }
+});
 
 export default app;

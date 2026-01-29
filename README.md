@@ -1,4 +1,5 @@
 🔗 Live Demo: https://ani-sync-8sx7.vercel.app/
+⚠️ Note: Some features require login to access user-specific data.
 
 # AniSync
 
@@ -29,6 +30,32 @@ The goal was to move beyond CRUD demos and create something closer to what real 
 ---
 
 ## 📸 Screenshots
+
+### Visual overview of key features and user flows.
+
+| Home                        | Home - logged in                      |
+| --------------------------- | ------------------------------------- |
+| ![](./screenshots/home.png) | ![](./screenshots/home_logged-in.png) |
+
+| Anime Details                          | Browse                        |
+| -------------------------------------- | ----------------------------- |
+| ![](./screenshots/anime%20details.png) | ![](./screenshots/browse.png) |
+
+| Anime list                       | Favourites - tilesFormat                |
+| -------------------------------- | --------------------------------------- |
+| ![](./screenshots/animeList.png) | ![](./screenshots/favourites-tiles.png) |
+
+| Favourites - cardFormat                     | Login                        |
+| ------------------------------------------- | ---------------------------- |
+| ![](./screenshots/favourites-card-form.png) | ![](./screenshots/login.png) |
+
+| register                        | Edit Anime Progress                 |
+| ------------------------------- | ----------------------------------- |
+| ![](./screenshots/register.png) | ![](./screenshots/edit%20anime.png) |
+
+| View Anime Progress                            | Profile Section                             |
+| ---------------------------------------------- | ------------------------------------------- |
+| ![](./screenshots/view%20anime%20progress.png) | ![](./screenshots/Blur_profile-section.png) |
 
 ---
 

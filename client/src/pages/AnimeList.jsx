@@ -280,10 +280,13 @@ const AnimeList = () => {
                   <h3 className="font-bold text-xl">Favourites</h3>
                   {!reorderMode ? <div className="flex gap-2">
                     <button
-                      className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
+                      className="bg-primary p-2 h-8 gap-2 flex items-center justify-center rounded-md"
                       onClick={startReorder}
                     >
-                      <RiListOrdered size={22} />
+                      <span className="font-semibold text-xs">
+                        Change Order
+                      </span>
+                      <RiListOrdered size={20} />
                     </button>
                     <button
                       className="bg-primary w-8 h-8 flex items-center justify-center rounded-md"
