@@ -11,8 +11,8 @@ const ListBar = ({ username, avatar, formattedDate, title, setTitle }) => {
   }
 
   return (
-    <div className="flex items-center justify-between relative bg-primary py-2 px-4 rounded-lg w-[95vw] xl:w-full mx-auto">
-      <div className="hidden lg:flex items-center gap-2 bg-primary rounded-lg">
+    <div className="grid grid-cols-1 lg:grid-cols-3  items-center justify-between relative bg-primary py-2 px-4 rounded-lg w-[95vw] xl:w-full mx-auto">
+      <div className="justify-self-start hidden lg:flex items-center gap-2 bg-primary rounded-lg">
         <img
           className="w-14 rounded-lg"
           src={avatar || defaultAvatar}
@@ -23,7 +23,7 @@ const ListBar = ({ username, avatar, formattedDate, title, setTitle }) => {
           <p className="text-sm text-gray-400">User since {formattedDate}</p>
         </div>
       </div>
-      <div className="bg-primary rounded-lg xl:absolute xl:left-[43%] w-full xl:w-auto text-center">
+      <div className="bg-primary rounded-lg justify-self-center w-full text-center">
         <p className="text-sm text-gray-300">You are seeing</p>
         <h1 className="text-2xl font-semibold">{title}</h1>
 
@@ -37,7 +37,7 @@ const ListBar = ({ username, avatar, formattedDate, title, setTitle }) => {
         <MdKeyboardArrowDown onClick={changeExpanded} className={`mx-auto text-xl lg:hidden transition-transform duration-300 cursor-pointer ${expanded ? "rotate-180" : "rotate-0 floaty"}`} />
 
       </div>
-      <div className="hidden lg:flex items-center gap-4">
+      <div className="hidden justify-self-end lg:flex items-center gap-4">
         <button
           onClick={() => setTitle("Anime List")}
           className={`hover:bg-btn_pink hover:text-secondary transition-colors duration-200 px-6 py-2 font-semibold rounded-lg ${title === "Anime List" ? "border-black bg-btn_pink text-black font-semibold border-4" : "border-2 border-btn_pink text-btn_pink"}`}
