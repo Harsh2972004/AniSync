@@ -129,7 +129,7 @@ const SelectedAnimeEdit = ({
             </div>
           </div>
         </div>
-        <div className="overflow-scroll grid md:grid-cols-2 grid-rows-3 gap-8 justify-between items-start basis-1/2">
+        <div className="overflow-scroll lg:overflow-visible grid md:grid-cols-2 grid-rows-3 gap-8 justify-between items-start basis-1/2">
           {/* status */}
           <SelectedAnimeInput
             id={id}

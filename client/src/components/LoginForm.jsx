@@ -28,6 +28,7 @@ const LoginForm = ({
           placeholder="Enter your email"
           className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
         />
+        {error.email && <p className="text-red-500 text-sm font-semibold">{error.email}</p>}
       </div>
       <div className="flex flex-col space-y-2">
         <label htmlFor="password">password</label>
@@ -54,8 +55,9 @@ const LoginForm = ({
             )}
           </button>
         </div>
-        {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
+        {error.password && <p className="text-red-500 text-sm font-semibold">{error.password}</p>}
       </div>
+      {error.credentials && <p className="text-red-500 text-sm font-semibold">{error.credentials}</p>}
       <LoadingButton isLoading={isLoading} text={"Login"} />
     </form>
   );

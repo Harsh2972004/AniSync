@@ -75,6 +75,9 @@ const RegisterForm = ({
             )}
           </button>
         </div>
+        {!error.password && (
+          <p className="text-sm font-semibold">Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one symbol</p>
+        )}
         {error.password && (
           <p className="text-red-500 text-sm font-semibold">{error.password}</p>
         )}

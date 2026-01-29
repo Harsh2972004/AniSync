@@ -23,7 +23,7 @@ const Register = () => {
   ); // "form" or "otp"
   const [otp, setOtp] = useState("");
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     try {
@@ -62,7 +62,7 @@ const Register = () => {
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
 
     try {
@@ -76,7 +76,7 @@ const Register = () => {
     } catch (error) {
       console.error("Error verifying OTP:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "OTP verification failed");
+        setError(error.response.data.errors || "OTP verification failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }

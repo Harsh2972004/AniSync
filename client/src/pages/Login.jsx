@@ -18,7 +18,7 @@ const Login = () => {
   const [resetPasswordStep, setResetPasswordStep] = useState("first");
   const [forgotPassword, setForgotPassword] = useState(false);
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [success, setSuccess] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     try {
@@ -44,7 +44,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in user:", error.response.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Login failed");
+        setError(error.response.data.errors || "Login failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
@@ -55,7 +55,7 @@ const Login = () => {
 
   const handleRequestResetPassword = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({});
     setSuccess("");
     setIsLoading(true);
     setResetPasswordStep("first");
@@ -66,7 +66,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error requesting password reset:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Password reset failed");
+        setError(error.response.data?.errors || "Password reset failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
@@ -95,7 +95,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error resetting password:", error.response?.data);
       if (error.response && error.response.data) {
-        setError(error.response.data.message || "Password reset failed");
+        setError(error.response.data.errors || "Password reset failed");
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }

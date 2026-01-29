@@ -23,7 +23,7 @@ const Modal = ({ children, open, onClose }) => {
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="overflow-scroll lg:overflow-auto pointer-events-auto relative w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg"
+          className="overflow-scroll lg:overflow-auto pointer-events-auto relative w-[90%] md:w-2/3 h-3/4 bg-primary shadow-lg shadow-black rounded-lg"
         >
           <button
             className="absolute z-50 top-8 right-8 bg-black/80 rounded-lg p-1"

@@ -150,6 +150,7 @@ userSchema.statics.register = async function (
 
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
+    err.statusCode = 400
     err.errors = errors;
     throw err;
   }
@@ -169,6 +170,7 @@ userSchema.statics.register = async function (
 
 userSchema.statics.login = async function (email, password) {
   const errors = {};
+  let user
 
   if (!email) {
     errors.email = "Please enter an email";
@@ -179,9 +181,9 @@ userSchema.statics.login = async function (email, password) {
   if (!password) {
     errors.password = "Please enter a password";
   }
-  const user = await this.findOne({ email });
 
   if (Object.keys(errors).length === 0) {
+    user = await this.findOne({ email });
     if (!user) {
       errors.credentials = "Invalid email or password";
     } else {
@@ -195,6 +197,7 @@ userSchema.statics.login = async function (email, password) {
   if (Object.keys(errors).length > 0) {
     const err = new Error("Validation failed");
     err.errors = errors;
+    err.statusCode = 400;
     throw err;
   }
 

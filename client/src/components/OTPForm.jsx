@@ -36,8 +36,8 @@ const OTPForm = ({
           name="otp"
           className="w-full md:w-[400px] h-12 p-2 rounded-md bg-secondary"
         />
-        {otpError && (
-          <p className="text-red-500 text-sm font-semibold -mt-2">{otpError}</p>
+        {otpError?.otp && (
+          <p className="text-red-500 text-sm font-semibold -mt-2">{otpError?.otp}</p>
         )}
       </div>
       <LoadingButton isLoading={isLoading} text={"Verify OTP"} />

@@ -56,6 +56,10 @@ const ForgotPasswordForm = ({
                 placeholder="Enter your email"
                 className="w-full md:w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
+              {backendError?.email && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError?.email}
+                </p>)}
             </div>
           </>
         ) : (
@@ -85,6 +89,11 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
+              {backendError?.newPassword && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.newPassword}
+                </p>
+              )}
             </div>
             <div className="flex flex-col space-y-2">
               <label htmlFor="confirmPassword">Confirm Password</label>
@@ -111,6 +120,11 @@ const ForgotPasswordForm = ({
                   )}
                 </button>
               </div>
+              {backendError?.confirmNewPassword && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.confirmNewPassword}
+                </p>
+              )}
             </div>
             <div className="flex flex-col space-y-2">
               <label htmlFor="otp">Enter OTP</label>
@@ -124,12 +138,17 @@ const ForgotPasswordForm = ({
                 placeholder="Enter your OTP"
                 className="w-[400px] h-12 p-2 rounded-lg bg-secondary border-2 border-gray-600"
               />
+              {backendError?.otp && (
+                <p className="text-red-500 text-sm font-semibold -mt-2">
+                  {backendError.otp}
+                </p>
+              )}
             </div>
           </>
         )}
-        {backendError && (
+        {backendError?.general && (
           <p className="text-red-500 text-sm font-semibold -mt-2">
-            {backendError}
+            {backendError.general}
           </p>
         )}
         <LoadingButton

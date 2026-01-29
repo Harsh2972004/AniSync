@@ -172,7 +172,7 @@ const Filters = () => {
           <FaFilter size={20} />
         </button>
       </div>
-      <div className={`xl:hidden flex flex-wrap justify-between gap-y-4 bg-[#262535] p-4 transition-all duration-300 ${expanded ? "opacity-100 max-h-60 mt-6" : "opacity-0 max-h-0 mt-0"}`}>
+      <div className={`xl:hidden flex flex-wrap justify-between gap-y-4 bg-[#262535] rounded-md p-4 transition-all duration-300 ${expanded ? "opacity-100 max-h-60 mt-6" : "opacity-0 max-h-0 mt-0"}`}>
         <FilterInput
           text="genre"
           handleChange={handleFilterChange}
