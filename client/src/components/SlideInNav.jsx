@@ -125,7 +125,7 @@ const SlideInNav = ({ hide, setHide }) => {
           {user && !isLoading && (
             <div
               onClick={() => setShowModal(true)}
-              className="max-w-[75%] flex border-2 rounded-lg items-center gap-3 py-2 px-3 cursor-pointer"
+              className="max-w-[75%] md:max-w-[40%] lg:max-w-[30%] flex border-2 rounded-lg items-center gap-3 py-2 px-3 cursor-pointer"
             >
               <img
                 className="w-12 h-12 object-cover object-center rounded-full"

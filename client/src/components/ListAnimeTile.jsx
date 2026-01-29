@@ -27,16 +27,16 @@ const ListAnimeTile = ({ index, id, title, image, reorderMode }) => {
     style={style}
     onMouseDown={(e) => (e.currentTarget.style.cursor = "grabbing")}
     onMouseUp={(e) => (e.currentTarget.style.cursor = "grab")}
-    className={`px-6 py-2 flex items-center justify-between bg-primary rounded-md ${reorderMode ? "touch-none " : "touch-manipulation"} ${!reorderMode
+    className={`px-6 py-2 flex gap-4 items-center justify-between bg-primary rounded-md ${reorderMode ? "touch-none " : "touch-manipulation"} ${!reorderMode
       ? "cursor-default" : isDragging ? "cursor-grabbing"
         : "cursor-grab"
       }`}
 
   >
     <div className="flex items-center gap-4">
-      <span className="font-bold">{`${index})`}</span>
+      <span className="font-bold text-sm md:text-base">{`${index})`}</span>
       <img className="w-10 rounded-md" src={image} alt={`${title}-image`} />
-      <h4 className="text-sm font-semibold">{title}</h4>
+      <h4 className="text-xs md:text-sm font-semibold">{title}</h4>
     </div>
     <span>{score ? score : "—"}</span>
   </div >

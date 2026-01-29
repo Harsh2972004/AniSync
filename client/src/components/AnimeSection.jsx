@@ -76,44 +76,57 @@ const AnimeSection = ({ title, fetchType, inBrowse = false }) => {
     new Map(animeList.map((item) => [item.id, item])).values()
   );
 
+  const isViewAll = inBrowse && mode === "sectionViewAll" && sectionType === fetchType;
+
+  const getPreviewLimit = () => {
+    if (window.innerWidth >= 960) return 4; // xl
+    if (window.innerWidth >= 667) return 3;  // md
+    return 4; // mobile (2x2)
+  };
+
+  const previewLimit = getPreviewLimit();
+
+  const visibleAnimeList = isViewAll
+    ? uniqueAnimeList
+    : uniqueAnimeList.slice(0, previewLimit);
+
   return (
     <section className="container-spacing flex flex-col w-full gap-6 ">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold w-[60%]">{title}</h1>
         <button
           onClick={handleViewAll}
-          className={`text-gray-400 xl:base ${
-            inBrowse && mode === "sectionViewAll" && "hidden"
-          }`}
+          className={`text-gray-400 xl:base ${inBrowse && mode === "sectionViewAll" && "hidden"
+            }`}
         >
           View All
         </button>
       </div>
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-10 gap-y-20 w-full">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 gap-y-20 w-full">
         {animeList.length === 0 && isLoading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))
-          : uniqueAnimeList.map((anime, index) => {
-              const isLast =
-                index === uniqueAnimeList.length - 1 &&
-                uniqueAnimeList.length >= displayLimit;
-              const shouldAttachRef =
-                inBrowse &&
-                mode === "sectionViewAll" &&
-                sectionType === fetchType;
-              return (
-                <AnimeCard
-                  key={anime.id}
-                  id={anime.id}
-                  title={anime.title?.english || anime.title.romaji}
-                  animeImg={anime.coverImage.extraLarge}
-                  airSince={anime.startDate.year}
-                  genres={anime.genres.slice(0, 3)}
-                  ref={isLast && shouldAttachRef ? lastAnimeRef : null}
-                />
-              );
-            })}
+            <SkeletonCard key={index} />
+          ))
+          : visibleAnimeList.map((anime, index) => {
+            const isLast =
+              index === visibleAnimeList.length - 1 &&
+              visibleAnimeList.length >= displayLimit;
+            const shouldAttachRef =
+              inBrowse &&
+              mode === "sectionViewAll" &&
+              sectionType === fetchType;
+            return (
+              <AnimeCard
+                key={anime.id}
+                id={anime.id}
+                title={anime.title?.english || anime.title.romaji}
+                animeImg={anime.coverImage.extraLarge}
+                airSince={anime.startDate.year}
+                genres={anime.genres.slice(0, 3)}
+                ref={isLast && shouldAttachRef ? lastAnimeRef : null}
+              />
+            );
+          })}
 
         {isLoading &&
           uniqueAnimeList.length > 0 &&

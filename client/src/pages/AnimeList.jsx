@@ -234,7 +234,7 @@ const AnimeList = () => {
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white animate-loading-bar" />
           </div>
         )}
-        <div className="overflow-hidden px-[5vw] md:px-[3vw] lg:px-0">
+        <div className="overflow-hidden px-[5vw] md:px-[3vw] xl:px-0">
           {listTitle === "Anime List" && !isLoading && (
             <div className="space-y-10">
               <AnimeListSection
